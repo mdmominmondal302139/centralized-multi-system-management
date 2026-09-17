@@ -1,0 +1,2262 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1">
+
+<title>Expense</title>
+
+
+<style>
+
+/* =========================================================
+   BASIC
+   ========================================================= */
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    padding:0;
+
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+
+    background:#f4f7fb;
+
+    color:#111827;
+}
+
+
+/* =========================================================
+   MAIN WORKING WRAPPER
+   ========================================================= */
+
+.wrap{
+    width:96%;
+
+    max-width:1500px;
+
+    margin:25px auto;
+
+    padding-bottom:25px;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.card{
+    background:#ffffff;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    margin-bottom:20px;
+
+    box-shadow:0 3px 12px #0001;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.page-header{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:20px;
+}
+
+.page-header h1{
+    margin:0;
+
+    font-size:26px;
+
+    color:#111827;
+}
+
+
+/* =========================================================
+   EXPENSE WORKING PAGE MENU
+   ========================================================= */
+
+.menu-grid{
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:20px;
+
+    margin-top:20px;
+}
+
+.menu-card{
+    display:block;
+
+    background:#ffffff;
+
+    padding:30px 25px;
+
+    border-radius:14px;
+
+    box-shadow:0 3px 12px #0001;
+
+    text-decoration:none;
+
+    color:#111827;
+
+    border:1px solid #e5e7eb;
+
+    transition:.2s;
+
+    cursor:pointer;
+}
+
+.menu-card:hover{
+    transform:translateY(-2px);
+
+    box-shadow:0 6px 18px #0002;
+}
+
+.menu-card h2{
+    margin:0 0 10px 0;
+
+    color:#2563eb;
+}
+
+.menu-card p{
+    margin:0;
+
+    color:#6b7280;
+
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.grid{
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:12px;
+}
+
+.field{
+    min-width:0;
+}
+
+.field label{
+    display:block;
+
+    font-weight:bold;
+
+    margin-bottom:5px;
+}
+
+.field input,
+.field textarea{
+    width:100%;
+
+    padding:10px;
+
+    border:1px solid #ddd;
+
+    border-radius:7px;
+
+    box-sizing:border-box;
+
+    background:#ffffff;
+
+    font-family:Arial,Helvetica,sans-serif;
+
+    font-size:14px;
+}
+
+.field input:disabled,
+.field textarea:disabled{
+    background:#f3f4f6;
+
+    cursor:not-allowed;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+
+/* =========================================================
+   CATEGORY CUSTOM DROPDOWN
+   ========================================================= */
+
+.category-select{
+    position:relative;
+
+    width:100%;
+}
+
+
+/* =========================================================
+   VISIBLE CATEGORY BOX
+   ========================================================= */
+
+.category-display{
+    width:100%;
+
+    min-height:40px;
+
+    padding:10px 38px 10px 10px;
+
+    border:1px solid #ddd;
+
+    border-radius:7px;
+
+    background:#ffffff;
+
+    color:#111827;
+
+    font-family:Arial,Helvetica,sans-serif;
+
+    font-size:14px;
+
+    cursor:pointer;
+
+    position:relative;
+
+    user-select:none;
+
+    display:flex;
+
+    align-items:center;
+}
+
+
+.category-display:hover{
+    border-color:#9ca3af;
+}
+
+
+.category-display:focus{
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,.10);
+}
+
+
+/* =========================================================
+   PLACEHOLDER
+   ========================================================= */
+
+.category-display.placeholder{
+    color:#6b7280;
+}
+
+
+/* =========================================================
+   ARROW
+   ========================================================= */
+
+.category-arrow{
+    position:absolute;
+
+    right:12px;
+
+    top:50%;
+
+    transform:
+        translateY(-50%);
+
+    color:#6b7280;
+
+    font-size:11px;
+
+    pointer-events:none;
+
+    transition:
+        transform .18s ease;
+}
+
+
+.category-select.open
+.category-arrow{
+    transform:
+        translateY(-50%)
+        rotate(180deg);
+}
+
+
+/* =========================================================
+   DROPDOWN
+
+   IMPORTANT:
+   It ALWAYS starts BELOW the category box.
+
+   max-height + overflow-y allows scrolling when there
+   are many categories.
+   ========================================================= */
+
+.category-options{
+    display:none;
+
+    position:absolute;
+
+    top:calc(100% + 5px);
+
+    left:0;
+
+    right:0;
+
+    z-index:9999;
+
+    max-height:240px;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    background:#ffffff;
+
+    border:1px solid #d1d5db;
+
+    border-radius:8px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(0,0,0,.18);
+
+    padding:4px 0;
+}
+
+
+/* OPEN */
+
+.category-select.open
+.category-options{
+    display:block;
+}
+
+
+/* =========================================================
+   CATEGORY OPTION
+   ========================================================= */
+
+.category-option{
+    width:100%;
+
+    display:block;
+
+    border:0;
+
+    background:#ffffff;
+
+    color:#111827;
+
+    padding:10px 12px;
+
+    text-align:left;
+
+    font-family:Arial,Helvetica,sans-serif;
+
+    font-size:14px;
+
+    cursor:pointer;
+}
+
+
+.category-option:hover{
+    background:#eff6ff;
+
+    color:#1d4ed8;
+}
+
+
+.category-option.selected{
+    background:#dbeafe;
+
+    color:#1d4ed8;
+
+    font-weight:bold;
+}
+
+
+/* =========================================================
+   CATEGORY SCROLLBAR
+   ========================================================= */
+
+.category-options::-webkit-scrollbar{
+    width:8px;
+}
+
+.category-options::-webkit-scrollbar-track{
+    background:#f3f4f6;
+
+    border-radius:8px;
+}
+
+.category-options::-webkit-scrollbar-thumb{
+    background:#9ca3af;
+
+    border-radius:8px;
+}
+
+.category-options::-webkit-scrollbar-thumb:hover{
+    background:#6b7280;
+}
+
+
+/* =========================================================
+   DISABLED CATEGORY
+   ========================================================= */
+
+.category-select.disabled
+.category-display{
+    background:#f3f4f6;
+
+    color:#6b7280;
+
+    cursor:not-allowed;
+}
+
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.btn{
+    display:inline-block;
+
+    border:0;
+
+    padding:9px 13px;
+
+    border-radius:7px;
+
+    text-decoration:none;
+
+    background:#2563eb;
+
+    color:#ffffff;
+
+    font-weight:bold;
+
+    margin:3px;
+
+    cursor:pointer;
+
+    font-family:Arial,Helvetica,sans-serif;
+
+    font-size:14px;
+}
+
+.btn:hover{
+    opacity:.9;
+}
+
+.btn:disabled{
+    opacity:.6;
+
+    cursor:not-allowed;
+}
+
+.lock{
+    background:#dc2626;
+}
+
+.unlock{
+    background:#047857;
+}
+
+.delete{
+    background:#b91c1c;
+}
+
+.back{
+    background:#374151;
+}
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+.msg{
+    padding:12px;
+
+    background:#ecfdf5;
+
+    color:#166534;
+
+    border-radius:8px;
+
+    margin-bottom:15px;
+}
+
+.error{
+    background:#fef2f2;
+
+    color:#991b1b;
+}
+
+
+/* =========================================================
+   LOCKED
+   ========================================================= */
+
+.locked{
+    color:#b91c1c;
+
+    font-weight:bold;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.wraptable{
+    overflow:auto;
+
+    width:100%;
+}
+
+table{
+    width:100%;
+
+    border-collapse:collapse;
+
+    min-width:1000px;
+}
+
+th,
+td{
+    padding:10px;
+
+    border-bottom:1px solid #e5e7eb;
+
+    white-space:nowrap;
+
+    text-align:left;
+}
+
+th{
+    background:#f3f4f6;
+}
+
+
+/* =========================================================
+   FORM ACTION AREA
+   ========================================================= */
+
+.form-actions{
+    margin-top:15px;
+
+    display:flex;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:850px){
+
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .menu-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+
+@media(max-width:550px){
+
+    .wrap{
+        width:94%;
+
+        margin:15px auto;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .page-header{
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+
+    .page-header h1{
+        font-size:22px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="wrap">
+
+
+    <!-- =====================================================
+         PAGE HEADER
+         ===================================================== -->
+
+    <div class="page-header">
+
+
+        <h1>
+            Expense Management
+        </h1>
+
+
+        <a
+            class="btn back"
+            href="/dashboard"
+            id="backToDashboard"
+        >
+            Back to Dashboard
+        </a>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MESSAGE
+         ===================================================== -->
+
+    {% if message %}
+
+    <div class="msg {{'error' if message_type=='error' else ''}}">
+
+        {{message}}
+
+    </div>
+
+    {% endif %}
+
+
+
+    <!-- =========================================================
+         EXPENSE WORKING PAGE
+         ========================================================= -->
+
+    {% if not view or view == 'home' %}
+
+
+    <div class="menu-grid">
+
+
+        <!-- =====================================================
+             ADD EXPENSE
+             ===================================================== -->
+
+        <a
+            class="menu-card"
+            href="/expense?view=add"
+            target="_self"
+        >
+
+            <h2>
+                Add Expense
+            </h2>
+
+            <p>
+                Add a new expense record or edit an existing expense.
+            </p>
+
+        </a>
+
+
+
+        <!-- =====================================================
+             MONTHLY EXPENSE
+             ===================================================== -->
+
+        <a
+            class="menu-card"
+            href="/expense?view=monthly"
+            target="_self"
+        >
+
+            <h2>
+                Monthly Expense
+            </h2>
+
+            <p>
+                View monthly expense summary, details, lock, unlock
+                and delete records.
+            </p>
+
+        </a>
+
+
+    </div>
+
+
+    {% endif %}
+
+
+
+    <!-- =========================================================
+         ADD / EDIT EXPENSE
+         ========================================================= -->
+
+    {% if view == 'add' %}
+
+
+    <div class="card">
+
+
+        <div class="page-header">
+
+
+            <h2>
+
+                {% if edit_expense %}
+
+                    Edit Expense
+
+                {% else %}
+
+                    Add Expense
+
+                {% endif %}
+
+            </h2>
+
+
+            <a
+                class="btn back"
+                href="/expense"
+            >
+                Back
+            </a>
+
+
+        </div>
+
+
+
+        <form
+            method="post"
+            id="expenseForm"
+        >
+
+
+            <input
+                type="hidden"
+                name="expense_id"
+                value="{{edit_expense.get('_id','') if edit_expense else ''}}"
+            >
+
+
+            <!--
+                This hidden input stores the selected category.
+
+                The visible category box below is a custom
+                scrollable dropdown.
+            -->
+
+            <input
+                type="hidden"
+                name="category"
+                id="categoryValue"
+                value="{{edit_expense.get('category','') if edit_expense else ''}}"
+            >
+
+
+
+            <div class="grid">
+
+
+                <!-- =================================================
+                     AMOUNT
+                     ================================================= -->
+
+                <div class="field">
+
+
+                    <label for="amount">
+                        Amount
+                    </label>
+
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        id="amount"
+                        name="amount"
+                        value="{{edit_expense.get('amount','') if edit_expense else ''}}"
+                        required
+                        {% if selected_locked %}disabled{% endif %}
+                    >
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     CATEGORY
+                     ================================================= -->
+
+                <div class="field">
+
+
+                    <label for="categoryDisplay">
+                        Category
+                    </label>
+
+
+                    <div
+                        class="
+                            category-select
+                            {% if selected_locked %}disabled{% endif %}
+                        "
+                        id="categorySelect"
+                    >
+
+
+                        <!-- =========================================
+                             VISIBLE SELECT BOX
+                             ========================================= -->
+
+                        <div
+                            class="
+                                category-display
+                                {% if not edit_expense or not edit_expense.get('category') %}
+                                    placeholder
+                                {% endif %}
+                            "
+                            id="categoryDisplay"
+                            tabindex="{% if selected_locked %}-1{% else %}0{% endif %}"
+                            role="button"
+                            aria-haspopup="listbox"
+                            aria-expanded="false"
+                        >
+
+                            <span id="categoryDisplayText">
+
+                                {% if edit_expense and edit_expense.get('category') %}
+
+                                    {{ edit_expense.get('category') }}
+
+                                {% else %}
+
+                                    Select Category
+
+                                {% endif %}
+
+                            </span>
+
+
+                            <span
+                                class="category-arrow"
+                            >
+                                ▼
+                            </span>
+
+                        </div>
+
+
+
+                        <!-- =========================================
+                             SCROLLABLE CATEGORY LIST
+                             ========================================= -->
+
+                        <div
+                            class="category-options"
+                            id="categoryOptions"
+                            role="listbox"
+                        >
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Food"
+                                role="option"
+                            >
+                                Food
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Transport"
+                                role="option"
+                            >
+                                Transport
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Shopping"
+                                role="option"
+                            >
+                                Shopping
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Bills"
+                                role="option"
+                            >
+                                Bills
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Education"
+                                role="option"
+                            >
+                                Education
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Medical"
+                                role="option"
+                            >
+                                Medical
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Entertainment"
+                                role="option"
+                            >
+                                Entertainment
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Rent"
+                                role="option"
+                            >
+                                Rent
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Utilities"
+                                role="option"
+                            >
+                                Utilities
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Family"
+                                role="option"
+                            >
+                                Family
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Personal"
+                                role="option"
+                            >
+                                Personal
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="category-option"
+                                data-value="Other"
+                                role="option"
+                            >
+                                Other
+                            </button>
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     DATE
+                     ================================================= -->
+
+                <div class="field">
+
+
+                    <label for="expenseDate">
+                        Date
+                    </label>
+
+
+                    <input
+                        name="date"
+                        id="expenseDate"
+                        value="{{edit_expense.get('date',current_date) if edit_expense else current_date}}"
+                        required
+                        {% if selected_locked %}disabled{% endif %}
+                    >
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     TIME
+                     ================================================= -->
+
+                <div class="field">
+
+
+                    <label for="expenseTime">
+                        Time
+                    </label>
+
+
+                    <input
+                        name="time"
+                        id="expenseTime"
+                        value="{{edit_expense.get('time',current_time) if edit_expense else current_time}}"
+                        required
+                        {% if selected_locked %}disabled{% endif %}
+                    >
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     DESCRIPTION
+                     ================================================= -->
+
+                <div class="field full">
+
+
+                    <label for="description">
+                        Description
+                    </label>
+
+
+                    <textarea
+                        name="description"
+                        id="description"
+                        rows="3"
+                        {% if selected_locked %}disabled{% endif %}
+                    >{{edit_expense.get('description','N/A') if edit_expense else 'N/A'}}</textarea>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FORM BUTTONS
+                 ================================================= -->
+
+            <div class="form-actions">
+
+
+                <button
+                    class="btn"
+                    type="submit"
+                    {% if selected_locked %}disabled{% endif %}
+                >
+
+                    {% if edit_expense %}
+
+                        Update Expense
+
+                    {% else %}
+
+                        Add Expense
+
+                    {% endif %}
+
+                </button>
+
+
+
+                {% if edit_expense %}
+
+
+                <a
+                    class="btn back"
+                    href="/expense?view=monthly&month={{selected_month}}"
+                >
+
+                    Cancel
+
+                </a>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+
+    {% endif %}
+
+
+
+    <!-- =========================================================
+         MONTHLY EXPENSE
+         ========================================================= -->
+
+    {% if view == 'monthly' %}
+
+
+    <div class="card">
+
+
+        <div class="page-header">
+
+
+            <h2>
+                Monthly Expense
+            </h2>
+
+
+            <a
+                class="btn back"
+                href="/expense"
+            >
+
+                Back
+
+            </a>
+
+
+        </div>
+
+
+
+        <div class="wraptable">
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            SL
+                        </th>
+
+                        <th>
+                            Month
+                        </th>
+
+                        <th>
+                            Total
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                    {% for item in summaries %}
+
+
+                    <tr>
+
+
+                        <td>
+                            {{loop.index}}
+                        </td>
+
+
+                        <td>
+                            {{item.month}} {{item.year}}
+                        </td>
+
+
+                        <td>
+                            {{'%.2f'|format(item.total)}}
+                        </td>
+
+
+                        <td>
+
+
+                            <a
+                                class="btn"
+                                href="/expense?view=monthly&month={{item.month_key}}"
+                            >
+
+                                Open
+
+                            </a>
+
+
+
+                            {% if item.locked %}
+
+
+                                {% if user.get('role')=='Expense Developer' %}
+
+
+                                <a
+                                    class="btn unlock"
+                                    href="/expense/month/unlock?month={{item.month_key}}"
+                                >
+
+                                    Unlock
+
+                                </a>
+
+
+                                {% else %}
+
+
+                                <span class="btn lock">
+
+                                    Locked
+
+                                </span>
+
+
+                                {% endif %}
+
+
+                            {% else %}
+
+
+                                <a
+                                    class="btn lock"
+                                    href="/expense/month/lock?month={{item.month_key}}"
+                                    onclick="return confirm('Lock this month?')"
+                                >
+
+                                    Lock
+
+                                </a>
+
+
+
+                                <a
+                                    class="btn delete"
+                                    href="/expense/delete-month?month={{item.month_key}}"
+                                    onclick="return confirm('Permanently delete this month?')"
+                                >
+
+                                    Delete
+
+                                </a>
+
+
+                            {% endif %}
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% else %}
+
+
+                    <tr>
+
+                        <td colspan="4">
+
+                            No expense records found.
+
+                        </td>
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================================================
+         SELECTED MONTH EXPENSE DETAILS
+         ========================================================= -->
+
+    {% if selected_month %}
+
+
+    <div class="card">
+
+
+        <div class="page-header">
+
+
+            <h2>
+
+                {{selected_month}} Expense Details
+
+            </h2>
+
+
+            <a
+                class="btn back"
+                href="/expense?view=monthly"
+            >
+
+                Back
+
+            </a>
+
+
+        </div>
+
+
+
+        {% if selected_locked %}
+
+
+        <p class="locked">
+
+            This month is locked.
+            Add/Edit/Delete is disabled.
+
+        </p>
+
+
+        {% endif %}
+
+
+
+        <div class="wraptable">
+
+
+            <table>
+
+
+                <thead>
+
+
+                    <tr>
+
+                        <th>
+                            SL
+                        </th>
+
+                        <th>
+                            Month
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Amount
+                        </th>
+
+                        <th>
+                            Time
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Description
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                    {% for r in month_expenses %}
+
+
+                    <tr>
+
+
+                        <td>
+                            {{loop.index}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('month','')}} {{r.get('year','')}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('category','')}}
+                        </td>
+
+
+                        <td>
+                            {{'%.2f'|format(r.get('amount',0))}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('time','')}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('date','')}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('description','')}}
+                        </td>
+
+
+                        <td>
+
+
+                            {% if selected_locked %}
+
+
+                            <span class="locked">
+
+                                Locked
+
+                            </span>
+
+
+                            {% else %}
+
+
+                            <a
+                                class="btn"
+                                href="/expense?view=add&edit={{r.get('_id')}}&month={{selected_month}}"
+                            >
+
+                                Edit
+
+                            </a>
+
+
+
+                            <a
+                                class="btn delete"
+                                href="/expense/delete/{{r.get('_id')}}?month={{selected_month}}"
+                                onclick="return confirm('Permanently delete this record?')"
+                            >
+
+                                Delete
+
+                            </a>
+
+
+                            {% endif %}
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% else %}
+
+
+                    <tr>
+
+
+                        <td colspan="8">
+
+                            No records found.
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+    {% endif %}
+
+
+    {% endif %}
+
+
+</div>
+
+
+
+<!-- =========================================================
+     CUSTOM CATEGORY DROPDOWN SCRIPT
+     ========================================================= -->
+
+<script>
+
+(function(){
+
+    "use strict";
+
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const categorySelect =
+        document.getElementById(
+            "categorySelect"
+        );
+
+
+    const categoryDisplay =
+        document.getElementById(
+            "categoryDisplay"
+        );
+
+
+    const categoryDisplayText =
+        document.getElementById(
+            "categoryDisplayText"
+        );
+
+
+    const categoryOptions =
+        document.getElementById(
+            "categoryOptions"
+        );
+
+
+    const categoryValue =
+        document.getElementById(
+            "categoryValue"
+        );
+
+
+    const expenseForm =
+        document.getElementById(
+            "expenseForm"
+        );
+
+
+    if(
+        !categorySelect ||
+        !categoryDisplay ||
+        !categoryDisplayText ||
+        !categoryOptions ||
+        !categoryValue
+    ){
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       OPTIONS
+       ===================================================== */
+
+    const options =
+        categoryOptions.querySelectorAll(
+            ".category-option"
+        );
+
+
+    /* =====================================================
+       OPEN DROPDOWN
+       ===================================================== */
+
+    function openCategoryDropdown(){
+
+        if(
+            categorySelect.classList.contains(
+                "disabled"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        categorySelect.classList.add(
+            "open"
+        );
+
+
+        categoryDisplay.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+    }
+
+
+    /* =====================================================
+       CLOSE DROPDOWN
+       ===================================================== */
+
+    function closeCategoryDropdown(){
+
+        categorySelect.classList.remove(
+            "open"
+        );
+
+
+        categoryDisplay.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+    }
+
+
+    /* =====================================================
+       SET CATEGORY
+       ===================================================== */
+
+    function setCategory(value){
+
+        if(!value){
+
+            categoryValue.value = "";
+
+
+            categoryDisplayText.textContent =
+                "Select Category";
+
+
+            categoryDisplay.classList.add(
+                "placeholder"
+            );
+
+            return;
+
+        }
+
+
+        categoryValue.value =
+            value;
+
+
+        categoryDisplayText.textContent =
+            value;
+
+
+        categoryDisplay.classList.remove(
+            "placeholder"
+        );
+
+
+        options.forEach(
+            function(option){
+
+                const optionValue =
+                    option.getAttribute(
+                        "data-value"
+                    );
+
+
+                option.classList.toggle(
+                    "selected",
+                    optionValue === value
+                );
+
+
+                option.setAttribute(
+                    "aria-selected",
+                    optionValue === value
+                        ? "true"
+                        : "false"
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       INITIAL CATEGORY
+
+       This preserves the category when editing
+       an existing expense.
+       ===================================================== */
+
+    const initialCategory =
+        categoryValue.value;
+
+
+    if(initialCategory){
+
+        setCategory(
+            initialCategory
+        );
+
+    }
+
+
+    /* =====================================================
+       DISPLAY CLICK
+       ===================================================== */
+
+    categoryDisplay.addEventListener(
+        "click",
+        function(event){
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            if(
+                categorySelect.classList.contains(
+                    "disabled"
+                )
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                categorySelect.classList.contains(
+                    "open"
+                )
+            ){
+
+                closeCategoryDropdown();
+
+            }
+
+            else{
+
+                openCategoryDropdown();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       KEYBOARD SUPPORT
+       ===================================================== */
+
+    categoryDisplay.addEventListener(
+        "keydown",
+        function(event){
+
+            if(
+                event.key === "Enter" ||
+                event.key === " "
+            ){
+
+                event.preventDefault();
+
+
+                if(
+                    categorySelect.classList.contains(
+                        "open"
+                    )
+                ){
+
+                    closeCategoryDropdown();
+
+                }
+
+                else{
+
+                    openCategoryDropdown();
+
+                }
+
+            }
+
+
+            if(
+                event.key === "Escape"
+            ){
+
+                closeCategoryDropdown();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       OPTION CLICK
+       ===================================================== */
+
+    options.forEach(
+        function(option){
+
+            option.addEventListener(
+                "click",
+                function(event){
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    const value =
+                        option.getAttribute(
+                            "data-value"
+                        );
+
+
+                    setCategory(
+                        value
+                    );
+
+
+                    closeCategoryDropdown();
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       CLICK OUTSIDE
+       ===================================================== */
+
+    document.addEventListener(
+        "click",
+        function(event){
+
+            if(
+                !categorySelect.contains(
+                    event.target
+                )
+            ){
+
+                closeCategoryDropdown();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       ESCAPE KEY
+       ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        function(event){
+
+            if(
+                event.key === "Escape"
+            ){
+
+                closeCategoryDropdown();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       FORM VALIDATION
+
+       Category is required even though the visible control
+       is custom.
+       ===================================================== */
+
+    if(expenseForm){
+
+        expenseForm.addEventListener(
+            "submit",
+            function(event){
+
+                if(
+                    !categoryValue.value
+                ){
+
+                    event.preventDefault();
+
+
+                    openCategoryDropdown();
+
+
+                    categoryDisplay.focus();
+
+
+                    return false;
+
+                }
+
+            }
+        );
+
+    }
+
+
+})();
+
+</script>
+
+
+
+<!-- =========================================================
+     WORKING AREA / DASHBOARD NAVIGATION SCRIPT
+     ========================================================= -->
+
+<script>
+
+(function(){
+
+    /*
+     * This page can work in two situations:
+     *
+     * 1. Inside dashboard.html iframe
+     * 2. Directly as a standalone page
+     *
+     * When inside the dashboard iframe, navigation remains
+     * inside the iframe so the permanent sidebar stays visible.
+     */
+
+
+    const isInsideDashboard =
+        window.parent &&
+        window.parent !== window &&
+        window.parent.document &&
+        window.parent.document.getElementById(
+            "workingFrame"
+        );
+
+
+    /* =====================================================
+       BACK TO DASHBOARD
+       ===================================================== */
+
+    const backButton =
+        document.getElementById(
+            "backToDashboard"
+        );
+
+
+    if(backButton){
+
+        backButton.addEventListener(
+            "click",
+            function(event){
+
+                if(isInsideDashboard){
+
+                    event.preventDefault();
+
+
+                    try{
+
+                        if(
+                            typeof window.parent.showHome ===
+                            "function"
+                        ){
+
+                            window.parent.showHome();
+
+                        }
+
+                        else{
+
+                            window.parent.location.href =
+                                "/dashboard";
+
+                        }
+
+                    }
+                    catch(error){
+
+                        window.parent.location.href =
+                            "/dashboard";
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       INTERCEPT DASHBOARD LINKS
+       ===================================================== */
+
+    if(isInsideDashboard){
+
+        const links =
+            document.querySelectorAll(
+                "a"
+            );
+
+
+        links.forEach(function(link){
+
+            const href =
+                link.getAttribute(
+                    "href"
+                );
+
+
+            if(!href){
+
+                return;
+
+            }
+
+
+            if(
+                href === "/dashboard" ||
+                href.indexOf("/dashboard?") === 0
+            ){
+
+                link.addEventListener(
+                    "click",
+                    function(event){
+
+                        event.preventDefault();
+
+
+                        try{
+
+                            if(
+                                typeof window.parent.showHome ===
+                                "function"
+                            ){
+
+                                window.parent.showHome();
+
+                            }
+
+                            else{
+
+                                window.parent.location.href =
+                                    "/dashboard";
+
+                            }
+
+                        }
+                        catch(error){
+
+                            window.parent.location.href =
+                                "/dashboard";
+
+                        }
+
+                    }
+                );
+
+            }
+
+        });
+
+    }
+
+
+    /* =====================================================
+       INFORM PARENT DASHBOARD ABOUT CURRENT PAGE
+       ===================================================== */
+
+    if(isInsideDashboard){
+
+        try{
+
+            const currentPath =
+                window.location.pathname;
+
+
+            const currentSearch =
+                window.location.search || "";
+
+
+            if(
+                window.parent.setPageTitle
+            ){
+
+                if(
+                    currentPath === "/expense"
+                ){
+
+                    if(
+                        currentSearch.includes(
+                            "view=add"
+                        )
+                    ){
+
+                        window.parent.setPageTitle(
+                            "Add Expense"
+                        );
+
+                    }
+
+                    else if(
+                        currentSearch.includes(
+                            "view=monthly"
+                        )
+                    ){
+
+                        window.parent.setPageTitle(
+                            "Monthly Expense"
+                        );
+
+                    }
+
+                    else{
+
+                        window.parent.setPageTitle(
+                            "Expense"
+                        );
+
+                    }
+
+                }
+
+            }
+
+        }
+        catch(error){
+
+            /*
+             * Ignore parent access errors.
+             */
+
+        }
+
+    }
+
+
+})();
+
+</script>
+
+
+</body>
+
+</html>

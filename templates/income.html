@@ -1,0 +1,690 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Income</title>
+
+<style>
+body{
+    font-family:Arial;
+    background:#f4f7fb;
+    margin:0
+}
+
+.wrap{
+    width:96%;
+    max-width:1500px;
+    margin:25px auto
+}
+
+.card{
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 3px 12px #0001
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px
+}
+
+.field label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:5px
+}
+
+.field input,
+.field select,
+.field textarea{
+    width:100%;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:7px;
+    box-sizing:border-box;
+    background:#fff
+}
+
+.full{
+    grid-column:1/-1
+}
+
+.btn{
+    display:inline-block;
+    border:0;
+    padding:9px 13px;
+    border-radius:7px;
+    text-decoration:none;
+    background:#2563eb;
+    color:#fff;
+    font-weight:bold;
+    margin:3px;
+    cursor:pointer
+}
+
+.lock{
+    background:#dc2626
+}
+
+.unlock{
+    background:#047857
+}
+
+.delete{
+    background:#b91c1c
+}
+
+.back{
+    background:#374151
+}
+
+.msg{
+    padding:12px;
+    background:#ecfdf5;
+    color:#166534;
+    border-radius:8px;
+    margin-bottom:15px
+}
+
+.error{
+    background:#fef2f2;
+    color:#991b1b
+}
+
+.locked{
+    color:#b91c1c;
+    font-weight:bold
+}
+
+.wraptable{
+    overflow:auto
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1000px
+}
+
+th,
+td{
+    padding:10px;
+    border-bottom:1px solid #e5e7eb;
+    white-space:nowrap;
+    text-align:left
+}
+
+th{
+    background:#f3f4f6
+}
+
+@media(max-width:850px){
+    .grid{
+        grid-template-columns:repeat(2,1fr)
+    }
+}
+
+@media(max-width:550px){
+    .grid{
+        grid-template-columns:1fr
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+    <div style="display:flex;justify-content:space-between;align-items:center">
+        <h1>Income Management</h1>
+
+        <a class="btn back" href="/dashboard">
+            Back to Dashboard
+        </a>
+    </div>
+
+
+    {% if message %}
+
+    <div class="msg {{'error' if message_type=='error' else ''}}">
+        {{message}}
+    </div>
+
+    {% endif %}
+
+
+    <!-- =========================================================
+         ADD INCOME WORKING PAGE
+         ========================================================= -->
+
+    {% if view == 'add' %}
+
+    <div class="card">
+
+        <h2>Add Income</h2>
+
+        <form method="post">
+
+            <div class="grid">
+
+                <!-- Amount -->
+
+                <div class="field">
+
+                    <label>Amount</label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        name="amount"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Income Type -->
+
+                <div class="field">
+
+                    <label>Income Type</label>
+
+                    <select
+                        name="income_type"
+                        required
+                    >
+
+                        <option value="" selected disabled>
+                            Select Income Type
+                        </option>
+
+                        <option value="Salary">
+                            Salary
+                        </option>
+
+                        <option value="Business">
+                            Business
+                        </option>
+
+                        <option value="Freelance">
+                            Freelance
+                        </option>
+
+                        <option value="Bonus">
+                            Bonus
+                        </option>
+
+                        <option value="Commission">
+                            Commission
+                        </option>
+
+                        <option value="Investment">
+                            Investment
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Received Method -->
+
+                <div class="field">
+
+                    <label>Received Method</label>
+
+                    <select
+                        name="received_method"
+                        required
+                    >
+
+                        <option value="" selected disabled>
+                            Select Received Method
+                        </option>
+
+                        <option value="Cash">
+                            Cash
+                        </option>
+
+                        <option value="Bank">
+                            Bank
+                        </option>
+
+                        <option value="bKash">
+                            bKash
+                        </option>
+
+                        <option value="Nagad">
+                            Nagad
+                        </option>
+
+                        <option value="Rocket">
+                            Rocket
+                        </option>
+
+                        <option value="Card">
+                            Card
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Source -->
+
+                <div class="field">
+
+                    <label>Source</label>
+
+                    <select
+                        name="source"
+                        required
+                    >
+
+                        <option value="" selected disabled>
+                            Select Source
+                        </option>
+
+                        <option value="Job">
+                            Job
+                        </option>
+
+                        <option value="Business">
+                            Business
+                        </option>
+
+                        <option value="Freelance">
+                            Freelance
+                        </option>
+
+                        <option value="Family">
+                            Family
+                        </option>
+
+                        <option value="Investment">
+                            Investment
+                        </option>
+
+                        <option value="Gift">
+                            Gift
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Date -->
+
+                <div class="field">
+
+                    <label>Date</label>
+
+                    <input
+                        name="date"
+                        value="{{current_date}}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Time -->
+
+                <div class="field">
+
+                    <label>Time</label>
+
+                    <input
+                        name="time"
+                        value="{{current_time}}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="field full">
+
+                    <label>Description</label>
+
+                    <textarea
+                        name="description"
+                        rows="3"
+                    >N/A</textarea>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn"
+                type="submit"
+                {% if selected_locked %}disabled{% endif %}
+            >
+                Add Income
+            </button>
+
+        </form>
+
+    </div>
+
+    {% endif %}
+
+
+
+    <!-- =========================================================
+         MONTHLY INCOME WORKING PAGE
+         ========================================================= -->
+
+    {% if view == 'monthly' %}
+
+    <div class="card">
+
+        <h2>Monthly Income</h2>
+
+        <div class="wraptable">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>SL</th>
+
+                        <th>Month</th>
+
+                        <th>Total</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in summaries %}
+
+                    <tr>
+
+                        <td>
+                            {{loop.index}}
+                        </td>
+
+
+                        <td>
+                            {{item.month}} {{item.year}}
+                        </td>
+
+
+                        <td>
+                            {{'%.2f'|format(item.total)}}
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                class="btn"
+                                href="/income?view=monthly&month={{item.month_key}}"
+                            >
+                                Open
+                            </a>
+
+
+                            {% if item.locked %}
+
+                                {% if user.get('role')=='Expense Developer' %}
+
+                                <a
+                                    class="btn unlock"
+                                    href="/income/lock?month={{item.month_key}}"
+                                >
+                                    Unlock
+                                </a>
+
+                                {% else %}
+
+                                <span class="btn lock">
+                                    Locked
+                                </span>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <a
+                                    class="btn lock"
+                                    href="/income/lock?month={{item.month_key}}"
+                                    onclick="return confirm('Lock this month?')"
+                                >
+                                    Lock
+                                </a>
+
+
+                                <a
+                                    class="btn delete"
+                                    href="/income/delete-month?month={{item.month_key}}"
+                                    onclick="return confirm('Permanently delete this month?')"
+                                >
+                                    Delete
+                                </a>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="4">
+                            No income records found.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         SELECTED MONTH DETAILS
+         ========================================================= -->
+
+    {% if selected_month %}
+
+    <div class="card">
+
+        <div style="display:flex;justify-content:space-between">
+
+            <h2>
+                {{selected_month}} Income Details
+            </h2>
+
+
+            <a
+                class="btn back"
+                href="/income?view=monthly"
+            >
+                Back
+            </a>
+
+        </div>
+
+
+        {% if selected_locked %}
+
+        <p class="locked">
+            This month is locked. Add/Edit/Delete is disabled.
+        </p>
+
+        {% endif %}
+
+
+        <div class="wraptable">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>SL</th>
+
+                        <th>Income Type</th>
+
+                        <th>Received Method</th>
+
+                        <th>Source</th>
+
+                        <th>Amount</th>
+
+                        <th>Time</th>
+
+                        <th>Date</th>
+
+                        <th>Description</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for r in month_incomes %}
+
+                    <tr>
+
+                        <td>
+                            {{loop.index}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('income_type','')}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('received_method','')}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('source','')}}
+                        </td>
+
+
+                        <td>
+                            {{'%.2f'|format(r.get('amount',0))}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('time','')}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('date','')}}
+                        </td>
+
+
+                        <td>
+                            {{r.get('description','')}}
+                        </td>
+
+
+                        <td>
+
+                            {% if selected_locked %}
+
+                            <span class="locked">
+                                Locked
+                            </span>
+
+                            {% else %}
+
+                            <a
+                                class="btn delete"
+                                href="/income/delete/{{r.get('_id')}}?month={{selected_month}}"
+                                onclick="return confirm('Permanently delete this record?')"
+                            >
+                                Delete
+                            </a>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="9">
+                            No records found.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

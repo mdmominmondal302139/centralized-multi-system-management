@@ -1,0 +1,583 @@
+<!doctype html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Developer Department</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    background:#f4f7fb;
+    margin:0;
+}
+
+.wrap{
+    width:96%;
+    max-width:1600px;
+    margin:25px auto;
+}
+
+.card{
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 3px 12px #0001;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:10px;
+}
+
+.field label{
+    display:block;
+    font-weight:bold;
+}
+
+.field input,
+.field select{
+    width:100%;
+    padding:9px;
+    border:1px solid #ddd;
+    border-radius:7px;
+}
+
+.btn{
+    display:inline-block;
+    padding:8px 11px;
+    border-radius:7px;
+    text-decoration:none;
+    background:#2563eb;
+    color:#fff;
+    font-weight:bold;
+    margin:3px;
+    border:0;
+}
+
+.green{
+    background:#047857;
+}
+
+.red{
+    background:#b91c1c;
+}
+
+.gray{
+    background:#374151;
+}
+
+.orange{
+    background:#c2410c;
+}
+
+.msg{
+    padding:12px;
+    border-radius:8px;
+    background:#ecfdf5;
+    color:#166534;
+    margin-bottom:15px;
+}
+
+.error{
+    background:#fef2f2;
+    color:#991b1b;
+}
+
+.circles{
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+}
+
+.circle{
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    background:#fff;
+    border:8px solid #ddd;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-weight:bold;
+}
+
+.wraptable{
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1100px;
+}
+
+th,
+td{
+    padding:9px;
+    border-bottom:1px solid #e5e7eb;
+    white-space:nowrap;
+    text-align:left;
+}
+
+th{
+    background:#f3f4f6;
+}
+
+.small{
+    font-size:12px;
+    color:#555;
+}
+
+.member-menu{
+    margin:10px 0 15px;
+    padding:0;
+    list-style:none;
+}
+
+.member-menu li{
+    margin:6px 0;
+}
+
+.member-menu a{
+    display:block;
+    padding:10px 14px;
+    background:#f3f4f6;
+    color:#1f2937;
+    text-decoration:none;
+    border-radius:7px;
+    font-weight:bold;
+}
+
+.member-menu a:hover{
+    background:#e5e7eb;
+}
+
+@media(max-width:900px){
+
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:550px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrap">
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+    ">
+
+        <h1>Developer Department</h1>
+
+        <a class="btn gray"
+           href="/dashboard"
+           target="_top">
+            Back
+        </a>
+
+    </div>
+
+
+    {% if message %}
+
+    <div class="msg {{'error' if message_type=='error' else ''}}">
+        {{message}}
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- MEMBER CREATE -->
+    <!-- ================================================= -->
+
+    {% if view == 'create' %}
+
+    <div class="card">
+
+        <h2>Member Create</h2>
+
+        <form method="post"
+              action="/developer/member/create">
+
+            <div class="grid">
+
+                <div class="field">
+                    <label>Name</label>
+                    <input name="name" required>
+                </div>
+
+                <div class="field">
+                    <label>Username</label>
+                    <input name="username" required>
+                </div>
+
+                <div class="field">
+                    <label>Mobile</label>
+                    <input name="mobile" required>
+                </div>
+
+                <div class="field">
+                    <label>Email</label>
+                    <input type="email"
+                           name="email"
+                           required>
+                </div>
+
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password"
+                           name="password"
+                           required>
+                </div>
+
+                <div class="field">
+                    <label>Select Role</label>
+
+                    <select name="role" required>
+
+                        <option value="Manager">
+                            Manager
+                        </option>
+
+                        <option value="Expense Developer">
+                            Expense Developer
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <button class="btn green"
+                    type="submit">
+                Create Member
+            </button>
+
+        </form>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- MEMBER SUMMARY -->
+    <!-- ================================================= -->
+
+    {% if view == 'summary' %}
+
+    <div class="card">
+
+        <h2>Member Summary</h2>
+
+        <ul class="member-menu">
+
+            <li>
+                <a href="/developer/multi-members">
+                    1. Multi Member Selected
+                </a>
+            </li>
+
+            <li>
+                <a href="/developer/audit">
+                    2. Audit Log Book
+                </a>
+            </li>
+
+            <li>
+                <a href="/developer?view=members">
+                    3. Member View
+                </a>
+            </li>
+
+            <li>
+                <a href="/developer/requests">
+                    4. Member Request
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- MEMBERS -->
+    <!-- ================================================= -->
+
+    {% if view == 'members' %}
+
+    <div class="card">
+
+        <h2>Members</h2>
+
+        <div class="wraptable">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>SL</th>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Mobile</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Account Created</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for m in members %}
+
+                    <tr>
+
+                        <td>
+                            {{loop.index}}
+                        </td>
+
+                        <td>
+                            {{m.get('name','')}}
+                        </td>
+
+                        <td>
+                            {{m.get('username',m.get('name',''))}}
+                        </td>
+
+                        <td>
+                            {{m.get('mobile','')}}
+                        </td>
+
+                        <td>
+                            {{m.get('email','')}}
+                        </td>
+
+                        <td>
+                            {{m.get('role','')}}
+                        </td>
+
+                        <td>
+                            {{m.get('status','')}}
+                        </td>
+
+                        <td>
+                            {{m.get('created_at','')}}
+                        </td>
+
+                        <td>
+
+                            <a class="btn"
+                               href="/developer/member/{{m.get('_id')}}">
+                                Open
+                            </a>
+
+                            {% if m.get('locked') %}
+
+                            <a class="btn green"
+                               href="/developer/member/unlock/{{m.get('_id')}}">
+                                Unlock
+                            </a>
+
+                            {% else %}
+
+                            <a class="btn red"
+                               href="/developer/member/lock/{{m.get('_id')}}">
+                                Lock
+                            </a>
+
+                            {% endif %}
+
+                            <a class="btn orange"
+                               href="/developer/member/suspend/{{m.get('_id')}}">
+                                Suspended
+                            </a>
+
+                            <a class="btn red"
+                               href="/developer/member/delete/{{m.get('_id')}}"
+                               onclick="return confirm('Delete this account?')">
+                                Delete Account
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="9">
+                            No active members.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- INACTIVE / SUSPENDED -->
+    <!-- ================================================= -->
+
+    {% if view == 'inactive' %}
+
+    <div class="card">
+
+        <h2>Inactive / Suspended Members</h2>
+
+        <div class="wraptable">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>SL</th>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Mobile</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for m in inactive_members %}
+
+                    <tr>
+
+                        <td>
+                            {{loop.index}}
+                        </td>
+
+                        <td>
+                            {{m.get('name','')}}
+                        </td>
+
+                        <td>
+                            {{m.get('username',m.get('name',''))}}
+                        </td>
+
+                        <td>
+                            {{m.get('mobile','')}}
+                        </td>
+
+                        <td>
+                            {{m.get('role','')}}
+                        </td>
+
+                        <td>
+                            {{'Suspended' if m.get('suspended') else m.get('status','Inactive')}}
+                        </td>
+
+                        <td>
+
+                            <a class="btn green"
+                               href="/developer/member/activate/{{m.get('_id')}}">
+                                Approve / Activate
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="7">
+                            No inactive members.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================================================= -->
+    <!-- REAL SERVER STORAGE -->
+    <!-- ================================================= -->
+
+    {% if view == 'storage' %}
+
+    <div class="card">
+
+        <h2>Real Server Storage</h2>
+
+        <div class="circles">
+
+            <div class="circle">
+                Total<br>
+                100%
+            </div>
+
+            <div class="circle">
+                Used<br>
+                {{storage.used}}%
+            </div>
+
+            <div class="circle">
+                Available<br>
+                {{storage.available}}%
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
