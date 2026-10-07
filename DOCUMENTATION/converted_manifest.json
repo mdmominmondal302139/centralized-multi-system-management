@@ -1,0 +1,738 @@
+{
+  "source": "nextjs_native_full_system_super_admin_v48.zip",
+  "page_count": 183,
+  "pages": [
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "member_transfer_history"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "branch_officer_dashboard"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "branch_management"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "expense"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "branch_officer_expense"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "register"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "member_transfer"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "member_transfer_sent"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "branch_officer_records"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "records"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "member_transfer_request"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "branch_members"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "work"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "savings"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "branch_officer_work"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "login"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "branch_officer_savings"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "meal_management"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "meal"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "logout"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "home"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "branch_officer_meal"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "sidebar"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "member_transfer_sent_details"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "member_transfer_received"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "dashboard"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "branch_officer_income"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "member_transfer_received_details"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "income"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "reports"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "accounts_officer_transactions"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "financial_reports"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "reconciliation"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "login"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "dashboard"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "accounts"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "accounts_officer_savings"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "home"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "register"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "sidebar"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "transactions"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "logout"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "meal_management"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "accounts_officer_expense"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "accounts_officer_accounts"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "cash_management"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "approvals"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "accounts_officer_dashboard"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "expense"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "accounts_officer_reports"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "correction_adjustment"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "income"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "verification"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "savings"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "my_records"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "my_profile"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "accounts_officer_income"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "meal_manager_report"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "monthly"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "savings"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "expense"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "meal_records"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "meal_entry"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "login"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "sidebar"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "home"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "meal_management"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "meal_manager_monthly"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "register"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "dashboard"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "entry"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "income"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "report"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "meal_reports"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "member_meal_records"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "meal_manager_entry"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "meal_manager_dashboard"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "logout"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "request_form"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "reports"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "form"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "register"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "donors"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "dashboard"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "donations"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "screening"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "requests"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "account"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "login"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "inventory"
+    },
+    {
+      "role": "MEMBER",
+      "page": "savings"
+    },
+    {
+      "role": "MEMBER",
+      "page": "login"
+    },
+    {
+      "role": "MEMBER",
+      "page": "staff_member_work"
+    },
+    {
+      "role": "MEMBER",
+      "page": "home"
+    },
+    {
+      "role": "MEMBER",
+      "page": "meal"
+    },
+    {
+      "role": "MEMBER",
+      "page": "expense"
+    },
+    {
+      "role": "MEMBER",
+      "page": "profile"
+    },
+    {
+      "role": "MEMBER",
+      "page": "records"
+    },
+    {
+      "role": "MEMBER",
+      "page": "dashboard"
+    },
+    {
+      "role": "MEMBER",
+      "page": "login_alternate"
+    },
+    {
+      "role": "MEMBER",
+      "page": "meal_alternate"
+    },
+    {
+      "role": "MEMBER",
+      "page": "work"
+    },
+    {
+      "role": "MEMBER",
+      "page": "register"
+    },
+    {
+      "role": "MEMBER",
+      "page": "logout"
+    },
+    {
+      "role": "MEMBER",
+      "page": "income"
+    },
+    {
+      "role": "MEMBER",
+      "page": "work_alternate"
+    },
+    {
+      "role": "MEMBER",
+      "page": "expense_alternate"
+    },
+    {
+      "role": "MEMBER",
+      "page": "meal_management"
+    },
+    {
+      "role": "MEMBER",
+      "page": "savings_alternate"
+    },
+    {
+      "role": "MEMBER",
+      "page": "staff_member_meal"
+    },
+    {
+      "role": "MEMBER",
+      "page": "staff_member_records"
+    },
+    {
+      "role": "MEMBER",
+      "page": "register_alternate"
+    },
+    {
+      "role": "MEMBER",
+      "page": "staff_member_savings"
+    },
+    {
+      "role": "MEMBER",
+      "page": "logout_alternate"
+    },
+    {
+      "role": "MEMBER",
+      "page": "income_alternate"
+    },
+    {
+      "role": "MEMBER",
+      "page": "staff_member_income"
+    },
+    {
+      "role": "MEMBER",
+      "page": "staff_member_expense"
+    },
+    {
+      "role": "MEMBER",
+      "page": "staff_member_dashboard"
+    },
+    {
+      "role": "MEMBER",
+      "page": "records_alternate"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "search"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "corrections"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "detail"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "admin_form"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "system_super_administrator_information_directory"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "admin"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "operator_savings"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "assigned_task"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "operator_meal"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "assigned_work"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "task_records"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "expense"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "meal"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "sidebar"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "dashboard"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "operator_assigned_work"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "operator_expense"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "work"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "issue_reporting"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "operator_income"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "operator_task_records"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "production_status"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "income"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "quality_entry"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "login"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "meal_management"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "attendance"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "logout"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "machine_operation"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "my_records"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "savings"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "home"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "register"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "issues"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "operator_dashboard"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "production_entry"
+    },
+    {
+      "role": "BRANCH_OFFICER",
+      "page": "savigs"
+    },
+    {
+      "role": "ACCOUNT_OFFICER",
+      "page": "savigs"
+    },
+    {
+      "role": "MEAL_MANAGER",
+      "page": "savigs"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "database"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "route"
+    },
+    {
+      "role": "MEMBER",
+      "page": "savigs"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "indexes"
+    },
+    {
+      "role": "OPERATOR",
+      "page": "savigs"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "home"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "income_management"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "expense_management"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "meal_management"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "savings_management"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "information_directory"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "blood_donor_management"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "system_overview"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "branch_management"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "user_management"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "department_management"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "financial_management"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "reports"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "access_management"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "user_audit"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "settings"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "import"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "documentation"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "notifications"
+    },
+    {
+      "role": "SYSTEM_SUPER_ADMINISTRATOR",
+      "page": "profile"
+    }
+  ]
+}

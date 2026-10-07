@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>System Login</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,Segoe UI,Arial,sans-serif}
+body{min-height:100vh;background:linear-gradient(135deg,#eef6ff 0%,#f7fbff 48%,#eaf8f3 100%);color:#172033;display:flex;align-items:center;justify-content:center;padding:28px}
+.page{width:100%;max-width:470px}
+.login-card{background:rgba(255,255,255,.96);border:1px solid #dce5ef;border-radius:24px;box-shadow:0 22px 60px rgba(31,52,77,.14);padding:38px 38px 34px;position:relative;overflow:hidden}
+.login-card:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,#1677d2,#19a974)}
+.brand{text-align:center;margin-bottom:30px}
+.brand-icon{width:64px;height:64px;margin:0 auto 17px;border-radius:18px;background:linear-gradient(145deg,#1677d2,#0e5eb0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:27px;font-weight:800;box-shadow:0 10px 24px rgba(22,119,210,.22)}
+h1{margin:0;font-size:28px;line-height:1.2;font-weight:750;letter-spacing:-.4px;color:#142033}
+.subtitle{margin:9px 0 0;color:#718096;font-size:14px;line-height:1.5}
+.form-group{margin-bottom:19px}
+.form-label{display:block;font-size:13px;font-weight:700;color:#344054;margin:0 0 8px}
+.input-wrap{position:relative}
+.input-wrap input{width:100%;height:52px;border:1px solid #cfd9e5;border-radius:12px;background:#fff;padding:0 15px;font-size:15px;color:#172033;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
+.input-wrap input::placeholder{color:#a0aabb}
+.input-wrap input:focus{border-color:#2783dc;box-shadow:0 0 0 4px rgba(39,131,220,.11);background:#fcfeff}
+.password-wrap input{padding-right:54px}
+.password-eye{position:absolute;right:8px;top:8px;width:36px;height:36px;border:0;border-radius:9px;background:transparent;color:#6d7889;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:19px;line-height:1;transition:background .2s,color .2s}
+.password-eye:hover{background:#edf5fd;color:#176fc3}
+.password-eye:focus-visible{outline:2px solid #2783dc;outline-offset:1px}
+.password-eye svg{width:20px;height:20px;pointer-events:none}
+#login-error{margin:0 0 16px;padding:11px 13px;border:1px solid #f0b7b7;border-radius:10px;background:#fff4f4;color:#b42318;font-size:13px;line-height:1.45}
+.login-button{width:100%;height:52px;border:0;border-radius:12px;background:linear-gradient(135deg,#1677d2,#0f66bb);color:#fff;font-size:15px;font-weight:750;letter-spacing:.1px;cursor:pointer;box-shadow:0 9px 22px rgba(22,119,210,.2);transition:transform .15s,box-shadow .2s,opacity .2s}
+.login-button:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(22,119,210,.25)}
+.login-button:disabled{cursor:not-allowed;opacity:.65;transform:none}
+.security-note{text-align:center;margin:20px 0 0;color:#8a94a4;font-size:12px}
+.verification-panel{text-align:center;padding:7px 0 4px}
+.verification-circle{width:132px;height:132px;margin:5px auto 23px;position:relative;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#f7fbff;border:1px solid #d9e7f4;box-shadow:0 10px 30px rgba(30,89,139,.09)}
+.verification-ring{position:absolute;inset:7px;border-radius:50%;border:4px solid #dceaf7;border-top-color:#1677d2;border-right-color:#19a974;animation:spin 1s linear infinite}
+.verification-count{font-size:31px;font-weight:800;color:#176fc3;position:relative}
+.verification-message{font-size:16px;font-weight:700;color:#1d2939;line-height:1.45}
+.verification-submessage{margin-top:8px;font-size:13px;color:#7a8798;line-height:1.5}
+.verification-hidden{display:none}
+[hidden]{display:none!important}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:520px){body{padding:16px}.login-card{padding:30px 22px 27px;border-radius:20px}h1{font-size:25px}.brand-icon{width:58px;height:58px;font-size:24px}}
+</style>
+</head>
+<body class="login-page">
+<main class="page">
+<section class="card login-card" aria-label="System Login">
+<div class="brand">
+<div class="brand-icon" aria-hidden="true">S</div>
+<h1>System Login</h1>
+<p class="subtitle">Sign in securely to access your account</p>
+</div>
+
+<div id="login-error" role="alert"{% if not error %} style="display:none"{% endif %}>{{ error or '' }}</div>
+
+<form id="login-form" method="post" autocomplete="on">
+<div class="form-group">
+<label class="form-label" for="username">Username</label>
+<div class="input-wrap">
+<input id="username" name="username" type="text" autocomplete="username" placeholder="Enter your username" required autofocus>
+</div>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="password">Password</label>
+<div class="input-wrap password-wrap">
+<input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+<button id="password-toggle" class="password-eye" type="button" aria-label="Show password" title="Show password">
+<svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.2 12s3.4-5 9.8-5 9.8 5 9.8 5-3.4 5-9.8 5-9.8-5-9.8-5Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+</button>
+</div>
+</div>
+
+<button id="login-button" class="login-button" type="submit">Login</button>
+</form>
+
+<p class="security-note">Secure account verification • Your credentials are protected</p>
+
+<div id="verification-panel" class="verification-panel" hidden aria-live="polite">
+<div class="verification-circle">
+<div class="verification-ring"></div>
+<div class="verification-count" id="verification-count">1</div>
+</div>
+<div class="verification-message" id="verification-message">Please wait while we confirm your account..</div>
+<div class="verification-submessage" id="verification-submessage">Account verification in progress</div>
+</div>
+</section>
+</main>
+
+<script>
+(function () {
+  const form = document.getElementById('login-form');
+  const username = document.getElementById('username');
+  const password = document.getElementById('password');
+  const toggle = document.getElementById('password-toggle');
+  const eyeIcon = document.getElementById('eye-icon');
+  const button = document.getElementById('login-button');
+  const errorBox = document.getElementById('login-error');
+  const panel = document.getElementById('verification-panel');
+  const count = document.getElementById('verification-count');
+  const message = document.getElementById('verification-message');
+  const submessage = document.getElementById('verification-submessage');
+
+  const eyeOpen = '<path d="M2.2 12s3.4-5 9.8-5 9.8 5 9.8 5-3.4 5-9.8 5-9.8-5-9.8-5Z"/><circle cx="12" cy="12" r="2.6"/>';
+  const eyeClosed = '<path d="m3 3 18 18"/><path d="M10.6 5.2A11.2 11.2 0 0 1 12 5c6.4 0 9.8 7 9.8 7a17.4 17.4 0 0 1-3.1 3.8"/><path d="M6.2 6.3C3.7 8.2 2.2 12 2.2 12s3.4 7 9.8 7c1.6 0 3-.4 4.2-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>';
+
+  toggle.addEventListener('click', function () {
+    const showing = password.type === 'text';
+    password.type = showing ? 'password' : 'text';
+    toggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+    toggle.setAttribute('title', showing ? 'Show password' : 'Hide password');
+    eyeIcon.innerHTML = showing ? eyeOpen : eyeClosed;
+  });
+
+  function setError(text) {
+    errorBox.textContent = text;
+    errorBox.style.display = 'block';
+  }
+
+  function setStage(seconds) {
+    count.textContent = String(seconds);
+    if (seconds <= 4) {
+      message.textContent = 'Please wait while we confirm your account..';
+      submessage.textContent = 'Account verification in progress';
+    } else if (seconds <= 9) {
+      message.textContent = 'Please wait while we verify your identity and access permissions…';
+      submessage.textContent = 'Identity and access permissions are being checked';
+    } else {
+      message.textContent = 'Your account and role are being securely verified.';
+      submessage.textContent = 'Please wait a moment…';
+    }
+  }
+
+  form.addEventListener('submit', async function (event) {
+    event.preventDefault();
+    if (!username.value.trim() || !password.value) return;
+
+    errorBox.style.display = 'none';
+    form.classList.add('verification-hidden');
+    panel.hidden = false;
+    button.disabled = true;
+    username.disabled = true;
+    password.disabled = true;
+    toggle.disabled = true;
+
+    for (let second = 1; second <= 15; second++) {
+      setStage(second);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    try {
+      const body = new URLSearchParams();
+      body.set('username', username.value.trim());
+      body.set('password', password.value);
+
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8','X-Login-Flow': 'account-verification'},
+        body: body.toString(),
+        credentials: 'same-origin'
+      });
+
+      const data = await response.json();
+      if (data.ok && data.redirect) {
+        message.textContent = 'Account verified successfully.';
+        submessage.textContent = 'Opening your ' + (data.role || 'account') + ' Home…';
+        count.textContent = '✓';
+        setTimeout(function () { window.location.href = data.redirect; }, 350);
+        return;
+      }
+
+      panel.hidden = true;
+      form.classList.remove('verification-hidden');
+      button.disabled = false;
+      username.disabled = false;
+      password.disabled = false;
+      toggle.disabled = false;
+      setError(data.error || 'Invalid username or password!');
+    } catch (err) {
+      panel.hidden = true;
+      form.classList.remove('verification-hidden');
+      button.disabled = false;
+      username.disabled = false;
+      password.disabled = false;
+      toggle.disabled = false;
+      setError('Login service is temporarily unavailable. Please try again.');
+    }
+  });
+})();
+</script>
+</body>
+</html>

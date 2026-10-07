@@ -1,0 +1,96 @@
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}.page{max-width:1500px;margin:auto;padding:24px}.page header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.card{background:#fff;border:1px solid #dfe6ef;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px #0000000b}form{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:12px}label{display:flex;flex-direction:column;gap:6px;font-weight:600;color:#172033}input,select,textarea,button{font:inherit;padding:9px 11px;min-height:38px;border:1px solid #ccd5e0;border-radius:7px;background:#fff;color:#172033;outline:none}input:focus,select:focus,textarea:focus{border-color:#7aa7d9;box-shadow:0 0 0 2px #7aa7d933}textarea{min-height:90px;resize:vertical}button{background:#198754;color:#fff;border:0;cursor:pointer;font-weight:600}button.danger{background:#dc3545}.ok{padding:10px;background:#d1e7dd;border-radius:7px;margin-bottom:15px}.err{padding:10px;background:#f8d7da;border-radius:7px;margin-bottom:15px}table{width:100%;border-collapse:collapse;margin-top:15px}th,td{padding:9px;border-bottom:1px solid #e5e9ef;text-align:left;vertical-align:top}pre{white-space:pre-wrap;max-width:700px}.login-page .page{padding-top:80px}.login-page .login-card{max-width:520px;margin:0 auto}.login-page .login-card form{display:flex;flex-direction:column;gap:14px}.login-page .login-card label{width:100%}.login-page .login-card button{width:100%;margin-top:2px}.login-page .login-card h1{margin-top:0}.login-page .login-card .err{margin-bottom:2px}@media(max-width:900px){form{grid-template-columns:1fr 1fr}}@media(max-width:600px){form{grid-template-columns:1fr}.login-page .page{padding-top:30px}.login-page .login-card{margin:0 8px}}
+
+
+/* Consistent application form fields */
+input, select, textarea { min-height: 42px; }
+input, select, textarea { border-radius: 8px; }
+
+/* Login password eye sits beside the input, never inside the input box. */
+.password-field-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.password-field-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.password-eye {
+  flex: 0 0 42px;
+  width: 42px;
+  min-height: 42px;
+  padding: 0;
+  margin: 0;
+  border-radius: 8px;
+  background: #eef2f7;
+  color: #26384d;
+  border: 1px solid #ccd5e0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.password-eye:hover { background: #e2e8f0; }
+.password-eye:disabled { opacity: .55; cursor: not-allowed; }
+
+/* Large circular account verification flow */
+.verification-panel {
+  min-height: 390px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 22px 10px 8px;
+}
+.verification-panel[hidden] { display: none; }
+.verification-circle {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.verification-ring {
+  position: absolute;
+  inset: 0;
+  border: 10px solid #e5eaf0;
+  border-top-color: #198754;
+  border-right-color: #198754;
+  border-radius: 50%;
+  animation: login-spin 1s linear infinite;
+}
+.verification-count {
+  position: relative;
+  z-index: 1;
+  font-size: 52px;
+  line-height: 1;
+  font-weight: 800;
+  color: #172033;
+}
+.verification-message {
+  max-width: 520px;
+  min-height: 58px;
+  font-size: 21px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: #172033;
+}
+.verification-submessage {
+  margin-top: 8px;
+  max-width: 520px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #667085;
+}
+.verification-hidden { display: none !important; }
+@keyframes login-spin {
+  to { transform: rotate(360deg); }
+}
+@media (max-width: 600px) {
+  .verification-circle { width: 155px; height: 155px; }
+  .verification-message { font-size: 18px; }
+}

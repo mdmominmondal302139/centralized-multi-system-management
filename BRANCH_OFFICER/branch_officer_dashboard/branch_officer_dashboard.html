@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BRANCH OFFICER — Branch Officer Dashboard</title><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}.sidebar{position:fixed;left:0;top:0;bottom:0;width:270px;background:#101827;color:white;padding:22px 15px;overflow:auto}.brand{font-weight:800;font-size:18px;margin-bottom:6px}.scope{font-size:12px;opacity:.7;margin-bottom:20px}.nav{display:block;width:100%;text-align:left;border:0;background:transparent;color:#dbe4f0;padding:11px;border-radius:7px;margin:3px 0;cursor:pointer}.nav:hover,.nav.active{background:#263750;color:white}.main{margin-left:270px;padding:28px}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}h1{margin:0}.badge{padding:8px 12px;background:#e8eef8;border-radius:20px;font-size:12px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.card,.work{background:white;border:1px solid #e2e8f0;border-radius:12px;padding:18px}.card b{display:block;font-size:22px;margin-top:8px}.work{min-height:430px}.muted{color:#64748b;font-size:13px}.toolbar{margin:15px 0}input{padding:10px;border:1px solid #cbd5e1;border-radius:7px;width:280px}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px}.open,.action{border:0;background:#172033;color:white;padding:8px 12px;border-radius:6px;cursor:pointer}@media(max-width:800px){.sidebar{width:210px}.main{margin-left:210px}.cards{grid-template-columns:repeat(2,1fr)}}</style>
+<style id="bo-right-workspace-style">
+.bo-layout{display:flex;min-height:100vh;width:100%}
+.bo-sidebar{width:270px;flex:0 0 270px}
+.bo-workspace{flex:1;min-width:0;padding:24px;overflow:auto;background:#f6f8fb}
+.bo-workspace-inner{max-width:1400px;margin:0 auto}
+.bo-workspace-loading{text-align:center;padding:60px 20px;font-size:18px}
+.bo-nav-link,.member-transfer-toggle{cursor:pointer}
+.bo-workspace a[data-right-page]{cursor:pointer}
+</style>
+</head><body><aside class="sidebar"><div class="brand">BRANCH OFFICER</div><div class="scope">ASSIGNED BRANCH WORK SECTION</div><button class="nav" data-name="Branch Work">Branch Work</button><button class="nav" data-name="Income">Income</button><button class="nav" data-name="Expense">Expense</button><button class="nav" data-name="Meal">Meal</button><button class="nav" data-name="Savings">Savings</button><button class="nav" data-name="Records">Records</button></aside><section class="bo-workspace"><div id="bo-right-workspace" class="bo-workspace-inner" data-working-page><div class="bo-workspace-loading">Select an item from the left sidebar.</div></div></section><main class="main"><div class="head"><div><h1>Branch Officer Dashboard</h1><div class="muted">Dedicated role dashboard — LEFT clickable sidebar + RIGHT working page.</div></div><div class="badge">BRANCH OFFICER</div></div><div class="cards"><div class="card">Scope<b>ASSIGNED BRANCH WORK SECTION</b></div><div class="card">Modules<b>6</b></div><div class="card">Access<b>Scoped</b></div><div class="card">Status<b>Active</b></div></div><section class="work" id="work"><h2>Branch Officer Dashboard Working Page</h2><p class="muted">All actions for this role are performed here. No global sidebar or global dashboard is used.</p><div class="toolbar"><input id="search" placeholder="Search this section..."></div><table><thead><tr><th>Section</th><th>Scope</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td>Branch Work</td><td>ASSIGNED BRANCH WORK SECTION</td><td>Ready</td><td><button class="open" data-name="Branch Work">Open</button></td></tr><tr><td>Income</td><td>ASSIGNED BRANCH WORK SECTION</td><td>Ready</td><td><button class="open" data-name="Income">Open</button></td></tr><tr><td>Expense</td><td>ASSIGNED BRANCH WORK SECTION</td><td>Ready</td><td><button class="open" data-name="Expense">Open</button></td></tr><tr><td>Meal</td><td>ASSIGNED BRANCH WORK SECTION</td><td>Ready</td><td><button class="open" data-name="Meal">Open</button></td></tr><tr><td>Savings</td><td>ASSIGNED BRANCH WORK SECTION</td><td>Ready</td><td><button class="open" data-name="Savings">Open</button></td></tr><tr><td>Records</td><td>ASSIGNED BRANCH WORK SECTION</td><td>Ready</td><td><button class="open" data-name="Records">Open</button></td></tr></tbody></table></section></main><script>const nav=[...document.querySelectorAll('.nav')];const h=document.querySelector('.work h2');nav.forEach((b,i)=>b.onclick=()=>{nav.forEach(x=>x.classList.remove('active'));b.classList.add('active');h.textContent=b.dataset.name+' Working Page';});if(nav[0])nav[0].classList.add('active');document.querySelectorAll('.open').forEach(b=>b.onclick=()=>h.textContent=b.dataset.name+' Working Page');document.getElementById('search').oninput=function(){const q=this.value.toLowerCase();document.querySelectorAll('tbody tr').forEach(r=>r.style.display=r.innerText.toLowerCase().includes(q)?'':'none')};</script>
+<script id="bo-right-workspace-script">
+async function openRightPage(url, push=true){
+  const panel=document.getElementById("bo-right-workspace");
+  if(!panel) { window.location.href=url; return; }
+  panel.innerHTML='<div class="bo-workspace-loading">Loading...</div>';
+  try{
+    const r=await fetch(url,{headers:{"X-Requested-Right-Panel":"1"}});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const html=await r.text();
+    const doc=new DOMParser().parseFromString(html,"text/html");
+    let content=doc.querySelector("[data-working-page]");
+    if(!content) content=doc.querySelector("main");
+    if(!content) content=doc.body;
+    panel.innerHTML=content.innerHTML;
+    if(push) history.pushState({rightPage:url},"",url);
+    panel.querySelectorAll("a").forEach(a=>{
+      const href=a.getAttribute("href");
+      if(href && href.startsWith("/") && !a.hasAttribute("data-external-nav")){
+        a.addEventListener("click",e=>{e.preventDefault();openRightPage(href,true);});
+      }
+    });
+    panel.querySelectorAll("form").forEach(form=>{
+      form.addEventListener("submit",async e=>{
+        if(form.dataset.rightSubmit==="false") return;
+        e.preventDefault();
+        const fd=new FormData(form);
+        const resp=await fetch(form.action||location.href,{method:(form.method||"POST").toUpperCase(),body:fd,headers:{"X-Requested-Right-Panel":"1"}});
+        const text=await resp.text();
+        const d=new DOMParser().parseFromString(text,"text/html");
+        let c=d.querySelector("[data-working-page]")||d.querySelector("main")||d.body;
+        panel.innerHTML=c.innerHTML;
+      });
+    });
+  }catch(err){
+    panel.innerHTML='<div class="bo-workspace-loading">Unable to open this working page. <a href="'+url+'" data-external-nav="1">Open full page</a></div>';
+  }
+}
+window.addEventListener("popstate",()=>openRightPage(location.pathname+location.search,false));
+
+document.addEventListener("DOMContentLoaded",()=>{
+  document.querySelectorAll("a[href^='/branch_officer/']").forEach(a=>{
+    const href=a.getAttribute("href");
+    if(!href.includes("/logout/") && !a.classList.contains("member-transfer-toggle")){
+      a.addEventListener("click",e=>{e.preventDefault();openRightPage(href,true);});
+      a.classList.add("bo-nav-link");
+    }
+  });
+});
+</script>
+</body></html>

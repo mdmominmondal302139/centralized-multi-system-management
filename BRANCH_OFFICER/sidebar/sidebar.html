@@ -1,0 +1,72 @@
+<style>
+:root{--nav:#111827;--nav2:#24324a;--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#64748b;--line:#dbe3ee;--primary:#1d4ed8;--danger:#b91c1c}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+.bo-sidebar{position:fixed;inset:0 auto 0 0;width:260px;background:var(--nav);color:#fff;padding:22px 14px;overflow:auto}.bo-brand{font-weight:800;font-size:18px;margin:0 8px 4px}.bo-scope{font-size:11px;color:#aebbd0;margin:0 8px 20px}.bo-nav{display:block;width:100%;text-decoration:none;color:#dce5f2;padding:11px 12px;border-radius:8px;margin:3px 0}.bo-nav:hover,.bo-nav.active{background:var(--nav2);color:#fff}.bo-transfer-group{margin:3px 0 6px}.bo-transfer-toggle{display:flex;justify-content:space-between;align-items:center}.bo-subnav{display:block;margin:2px 0 5px 14px;padding:8px 10px;border-left:2px solid #334155;color:#b9c7d9;text-decoration:none;border-radius:0 6px 6px 0;font-size:12px}.bo-subnav:hover,.bo-subnav.active{background:#1e293b;color:#fff}.bo-main{margin-left:260px;padding:28px}.bo-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:20px}.bo-top h1{margin:0 0 5px;font-size:27px}.bo-muted{color:var(--muted)}.bo-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px}.bo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.bo-stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}.bo-stat span{display:block;color:var(--muted);font-size:12px}.bo-stat strong{display:block;font-size:23px;margin-top:8px}.bo-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.bo-form label{font-size:12px;font-weight:700}.bo-form input,.bo-form select,.bo-form textarea{width:100%;margin-top:6px;padding:10px;border:1px solid #cbd5e1;border-radius:7px;background:#fff}.bo-form textarea{min-height:82px}.bo-full{grid-column:1/-1}.bo-btn{border:0;border-radius:7px;padding:10px 15px;background:var(--primary);color:#fff;cursor:pointer;font-weight:700}.bo-btn.danger{background:var(--danger)}.bo-table{width:100%;border-collapse:collapse}.bo-table th,.bo-table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px;vertical-align:top}.bo-table th{background:#f8fafc}.bo-actions{display:flex;gap:6px;flex-wrap:wrap}.bo-alert{padding:11px 14px;border-radius:8px;margin-bottom:15px;background:#e8f2ff}.bo-error{background:#fee2e2;color:#991b1b}.bo-empty{color:var(--muted);padding:20px;text-align:center}@media(max-width:1000px){.bo-grid{grid-template-columns:repeat(2,1fr)}.bo-form{grid-template-columns:1fr 1fr}}@media(max-width:700px){.bo-sidebar{position:static;width:auto}.bo-main{margin-left:0}.bo-grid,.bo-form{grid-template-columns:1fr}.bo-top{display:block}}
+
+@media(min-width:701px){.bo-working-frame{width:100%;height:calc(100vh - 56px);border:0;background:var(--bg)}}
+</style>
+<aside class="bo-sidebar">
+  <div class="bo-brand">BRANCH OFFICER</div>
+  <div class="bo-scope">OWN ASSIGNED BRANCH ONLY</div>
+  <a class="bo-nav {% if request.path.startswith('/branch_officer/home') %}active{% endif %}" href="{{ url_for('branch_officer_home.home') }}">🏠 Home</a>
+  <a class="bo-nav {% if request.path.startswith('/branch_officer/branch_management') %}active{% endif %}" href="{{ url_for('branch_officer_branch_management.branch_management') }}">🏢 Branch Management</a>
+  <a class="bo-nav {% if request.path.startswith('/branch_officer/branch_members') %}active{% endif %}" href="{{ url_for('branch_officer_branch_members.branch_members') }}">👥 Branch Members</a>
+  <div class="bo-transfer-group">
+    <a class="bo-nav bo-transfer-toggle {% if request.path.startswith('/branch_officer/member_transfer') %}active{% endif %}" href="#" onclick="toggleMemberTransfer(event)"><span>🔄 Member Transfer</span><span id="member-transfer-arrow">{% if request.path.startswith('/branch_officer/member_transfer/') %}▴{% else %}▾{% endif %}</span></a>
+    <div id="member-transfer-submenu" class="member-transfer-submenu" style="display:{% if request.path.startswith('/branch_officer/member_transfer/') %}block{% else %}none{% endif %};">
+      <a class="bo-subnav {% if request.path.startswith('/branch_officer/member_transfer/request') %}active{% endif %}" href="{{ url_for('branch_officer_member_transfer_request.page') }}">📤 Transfer Request</a>
+      <a class="bo-subnav {% if request.path.startswith('/branch_officer/member_transfer/received') %}active{% endif %}" href="{{ url_for('branch_officer_member_transfer_received.page') }}">📥 Received Requests</a>
+      <a class="bo-subnav {% if request.path.startswith('/branch_officer/member_transfer/sent') %}active{% endif %}" href="{{ url_for('branch_officer_member_transfer_sent.page') }}">📤 Sent Requests</a>
+      <a class="bo-subnav {% if request.path.startswith('/branch_officer/member_transfer/history') %}active{% endif %}" href="{{ url_for('branch_officer_member_transfer_history.page') }}">📋 Transfer History</a>
+    </div>
+    <style>
+      .member-transfer-submenu{padding-left:14px;}
+      .member-transfer-submenu .bo-subnav{display:block;}
+    </style>
+    <script>
+      function toggleMemberTransfer(event){
+        event.preventDefault();
+        const menu=document.getElementById('member-transfer-submenu');
+        const arrow=document.getElementById('member-transfer-arrow');
+        if(!menu) return;
+        const open=menu.style.display !== 'none';
+        menu.style.display=open?'none':'block';
+        if(arrow) arrow.textContent=open?'▾':'▴';
+      }
+    </script>
+  </div>
+  <a class="bo-nav {% if request.path.startswith('/branch_officer/income') %}active{% endif %}" href="{{ url_for('branch_officer_income.income') }}">💰 Income</a>
+  <a class="bo-nav {% if request.path.startswith('/branch_officer/expense') %}active{% endif %}" href="{{ url_for('branch_officer_expense.expense') }}">💸 Expense</a>
+  <a class="bo-nav {% if request.path.startswith('/branch_officer/meal_management') %}active{% endif %}" href="{{ url_for('branch_officer_meal_management.meal_management') }}">🍽️ Meal Management</a>
+  <a class="bo-nav {% if request.path.startswith('/branch_officer/savings') %}active{% endif %}" href="{{ url_for('branch_officer_savings.savings') }}">💰 Savings</a>
+  <a class="bo-nav {% if request.path.startswith('/branch_officer/work') %}active{% endif %}" href="{{ url_for('branch_officer_work.work') }}">📋 Work</a>
+  <a class="bo-nav {% if request.path.startswith('/branch_officer/records') %}active{% endif %}" href="{{ url_for('branch_officer_records.records') }}">📊 Records</a>
+  <a class="bo-nav" href="{{ url_for('branch_officer_logout.logout') }}">↪ Logout</a>
+<script>
+(function(){
+  function setupWorkingNavigation(){
+    var frame=document.querySelector('.bo-working-frame');
+    var links=document.querySelectorAll('.bo-sidebar a.bo-nav, .bo-sidebar a.bo-subnav');
+    links.forEach(function(a){
+      var href=a.getAttribute('href');
+      if(!href || href==='#' || href.indexOf('/logout')!==-1 || a.classList.contains('bo-transfer-toggle')) return;
+      a.removeAttribute('target');
+      a.addEventListener('click',function(e){
+        if(!frame) return;
+        e.preventDefault();
+        frame.src=href;
+        links.forEach(function(x){x.classList.remove('active')});
+        a.classList.add('active');
+      });
+    });
+  }
+  if(window.self!==window.top){
+    var st=document.createElement('style');
+    st.textContent='.bo-sidebar{display:none!important}.bo-main{margin-left:0!important;padding:24px!important;min-height:100vh}.bo-working-frame{display:none!important}';
+    document.head.appendChild(st);
+  } else {
+    setupWorkingNavigation();
+  }
+})();
+</script>
+</aside>
