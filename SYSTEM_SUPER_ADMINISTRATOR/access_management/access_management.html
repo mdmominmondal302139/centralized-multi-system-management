@@ -1,74 +1,414 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Access Management</title><link rel="stylesheet" href="/static/app.css"><style>
-/* Permanent System Super Administrator sidebar. */
-.ssa-shell{min-height:100vh}
-.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.06);display:flex;flex-direction:column;z-index:1000}
-.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #e7edf4;flex:0 0 auto}
-.ssa-brand-title{font-size:16px;font-weight:800;color:#12355e;line-height:1.25}
-.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:5px;letter-spacing:.6px}
-.ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1 1 auto}
-.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}
-.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap}
-.ssa-nav a:hover{background:#eef6ff;color:#0d65bd}
-.ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}
-.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
-.ssa-profile{flex:0 0 auto;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}
-.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}
-.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}
-.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}
-.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
-.ssa-content{margin-left:280px;min-height:100vh}
-.ssa-content>.page{max-width:none;margin:0;padding:24px 24px 32px}
-@media(max-width:700px){.ssa-sidebar{width:280px}.ssa-content{margin-left:280px;min-width:820px}}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Access Management — System Super Administrator</title>
+<style>
+:root{--navy:#12355e;--blue:#126ac1;--soft:#eef6ff;--bg:#f4f8fc;--card:#fff;--line:#dce7f1;--text:#18324b;--muted:#718398;--green:#159957;--red:#dc3545;--amber:#c98700;--purple:#6941c6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif}
+.ssa-shell{min-height:100vh}.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:#fff;border-right:1px solid var(--line);box-shadow:2px 0 12px rgba(16,44,80,.06);display:flex;flex-direction:column;z-index:1000}.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #e7edf4}.ssa-brand-title{font-size:16px;font-weight:800;color:#12355e;line-height:1.25}.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:5px;letter-spacing:.6px}.ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1}.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap}.ssa-nav a:hover,.ssa-nav a.active{background:#e9f3ff;color:#0b67c0}.ssa-nav a.active{font-weight:800}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}.ssa-profile{border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}.ssa-content{margin-left:280px;min-height:100vh}.page{padding:24px;max-width:none}.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}.eyebrow{font-size:11px;color:var(--blue);font-weight:900;text-transform:uppercase;letter-spacing:.7px}.page-head h1{margin:4px 0 4px;font-size:28px;color:#0d355b}.page-head p{margin:0;color:var(--muted);font-size:13px}.identity{text-align:right}.identity strong{display:block;color:#173b61}.identity span{font-size:11px;color:var(--muted)}
+.notice{padding:11px 14px;border-radius:10px;margin-bottom:14px;font-weight:700}.ok{background:#eaf8ef;color:#12633b;border:1px solid #c3e8d0}.err{background:#fff0f1;color:#9d2330;border:1px solid #f0c4c9}
+.workspace{display:block}.access-nav{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:10px;background:transparent;border:0;border-radius:0;padding:0;margin:0 0 18px}.access-nav-title{grid-column:1/-1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 16px;color:#163b60;font-weight:900;font-size:15px;box-shadow:0 4px 14px rgba(14,45,75,.04)}.access-nav a{min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;text-decoration:none;color:#405a73;font-size:11px;font-weight:800;padding:10px 7px;border:1px solid var(--line);background:#fff;border-radius:12px;margin:0;box-shadow:0 4px 12px rgba(14,45,75,.04);transition:.18s ease}.access-nav a:hover{background:#f1f7fd;color:#0b67c0;border-color:#b8d6f5;transform:translateY(-1px)}.access-nav a.active{background:#e7f2ff;color:#0b67c0;border-color:#8fc0f4;box-shadow:0 6px 16px rgba(18,106,193,.12);font-weight:900}.access-nav .ico{width:auto;text-align:center;font-size:19px;line-height:1}.content-area{min-width:0}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px;box-shadow:0 5px 18px rgba(14,45,75,.04);margin-bottom:15px}.card-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:13px}.card h2{margin:0;font-size:17px;color:#12385d}.card p{color:var(--muted);font-size:12px}.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}.kpi small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;font-weight:900}.kpi b{display:block;font-size:24px;margin-top:7px;color:#0d3557}.kpi.blue{border-top:3px solid #2b7dcc}.kpi.green{border-top:3px solid var(--green)}.kpi.amber{border-top:3px solid #d88900}.kpi.red{border-top:3px solid var(--red)}.kpi.purple{border-top:3px solid var(--purple)}
+.dashboard-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:15px}.scope-box{border:1px solid var(--line);border-radius:12px;padding:14px;background:#f8fbfe}.scope-box strong{display:block;margin-bottom:8px}.scope-line{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e7eef5;padding:8px 0;font-size:12px}.scope-line:last-child{border-bottom:0}.pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:900;background:#eef4f8;color:#526a80}.pill.green{background:#e7f8ef;color:#12633b}.pill.red{background:#fff0f1;color:#9d2330}.pill.amber{background:#fff5df;color:#8a5b00}.pill.blue{background:#e8f2ff;color:#1557a8}
+.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.field{font-size:10px;font-weight:900;color:#53697d}.field.wide{grid-column:span 2}.field.full{grid-column:1/-1}.field input,.field select,.field textarea{display:block;width:100%;min-height:46px;margin-top:7px;border:1px solid #ccd9e5;border-radius:10px;padding:11px 13px;background:#fff;color:#18324b;font:inherit;font-size:12px;font-weight:600;outline:none;box-shadow:0 2px 7px rgba(14,45,75,.035)}.field textarea{min-height:100px;resize:vertical;line-height:1.5}.field input:focus,.field select:focus,.field textarea:focus{border-color:#6ba7ec;box-shadow:0 0 0 3px rgba(18,97,214,.08)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.btn{border:0;border-radius:8px;padding:9px 13px;color:#fff;background:var(--blue);font-weight:900;font-size:11px;cursor:pointer}.btn.green{background:var(--green)}.btn.red{background:var(--red)}.btn.gray{background:#64748b}.btn.amber{background:#c98700}.btn.purple{background:var(--purple)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:11px}table{width:100%;border-collapse:collapse;min-width:900px}th,td{padding:9px 8px;border-bottom:1px solid #e8eef4;text-align:left;font-size:10px;vertical-align:top}th{background:#f6f9fc;color:#60758a;font-size:9px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}tr:hover td{background:#fbfdff}.empty{text-align:center;color:var(--muted);padding:25px}.inline{display:inline}.danger-link{border:0;background:#fff0f1;color:#a51f2c;border-radius:7px;padding:6px 8px;font-size:9px;font-weight:900;cursor:pointer}.section-title{display:flex;align-items:center;gap:9px}.section-title .icon{font-size:20px}.helper{font-size:11px;color:var(--muted);margin:4px 0 0}.filter{display:grid;grid-template-columns:1fr 180px auto;gap:8px;margin-bottom:12px}.filter input,.filter select{border:1px solid #ccd9e5;border-radius:8px;padding:9px;font-size:11px}.readonly-note{padding:10px 12px;border-radius:9px;background:#f6f9fc;border:1px solid var(--line);color:#60758a;font-size:11px;margin-bottom:12px}.member-context{margin-bottom:14px;padding:13px 14px;border:1px solid #b9d7f4;border-radius:12px;background:linear-gradient(135deg,#f5faff,#edf6ff)}.member-context-grid{display:grid;grid-template-columns:minmax(320px,1.25fr) 1fr 1fr;gap:14px;align-items:end}.member-context-title{font-size:11px;font-weight:900;color:#0b67c0;text-transform:uppercase;letter-spacing:.45px;margin-bottom:5px}.member-context select{width:100%;min-height:48px;border:1px solid #bfd3e5;border-radius:10px;padding:11px 13px;background:#fff;color:#18324b;font:inherit;font-weight:700}.member-context select:focus{border-color:#6ba7ec;box-shadow:0 0 0 3px rgba(18,97,214,.08);outline:none}.member-meta{font-size:11px;color:#5f7489;padding:11px 13px;border:1px solid #d9e7f3;border-radius:10px;background:#fff;min-height:48px;display:flex;align-items:center}.member-required{color:#c62828;font-weight:900}.member-note{font-size:10px;color:#60758a;margin-top:6px}.member-context .member-error{display:none;color:#b42318;font-size:10px;font-weight:800;margin-top:5px}.member-context.invalid .member-error{display:block}.member-context.invalid select{border-color:#e05252;box-shadow:0 0 0 3px rgba(220,53,69,.08)}@media(max-width:900px){.member-context-grid{grid-template-columns:1fr}.member-meta{min-height:auto}}
 
-.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity strong{font-weight:800}.ssa-page-identity span{color:#73869c;font-size:11px}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form label:has(textarea){grid-column:span 2}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus,.ssa-content .card form textarea:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form textarea{min-height:90px;resize:vertical}.ssa-content .card form input[type=hidden]{display:none}.ssa-content .card form button{grid-column:span 1;border:0;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}.ssa-content .card form button:hover{filter:brightness(.96)}@media(max-width:1000px){.ssa-content .card form{grid-template-columns:repeat(2,minmax(180px,1fr))}}@media(max-width:700px){.ssa-content .card form{grid-template-columns:1fr}.ssa-content .card form label:has(textarea){grid-column:span 1}}
+@media(max-width:1100px){.workspace{grid-template-columns:210px 1fr}.kpis{grid-template-columns:repeat(3,1fr)}.dashboard-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:760px){.ssa-sidebar{width:280px}.ssa-content{margin-left:280px;min-width:760px}.workspace{grid-template-columns:210px 1fr}.page{padding:15px}.page-head{flex-direction:column}.identity{text-align:left}.kpis{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.field.wide{grid-column:span 1}.filter{grid-template-columns:1fr}}
 
-/* v17: keep the sidebar permanently left and keep all working content in the right scroll area. */
-.ssa-sidebar{position:fixed !important;left:0 !important;top:0 !important;bottom:0 !important;width:280px !important;height:100vh !important;overflow:hidden !important;}
-.ssa-nav{overflow-y:auto !important;overflow-x:hidden !important;min-height:0 !important;}
-.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:0 !important;box-sizing:border-box !important;overflow-x:hidden !important;}
-.ssa-content>.page{width:100% !important;max-width:none !important;box-sizing:border-box !important;min-width:0 !important;}
-.ssa-content .card{max-width:100% !important;box-sizing:border-box !important;}
-.ssa-content table{max-width:100%;}
-.table-wrap{width:100%;max-width:100%;overflow-x:auto;box-sizing:border-box;}
-@media(max-width:700px){.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:700px !important;}}
-</style><style>
-.record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(15,23,42,.06)}
-.record-table{width:100%;min-width:900px;border-collapse:collapse;font-size:15px;background:#fff}
-.record-table th{padding:14px 16px;text-align:left;background:#f3f7fb;color:#243447;font-weight:700;border-bottom:2px solid #d9e2ec;white-space:nowrap}
-.record-table td{padding:13px 16px;border-bottom:1px solid #e7edf3;color:#334155;vertical-align:middle;white-space:nowrap}
-.record-table tbody tr:hover{background:#f8fbff}
-.record-table tbody tr:last-child td{border-bottom:0}
-.record-table .empty{text-align:center;padding:28px;color:#64748b}
-.inline-action{margin:0}
-.inline-action .danger{padding:8px 14px;border:0;border-radius:8px;cursor:pointer;font-weight:600}
+/* Larger, professional form controls */
+.form-grid .field input[type="date"],
+.form-grid .field input[type="number"]{min-height:48px}
+.date-auto-note{display:block;margin-top:5px;font-size:9px;color:#718398;font-weight:600}
+
+/* Professional top navigation: 8 items per row */
+.workspace{display:block!important}
+.access-nav{position:static!important;width:100%;padding:14px 14px 16px;margin-bottom:16px}
+.access-nav-title{font-size:15px;padding:4px 8px 12px}
+.access-nav > div:not(.access-nav-title){display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:9px}
+.access-nav a{min-height:58px;margin:0;padding:10px 9px;display:flex;align-items:center;justify-content:flex-start;gap:8px;border:1px solid #e1eaf3;background:#f9fbfd;border-radius:11px;font-size:10px;line-height:1.25;box-shadow:0 2px 7px rgba(14,45,75,.03);transition:.15s ease}
+.access-nav a:hover{background:#eef7ff;border-color:#b8d8f5;color:#0b67c0;transform:translateY(-1px);box-shadow:0 4px 12px rgba(14,45,75,.07)}
+.access-nav a.active{background:linear-gradient(135deg,#e7f3ff,#f4f9ff);border-color:#8fc4f5;color:#0b67c0;box-shadow:0 4px 13px rgba(18,106,193,.10)}
+.access-nav .ico{width:22px;min-width:22px;font-size:15px}
+.content-area{width:100%}
+@media(max-width:1250px){.access-nav > div:not(.access-nav-title){grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:1250px){.access-nav{grid-template-columns:repeat(6,minmax(0,1fr))}}@media(max-width:900px){.access-nav{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:600px){.access-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.access-nav-title{grid-column:1/-1}}
+
+/* =========================================================
+   ACCESS MANAGEMENT — 9 x 2 TOP NAVIGATION
+   The main System Super Administrator sidebar remains intact.
+   ========================================================= */
+.access-nav{
+  display:grid !important;
+  grid-template-columns:repeat(9,minmax(0,1fr)) !important;
+  grid-template-rows:auto auto auto !important;
+  grid-auto-flow:row !important;
+  gap:10px !important;
+  width:100% !important;
+  max-width:none !important;
+  position:static !important;
+  float:none !important;
+  margin:0 0 18px !important;
+  padding:14px !important;
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-radius:16px !important;
+  box-shadow:0 5px 18px rgba(14,45,75,.04) !important;
+}
+.access-nav-title{
+  grid-column:1 / -1 !important;
+  grid-row:1 !important;
+  min-height:44px !important;
+  display:flex !important;
+  align-items:center !important;
+  padding:0 8px !important;
+  margin:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  color:#12385d !important;
+  font-size:16px !important;
+  font-weight:900 !important;
+}
+.access-nav > a{
+  min-width:0 !important;
+  width:auto !important;
+  height:72px !important;
+  min-height:72px !important;
+  max-height:72px !important;
+  margin:0 !important;
+  padding:8px 6px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:5px !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:normal !important;
+  text-align:center !important;
+  text-decoration:none !important;
+  color:#294967 !important;
+  background:#f9fbfd !important;
+  border:1px solid #dce7f1 !important;
+  border-radius:12px !important;
+  box-shadow:0 3px 10px rgba(14,45,75,.04) !important;
+  font-size:10px !important;
+  line-height:1.2 !important;
+  font-weight:800 !important;
+  transition:all .18s ease !important;
+}
+.access-nav > a:hover{
+  background:#eef7ff !important;
+  border-color:#9fcaf0 !important;
+  color:#0869c4 !important;
+  transform:translateY(-2px) !important;
+  box-shadow:0 6px 14px rgba(18,106,193,.10) !important;
+}
+.access-nav > a.active{
+  background:linear-gradient(135deg,#e5f2ff,#f5faff) !important;
+  border-color:#7eb8ee !important;
+  color:#0567c5 !important;
+  box-shadow:0 6px 16px rgba(18,106,193,.14) !important;
+  font-weight:900 !important;
+}
+.access-nav .ico{
+  display:block !important;
+  width:auto !important;
+  min-width:0 !important;
+  height:22px !important;
+  line-height:22px !important;
+  font-size:18px !important;
+  text-align:center !important;
+}
+@media(max-width:1250px){
+  .access-nav{grid-template-columns:repeat(6,minmax(0,1fr)) !important}
+}
+@media(max-width:900px){
+  .access-nav{grid-template-columns:repeat(4,minmax(0,1fr)) !important}
+}
+@media(max-width:600px){
+  .access-nav{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+}
+
+
+.access-nav-title{
+  width:100% !important;
+  min-height:44px !important;
+  display:flex !important;
+  align-items:center !important;
+  margin:0 0 10px !important;
+  padding:0 4px !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  color:#163b60 !important;
+  font-size:16px !important;
+  font-weight:900 !important;
+}
+
+
+/* =========================================================
+   ACCESS MANAGEMENT — 6 x 3 PROFESSIONAL TOP NAVIGATION
+   18 sections = 6 columns x 3 rows
+   ========================================================= */
+.access-nav{
+  display:grid !important;
+  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+  grid-auto-flow:row !important;
+  gap:12px !important;
+  width:100% !important;
+  margin:0 0 22px !important;
+}
+.access-nav-title{
+  grid-column:1/-1 !important;
+  min-height:52px !important;
+  display:flex !important;
+  align-items:center !important;
+  padding:0 6px !important;
+  margin:0 0 2px !important;
+  font-size:20px !important;
+  font-weight:900 !important;
+  color:#123b64 !important;
+}
+.access-nav a{
+  min-height:92px !important;
+  height:92px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:9px !important;
+  padding:12px 8px !important;
+  border:1px solid #d5e3ef !important;
+  border-radius:14px !important;
+  background:#fff !important;
+  color:#244563 !important;
+  font-size:13px !important;
+  font-weight:900 !important;
+  line-height:1.2 !important;
+  text-align:center !important;
+  box-shadow:0 4px 14px rgba(18,59,100,.07) !important;
+  transition:all .18s ease !important;
+}
+.access-nav a:hover{
+  transform:translateY(-2px) !important;
+  border-color:#8bbcf0 !important;
+  background:#f5faff !important;
+  color:#0868bd !important;
+  box-shadow:0 8px 20px rgba(18,106,193,.13) !important;
+}
+.access-nav a.active{
+  background:#e8f3ff !important;
+  border-color:#72aee8 !important;
+  color:#0868bd !important;
+  box-shadow:0 8px 22px rgba(18,106,193,.16) !important;
+}
+.access-nav .ico{
+  width:auto !important;
+  min-width:28px !important;
+  font-size:25px !important;
+  line-height:1 !important;
+  text-align:center !important;
+}
+@media(max-width:1250px){
+  .access-nav{grid-template-columns:repeat(6,minmax(0,1fr)) !important}
+  .access-nav a{font-size:12px !important}
+}
+@media(max-width:1000px){
+  .access-nav{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+}
+@media(max-width:600px){
+  .access-nav{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  .access-nav a{min-height:84px !important;height:84px !important}
+  .access-nav-title{font-size:18px !important}
+}
+
 </style>
-</head><body><div class="ssa-shell"><aside class="ssa-sidebar">
+</head>
+<body>
+<div class="ssa-shell">
+<aside class="ssa-sidebar">
   <div class="ssa-brand"><div class="ssa-brand-title">SYSTEM SUPER ADMINISTRATOR</div><div class="ssa-brand-scope">GLOBAL / HIGHEST AUTHORITY</div></div>
   <nav class="ssa-nav">
     <div class="ssa-nav-group">Main</div>
-    <a class="" href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
-    <a class="" href="/system_super_administrator/income-management"><span class="ssa-ico">↗</span>Income Management</a>
-    <a class="" href="/system_super_administrator/expense-management"><span class="ssa-ico">↘</span>Expense Management</a>
-    <a class="" href="/system_super_administrator/meal-management"><span class="ssa-ico">◉</span>Meal Management</a>
-    <a class="" href="/system_super_administrator/savings-management"><span class="ssa-ico">▣</span>Savings Management</a>
-    <a class="" href="/system_super_administrator/information-directory"><span class="ssa-ico">▤</span>Information Directory</a>
-    <a class="" href="/system_super_administrator/blood-donor-management"><span class="ssa-ico">🩸</span>Blood Donor Management</a>
+    <a href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
+    <a href="/system_super_administrator/income-management"><span class="ssa-ico">↗</span>Income Management</a>
+    <a href="/system_super_administrator/expense-management"><span class="ssa-ico">↘</span>Expense Management</a>
+    <a href="/system_super_administrator/meal-management"><span class="ssa-ico">◉</span>Meal Management</a>
+    <a href="/system_super_administrator/savings-management"><span class="ssa-ico">▣</span>Savings Management</a>
+    <a href="/system_super_administrator/information-directory"><span class="ssa-ico">▤</span>Information Directory</a>
+    <a href="/system_super_administrator/blood-donor-management"><span class="ssa-ico">🩸</span>Blood Donor Management</a>
     <div class="ssa-nav-group">System</div>
-    <a class="" href="/system_super_administrator/system-overview"><span class="ssa-ico">◫</span>System Overview</a>
-    <a class="" href="/system_super_administrator/branch-management"><span class="ssa-ico">▥</span>Branch Management</a>
-    <a class="" href="/system_super_administrator/member-management"><span class="ssa-ico">♟</span>Member Management</a>
-    <a class="" href="/system_super_administrator/department-management"><span class="ssa-ico">▦</span>Department Management</a>
-    <a class="" href="/system_super_administrator/financial-management"><span class="ssa-ico">৳</span>Financial Management</a>
-    <a class="" href="/system_super_administrator/reports"><span class="ssa-ico">▥</span>Reports</a>
+    <a href="/system_super_administrator/system-overview"><span class="ssa-ico">◫</span>System Overview</a>
+    <a href="/system_super_administrator/branch-management"><span class="ssa-ico">▥</span>Branch Management</a>
+    <a href="/system_super_administrator/member-management"><span class="ssa-ico">♟</span>Member Management</a>
+    <a href="/system_super_administrator/department-management"><span class="ssa-ico">▦</span>Department Management</a>
+    <a href="/system_super_administrator/financial-management"><span class="ssa-ico">৳</span>Financial Management</a>
+    <a href="/system_super_administrator/reports"><span class="ssa-ico">▥</span>Reports</a>
     <a class="active" href="/system_super_administrator/access-management"><span class="ssa-ico">⚿</span>Access Management</a>
-    <a class="" href="/system_super_administrator/member-audit"><span class="ssa-ico">◌</span>Member Audit</a>
-    <a class="" href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
-    <a class="" href="/system_super_administrator/import"><span class="ssa-ico">⇩</span>Import</a>
-    <a class="" href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
-    <a class="" href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
+    <a href="/system_super_administrator/member-audit"><span class="ssa-ico">◌</span>Member Audit</a>
+    <a href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
+    <a href="/system_super_administrator/import"><span class="ssa-ico">⇩</span>Import</a>
+    <a href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
+    <a href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
   </nav>
-  <div class="ssa-profile">
-    <a class="ssa-profile-link" href="/system_super_administrator/profile"><span class="ssa-avatar">SA</span><span><strong>{{ session.get('username','blue') }}</strong><small>System Super Administrator</small></span></a>
-    <a class="ssa-logout" href="/logout">Logout</a>
+  <div class="ssa-profile"><a class="ssa-profile-link" href="/system_super_administrator/profile"><span class="ssa-avatar">SA</span><span><strong>{{ session.get('username','blue') }}</strong><small>System Super Administrator</small></span></a><a class="ssa-logout" href="/logout">Logout</a></div>
+</aside>
+
+<div class="ssa-content"><main class="page">
+<header class="page-head"><div><div class="eyebrow">Security &amp; Authorization</div><h1>🔐 Access Management</h1><p>Centralized role, permission, authorization, scope and access-control command center.</p></div><div class="identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator · GLOBAL</span></div></header>
+{% if message %}<div class="notice ok">{{ message }}</div>{% endif %}{% if error %}<div class="notice err">{{ error }}</div>{% endif %}
+
+<div class="workspace">
+<div class="access-nav-title">🔐 Access Management</div>
+<nav class="access-nav" aria-label="Access Management Navigation">
+  {% for key,label in sections %}<a class="{% if section==key %}active{% endif %}" href="/system_super_administrator/access-management/?section={{ key }}"><span class="ico">{% if key=='dashboard' %}▦{% elif key=='roles' %}♛{% elif key=='permissions' %}✓{% elif key=='matrix' %}▤{% elif key=='users' %}♟{% elif key=='pages' %}▱{% elif key=='modules' %}▦{% elif key=='actions' %}⚡{% elif key=='scope' %}◎{% elif key=='temporary' %}◷{% elif key=='requests' %}↗{% elif key=='review' %}◉{% elif key=='history' %}◌{% elif key=='audit' %}🛡{% elif key=='policy' %}§{% elif key=='emergency' %}🚨{% elif key=='blocked' %}⛔{% else %}⚙{% endif %}</span>{{ label }}</a>{% endfor %}
+</nav>
+
+<section class="content-area">
+{% if section == 'dashboard' %}
+  <div class="kpis">
+    <div class="kpi blue"><small>Active Roles</small><b>{{ dashboard.active_roles }}</b></div><div class="kpi green"><small>Active Permissions</small><b>{{ dashboard.active_permissions }}</b></div><div class="kpi amber"><small>Pending Requests</small><b>{{ dashboard.pending_requests }}</b></div><div class="kpi purple"><small>Temporary Access</small><b>{{ dashboard.temporary }}</b></div><div class="kpi red"><small>Blocked / Restricted</small><b>{{ dashboard.blocked }}</b></div>
   </div>
-</aside><div class="ssa-content"><main class="page"><header><h1>Access Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}<section class="card"><h2>Access Management</h2><p>Role and Member permission control.</p><form method="post"><label>Role<select name="role"><option value="">Select Role</option><option>System Super Administrator</option><option>Branch Officer</option><option>Account Officer</option><option>Meal Manager</option><option>Operator</option><option>Member</option></select></label><label>Member<select name="member"><option value="">Select Member</option>{% for x in options.members %}<option>{{ x }}</option>{% endfor %}</select></label><label>View<select name="view"><option>Allow</option><option>Deny</option></select></label><label>Create<select name="create"><option>Allow</option><option>Deny</option></select></label><label>Update<select name="update"><option>Allow</option><option>Deny</option></select></label><label>Delete<select name="delete"><option>Allow</option><option>Deny</option></select></label><label>Module<input name="module" placeholder="e.g. Income Management"></label><input type="hidden" name="action" value="save"><button>Save Permissions</button></form></section><section class="card"><h2>Permission Records</h2><form method="get"><input name="search" placeholder="Search permissions" value="{{ request.args.get('search','') }}"><button>Search</button></form><div class="record-table-wrap"><table class="record-table"><thead><tr><th>SL</th><th>Role</th><th>Member</th><th>Module</th><th>View</th><th>Create</th><th>Update</th><th>Delete</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td>{{ r.get("role","") }}</td><td>{{ r.get("member","") }}</td><td>{{ r.get("module","") }}</td><td>{{ r.get("view","") }}</td><td>{{ r.get("create","") }}</td><td>{{ r.get("update","") }}</td><td>{{ r.get("delete","") }}</td><td><form method="post" class="inline-action"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><button class="danger" type="submit">Delete</button></form></td></tr>{% else %}<tr><td colspan="9" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div></section></main></div></div></body></html>
+  <div class="dashboard-grid" style="margin-top:15px">
+    <div class="card"><div class="card-head"><div><h2>Authorization Architecture</h2><p class="helper">Role hierarchy and data scope are controlled independently from user/account management.</p></div></div><div class="scope-box"><div class="scope-line"><strong>GLOBAL</strong><span class="pill blue">System Super Administrator</span></div><div class="scope-line"><strong>CENTRAL</strong><span class="pill blue">Central System Administrator</span></div><div class="scope-line"><strong>BRANCH</strong><span class="pill green">Branch Officer</span></div><div class="scope-line"><strong>DEPARTMENT</strong><span class="pill amber">Operator</span></div><div class="scope-line"><strong>OWN</strong><span class="pill purple">Member</span></div></div></div>
+    <div class="card"><div class="card-head"><div><h2>Permission Model</h2><p class="helper">Every module can use View, Create, Update, Delete, Approve, Reject, Export, Import and Manage.</p></div></div><div class="scope-box"><div class="scope-line"><strong>View</strong><span class="pill green">Read access</span></div><div class="scope-line"><strong>Create / Update</strong><span class="pill blue">Write access</span></div><div class="scope-line"><strong>Approve / Reject</strong><span class="pill amber">Workflow access</span></div><div class="scope-line"><strong>Export / Import</strong><span class="pill purple">Data movement</span></div><div class="scope-line"><strong>Manage</strong><span class="pill red">Administrative control</span></div></div></div>
+  </div>
+  <div class="card"><div class="card-head"><div><h2>Access Control Rules</h2><p class="helper">UI visibility is not treated as authorization. Backend routes and actions must check access.</p></div></div><div class="scope-box"><div class="scope-line"><span>Role hierarchy</span><span class="pill green">Enabled</span></div><div class="scope-line"><span>Page + module + action control</span><span class="pill green">Enabled</span></div><div class="scope-line"><span>Branch / department scope</span><span class="pill green">Enabled</span></div><div class="scope-line"><span>Temporary / emergency elevation</span><span class="pill amber">Controlled</span></div><div class="scope-line"><span>Permission audit trail</span><span class="pill blue">Recorded</span></div></div></div>
+{% else %}
+  {% set labels = {
+    'roles':'Role Management','permissions':'Permission Management','matrix':'Role Permission Matrix','users':'User Access','pages':'Page Access','modules':'Module Access','actions':'Action Access','scope':'Data Scope','temporary':'Temporary Access','requests':'Access Requests','review':'Access Review','history':'Access History','audit':'Permission Audit','policy':'Access Policy','emergency':'Emergency Access','blocked':'Blocked / Restricted','settings':'Access Settings'
+  } %}
+  <div class="card"><div class="card-head"><div><h2 class="section-title"><span class="icon">🔐</span>{{ labels[section] }}</h2><p class="helper">{% if section=='roles' %}Create, edit, disable and organize role hierarchy.{% elif section=='permissions' %}Define granular permissions per module and action.{% elif section=='matrix' %}Control which role receives which permission.{% elif section=='users' %}Assign role, access scope and branch/department boundaries to a user.{% elif section=='pages' %}Control which application pages a role may open.{% elif section=='modules' %}Control module-level access across Income, Expense, Meal, Blood, Savings and other areas.{% elif section=='actions' %}Control Create/Edit/Delete/Approve/Reject/Export/Import/Manage actions.{% elif section=='scope' %}Define Own Data, Branch Data, Department Data, Central or Global data scope.{% elif section=='temporary' %}Grant access for a defined start and end time.{% elif section=='requests' %}Review user access requests and approve or reject them.{% elif section=='review' %}Review assigned access and identify unnecessary access.{% elif section=='history' %}Track when access was granted, removed or changed.{% elif section=='audit' %}Keep a permission-change audit trail with before/after values.{% elif section=='policy' %}Store login, session, password and access-related policy values.{% elif section=='emergency' %}Grant specially controlled temporary elevated access for exceptional situations.{% elif section=='blocked' %}Temporarily block or restrict user, role, module or page access.{% else %}System configuration for access-control behavior.{% endif %}</p></div></div>
+
+  {% if section not in ['history','audit'] %}
+  <form class="card" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="section" value="{{ section }}"><input type="hidden" name="action" value="create">
+    <div class="member-context" id="memberContext" data-required="{{ '1' if section in ['users','matrix','pages','modules','actions','scope','temporary','requests','review','emergency','blocked'] else '0' }}">
+      <div class="member-context-title">👤 Active Member Selection {% if section in ['users','matrix','pages','modules','actions','scope','temporary','requests','review','emergency','blocked'] %}<span class="member-required">* Required</span>{% else %}<span>(optional context)</span>{% endif %}</div>
+      <div class="member-context-grid">
+        <label class="field">Select Active Member
+          <select name="target_user_id" id="targetUserId" {{ 'required' if section in ['users','matrix','pages','modules','actions','scope','temporary','requests','review','emergency','blocked'] else '' }}>
+            <option value="">— Select an active member —</option>
+            {% for u in users %}<option value="{{u.id}}" data-name="{{u.name or u.username}}" data-role="{{u.role or ''}}" data-branch="{{u.branch or ''}}" data-department="{{u.department or ''}}">{{u.name or u.username}}{% if u.username and u.name and u.username != u.name %} ({{u.username }}){% endif %}{% if u.role %} — {{u.role}}{% endif %}</option>{% endfor %}
+          </select>
+          <div class="member-error">Please select an active member before saving.</div>
+        </label>
+        <div class="member-meta"><strong>Selected Member:</strong> <span id="selectedMemberName">Not selected</span></div>
+        <div class="member-meta"><strong>Role / Scope Context:</strong> <span id="selectedMemberRole">—</span></div>
+      </div>
+      <div class="member-note">Only active, non-locked accounts appear here. Selecting a member automatically supplies the member ID and role to user-specific access sections.</div>
+    </div>
+    <div class="form-grid">
+      {% if section=='roles' %}<label class="field">Role Name<select name="name" id="roleNameSelect" required><option value="">— Select Role Name —</option>{% for r in role_options %}<option value="{{r.get('name','')}}" data-record-id="{{r.get('_id','')}}" data-code="{{r.get('code','')}}" data-level="{{r.get('level','')}}" data-scope="{{r.get('scope','')}}" data-parent="{{r.get('parent','')}}" data-status="{{r.get('status','ACTIVE')}}">{{r.get('name','')}}{% if r.get('code') %} — {{r.get('code')}}{% endif %}</option>{% endfor %}<option value="__NEW__">＋ Create New Role</option></select></label><label class="field">Role Code<input name="code" id="roleCode" placeholder="e.g. BRANCH_OFFICER" required></label><label class="field">Hierarchy Level<input name="level" id="roleLevel" type="number" min="0" max="999" value="50"></label><label class="field">Scope<select name="scope" id="roleScope"><option>GLOBAL</option><option>CENTRAL</option><option>BRANCH</option><option>DEPARTMENT</option><option>OWN</option></select></label><label class="field">Parent Role<select name="parent" id="roleParent"><option value="">— No Parent Role —</option>{% for r in role_options %}<option value="{{r.get('code','')}}">{{r.get('name','')}}{% if r.get('code') %} — {{r.get('code')}}{% endif %}</option>{% endfor %}</select></label><label class="field">Status<select name="status" id="roleStatus"><option>ACTIVE</option><option>DISABLED</option></select></label><input type="hidden" name="record_id" id="roleRecordId" value="" />
+      {% elif section=='permissions' %}<label class="field">Permission Code<input name="code" placeholder="EXPENSE_MANAGEMENT.APPROVE" required></label><label class="field wide">Permission Name<input name="name" placeholder="Expense Management — Approve"></label><label class="field">Module<input name="module" placeholder="Expense Management" required></label><label class="field">Action<select name="action"><option>View</option><option>Create</option><option>Update</option><option>Delete</option><option>Approve</option><option>Reject</option><option>Export</option><option>Import</option><option>Manage</option></select></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>DISABLED</option></select></label>
+      {% elif section=='matrix' %}<label class="field">Role Code<input name="role_code" placeholder="BRANCH_OFFICER" required></label><label class="field wide">Permission Code<input name="permission_code" placeholder="EXPENSE_MANAGEMENT.APPROVE" required></label><label class="field">Access<select name="allow"><option>ALLOW</option><option>DENY</option></select></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>DISABLED</option></select></label>
+      {% elif section=='users' %}<input type="hidden" name="user_id" id="linkedUserId"><label class="field">Role Code<input name="role_code" id="linkedRoleCode" placeholder="MEMBER"></label><label class="field">Scope<select name="scope"><option>OWN</option><option>DEPARTMENT</option><option>BRANCH</option><option>CENTRAL</option><option>GLOBAL</option></select></label><label class="field">Branch<input name="branch" placeholder="Branch name"></label><label class="field">Department<input name="department" placeholder="Department name"></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>RESTRICTED</option><option>BLOCKED</option></select></label>
+      {% elif section=='pages' %}<label class="field">Role Code<input name="role_code" required></label><label class="field wide">Page Path<input name="page" placeholder="/system_super_administrator/reports" required></label><label class="field">Access<select name="allow"><option>ALLOW</option><option>DENY</option></select></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>DISABLED</option></select></label>
+      {% elif section=='modules' %}<label class="field">Role Code<input name="role_code" required></label><label class="field wide">Module<select name="module"><option>Income Management</option><option>Expense Management</option><option>Meal Management</option><option>Savings Management</option><option>Blood Donor Management</option><option>Branch Management</option><option>Reports</option><option>Access Management</option></select></label><label class="field">Access<select name="allow"><option>ALLOW</option><option>DENY</option></select></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>DISABLED</option></select></label>
+      {% elif section=='actions' %}<label class="field">Role Code<input name="role_code" required></label><label class="field">Module<input name="module" required></label><label class="field">Action<select name="action"><option>Create</option><option>Update</option><option>Delete</option><option>Approve</option><option>Reject</option><option>Export</option><option>Import</option><option>Manage</option></select></label><label class="field">Access<select name="allow"><option>ALLOW</option><option>DENY</option></select></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>DISABLED</option></select></label>
+      {% elif section=='scope' %}<label class="field wide">User ID<input name="user_id" placeholder="User/Object ID"></label><label class="field">Role Code<input name="role_code"></label><label class="field">Scope<select name="scope"><option>OWN</option><option>DEPARTMENT</option><option>BRANCH</option><option>CENTRAL</option><option>GLOBAL</option></select></label><label class="field">Branch<input name="branch"></label><label class="field">Department<input name="department"></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>RESTRICTED</option></select></label>
+      {% elif section=='temporary' %}<label class="field wide">User ID<input name="user_id" required></label><label class="field">Role Code<input name="role_code"></label><label class="field">Scope<select name="scope"><option>OWN</option><option>DEPARTMENT</option><option>BRANCH</option><option>CENTRAL</option><option>GLOBAL</option></select></label><label class="field">Start Date<input name="start" type="date" required></label><label class="field">End Date<input name="end" type="date" required></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>EXPIRED</option><option>REVOKED</option></select></label><label class="field full">Reason<textarea name="reason" placeholder="Why is temporary access needed?"></textarea></label>
+      {% elif section=='requests' %}<label class="field wide">Requester<input name="requester" required></label><label class="field">User ID<input name="user_id"></label><label class="field">Requested Role<input name="role_code"></label><label class="field">Requested Scope<select name="scope"><option>OWN</option><option>DEPARTMENT</option><option>BRANCH</option><option>CENTRAL</option><option>GLOBAL</option></select></label><label class="field">Status<select name="status"><option>PENDING</option><option>APPROVED</option><option>REJECTED</option></select></label><label class="field wide">Reason<textarea name="reason"></textarea></label><label class="field wide">Decision / Note<textarea name="note"></textarea></label>
+      {% elif section=='review' %}<label class="field wide">User ID<input name="user_id" required></label><label class="field">Reviewer<input name="reviewer"></label><label class="field">Review Status<select name="status"><option>PENDING</option><option>REVIEWED</option><option>EXCESS_ACCESS</option><option>APPROVED</option><option>REVOKED</option></select></label><label class="field">Next Review<input name="next_review" type="date"></label><label class="field full">Finding / Note<textarea name="reason"></textarea></label>
+      {% elif section=='policy' %}<label class="field">Policy Key<input name="policy_key" placeholder="SESSION_TIMEOUT_MINUTES" required></label><label class="field wide">Policy Name<input name="name"></label><label class="field wide">Value<input name="value" placeholder="30"></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>DISABLED</option></select></label><label class="field full">Description<textarea name="description"></textarea></label>
+      {% elif section=='emergency' %}<label class="field wide">User ID<input name="user_id" required></label><label class="field">Role Code<input name="role_code"></label><label class="field">Scope<select name="scope"><option>GLOBAL</option><option>CENTRAL</option><option>BRANCH</option><option>DEPARTMENT</option></select></label><label class="field">Start Date<input name="start" type="date"></label><label class="field">End Date<input name="end" type="date"></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>EXPIRED</option><option>REVOKED</option></select></label><label class="field full">Reason<textarea name="reason" required></textarea></label>
+      {% elif section=='blocked' %}<label class="field wide">User ID<input name="user_id"></label><label class="field">Role Code<input name="role_code"></label><label class="field">Module<input name="module"></label><label class="field">Page<input name="page"></label><label class="field">Status<select name="status"><option>BLOCKED</option><option>RESTRICTED</option><option>RELEASED</option></select></label><label class="field full">Reason<textarea name="reason"></textarea></label>
+      {% elif section=='settings' %}<label class="field">Setting Key<input name="key" placeholder="ACCESS_REVIEW_DAYS" required></label><label class="field wide">Value<input name="value"></label><label class="field">Status<select name="status"><option>ACTIVE</option><option>DISABLED</option></select></label><label class="field full">Description<textarea name="description"></textarea></label>
+      {% endif %}
+    </div>
+    <div class="actions"><button class="btn green" type="submit">Save {{ labels[section] }}</button><a class="btn gray" href="/system_super_administrator/access-management/?section={{section}}">Reset</a></div>
+  </form>
+  {% else %}<div class="readonly-note">This section is an immutable audit/history view. New entries are created automatically by access-control changes.</div>{% endif %}
+
+  <div class="card"><div class="card-head"><div><h2>{{ labels[section] }} Records</h2><p class="helper">Search and review current records. Sensitive access changes are kept server-side and audited.</p></div></div>
+  <form class="filter" method="get"><input type="hidden" name="section" value="{{section}}"><input name="search" placeholder="Search by role, user, module, page, action, scope..." value="{{request.args.get('search','')}}"><select name="status"><option value="">All Status</option><option>ACTIVE</option><option>DISABLED</option><option>ALLOW</option><option>DENY</option><option>PENDING</option><option>APPROVED</option><option>REJECTED</option><option>BLOCKED</option><option>RESTRICTED</option><option>REVOKED</option></select><button class="btn" type="submit">Search</button></form>
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>Primary</th><th>Role / User</th><th>Module / Page</th><th>Action / Scope</th><th>Status</th><th>Updated</th><th>Control</th></tr></thead><tbody>{% for r in records %}<tr><td>{{loop.index}}</td><td>{{r.get('name') or r.get('code') or r.get('policy_key') or r.get('requester') or r.get('user_id') or '—'}}</td><td>{{r.get('role') or r.get('role_code') or r.get('username') or r.get('reviewer') or '—'}}</td><td>{{r.get('module') or r.get('page') or r.get('permission') or r.get('permission_code') or '—'}}</td><td>{{r.get('action') or r.get('scope') or r.get('allow') or '—'}}</td><td><span class="pill {% if r.get('status') in ['ACTIVE','ALLOW','APPROVED','REVIEWED'] %}green{% elif r.get('status') in ['BLOCKED','DENY','REJECTED','REVOKED'] %}red{% else %}amber{% endif %}">{{r.get('status','—')}}</span></td><td>{{r.get('updated_at') or r.get('created_at') or '—'}}</td><td>{% if section not in ['history','audit'] %}<form class="inline" method="post" onsubmit="return confirm('Delete this access-management record?')"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><input type="hidden" name="section" value="{{section}}"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{r.get('_id','')}}"><button class="danger-link" type="submit">Delete</button></form>{% else %}<span class="pill blue">AUDIT</span>{% endif %}</td></tr>{% else %}<tr><td colspan="8" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endif %}
+</section></div>
+</main></div></div>
+<script>
+(function(){
+  /* Active member selector */
+  const ctx=document.getElementById('memberContext');
+  if(ctx){
+    const select=document.getElementById('targetUserId');
+    const nameEl=document.getElementById('selectedMemberName');
+    const roleEl=document.getElementById('selectedMemberRole');
+    const required=ctx.dataset.required==='1';
+    const form=ctx.closest('form');
+    function sync(){
+      const opt=select && select.options[select.selectedIndex];
+      const selected=select && select.value;
+      if(!selected){
+        nameEl.textContent='Not selected';
+        roleEl.textContent='—';
+        ctx.classList.remove('invalid');
+        return;
+      }
+      nameEl.textContent=opt.dataset.name || opt.textContent;
+      roleEl.textContent=(opt.dataset.role || '—') + (opt.dataset.branch ? ' • '+opt.dataset.branch : '');
+      ctx.classList.remove('invalid');
+      document.querySelectorAll('input[name="user_id"]').forEach(function(el){el.value=selected;});
+      const role=opt.dataset.role || '';
+      document.querySelectorAll('input[name="role_code"]').forEach(function(el){
+        if(!el.value || el.dataset.autofilled==='1'){el.value=role; el.dataset.autofilled='1';}
+      });
+    }
+    if(select){select.addEventListener('change',sync); sync();}
+    if(form){
+      form.addEventListener('submit',function(e){
+        if(required && (!select || !select.value)){
+          e.preventDefault(); ctx.classList.add('invalid'); select && select.focus();
+        }
+      });
+    }
+  }
+
+  /* Role Management: select Role Name -> auto-fill Role Code, Hierarchy, Scope, Parent and Status. */
+  const roleSelect=document.getElementById('roleNameSelect');
+  if(roleSelect){
+    const code=document.getElementById('roleCode');
+    const level=document.getElementById('roleLevel');
+    const scope=document.getElementById('roleScope');
+    const parent=document.getElementById('roleParent');
+    const status=document.getElementById('roleStatus');
+    const record=document.getElementById('roleRecordId');
+    const form=roleSelect.closest('form');
+    const action=form && form.querySelector('input[name="action"]');
+    function syncRole(){
+      const opt=roleSelect.options[roleSelect.selectedIndex];
+      if(!opt || !roleSelect.value || roleSelect.value==='__NEW__'){
+        if(roleSelect.value==='__NEW__'){
+          code.value=''; level.value='50'; scope.value='DEPARTMENT'; parent.value=''; status.value='ACTIVE';
+        }
+        record.value=''; if(action) action.value='create';
+        return;
+      }
+      code.value=opt.dataset.code || '';
+      level.value=opt.dataset.level || '50';
+      scope.value=opt.dataset.scope || 'DEPARTMENT';
+      parent.value=opt.dataset.parent || '';
+      status.value=opt.dataset.status || 'ACTIVE';
+      record.value=opt.dataset.recordId || '';
+      if(action) action.value=record.value ? 'update' : 'create';
+    }
+    roleSelect.addEventListener('change',syncRole);
+    syncRole();
+  }
+
+  /* Auto-fill date fields only. Dates remain fully editable. */
+  function pad(n){return String(n).padStart(2,'0');}
+  function localDate(){
+    const d=new Date();
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  }
+  document.querySelectorAll('input[type="date"]').forEach(function(input){
+    if(!input.value) input.value=localDate();
+    input.title='Auto-filled with today; you can change it.';
+  });
+})();
+</script>
+</body></html>
