@@ -1,88 +1,156 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Meal Management</title><link rel="stylesheet" href="/static/app.css"><style>
-/* Permanent System Super Administrator sidebar. */
-.ssa-shell{min-height:100vh}
-.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.06);display:flex;flex-direction:column;z-index:1000}
-.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #e7edf4;flex:0 0 auto}
-.ssa-brand-title{font-size:16px;font-weight:800;color:#12355e;line-height:1.25}
-.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:5px;letter-spacing:.6px}
-.ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1 1 auto}
-.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}
-.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap}
-.ssa-nav a:hover{background:#eef6ff;color:#0d65bd}
-.ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}
-.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
-.ssa-profile{flex:0 0 auto;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}
-.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}
-.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}
-.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}
-.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
-.ssa-content{margin-left:280px;min-height:100vh}
-.ssa-content>.page{max-width:none;margin:0;padding:24px 24px 32px}
-@media(max-width:700px){.ssa-sidebar{width:280px}.ssa-content{margin-left:280px;min-width:820px}}
-
-.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity strong{font-weight:800}.ssa-page-identity span{color:#73869c;font-size:11px}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form label:has(textarea){grid-column:span 2}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus,.ssa-content .card form textarea:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form textarea{min-height:90px;resize:vertical}.ssa-content .card form input[type=hidden]{display:none}.ssa-content .card form button{grid-column:span 1;border:0;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}.ssa-content .card form button:hover{filter:brightness(.96)}@media(max-width:1000px){.ssa-content .card form{grid-template-columns:repeat(2,minmax(180px,1fr))}}@media(max-width:700px){.ssa-content .card form{grid-template-columns:1fr}.ssa-content .card form label:has(textarea){grid-column:span 1}}
-
-/* v17: keep the sidebar permanently left and keep all working content in the right scroll area. */
-.ssa-sidebar{position:fixed !important;left:0 !important;top:0 !important;bottom:0 !important;width:280px !important;height:100vh !important;overflow:hidden !important;}
-.ssa-nav{overflow-y:auto !important;overflow-x:hidden !important;min-height:0 !important;}
-.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:0 !important;box-sizing:border-box !important;overflow-x:hidden !important;}
-.ssa-content>.page{width:100% !important;max-width:none !important;box-sizing:border-box !important;min-width:0 !important;}
-.ssa-content .card{max-width:100% !important;box-sizing:border-box !important;}
-.ssa-content table{max-width:100%;}
-.table-wrap{width:100%;max-width:100%;overflow-x:auto;box-sizing:border-box;}
-@media(max-width:700px){.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:700px !important;}}
-</style><style>
-.record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(15,23,42,.06)}
-.record-table{width:100%;min-width:900px;border-collapse:collapse;font-size:15px;background:#fff}
-.record-table th{padding:14px 16px;text-align:left;background:#f3f7fb;color:#243447;font-weight:700;border-bottom:2px solid #d9e2ec;white-space:nowrap}
-.record-table td{padding:13px 16px;border-bottom:1px solid #e7edf3;color:#334155;vertical-align:middle;white-space:nowrap}
-.record-table tbody tr:hover{background:#f8fbff}
-.record-table tbody tr:last-child td{border-bottom:0}
-.record-table .empty{text-align:center;padding:28px;color:#64748b}
-.inline-action{margin:0}
-.inline-action .danger{padding:8px 14px;border:0;border-radius:8px;cursor:pointer;font-weight:600}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meal Management</title>
+<link rel="stylesheet" href="/static/app.css">
+<style>
+.ssa-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:280px!important;height:100vh!important;overflow:hidden!important;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.06);display:flex;flex-direction:column;z-index:1000}
+.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #e7edf4;flex:0 0 auto}.ssa-brand-title{font-size:16px;font-weight:800;color:#12355e;line-height:1.25}.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:5px;letter-spacing:.6px}
+.ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1 1 auto}.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap}.ssa-nav a:hover{background:#eef6ff;color:#0d65bd}.ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
+.ssa-profile{flex:0 0 auto;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
+.ssa-content{margin-left:280px!important;width:calc(100% - 280px)!important;min-height:100vh;box-sizing:border-box;overflow-x:hidden}.ssa-content>.page{width:100%!important;max-width:none!important;box-sizing:border-box;padding:24px 24px 32px}
+.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity span{color:#73869c;font-size:11px}
+.ssa-content .card{max-width:100%;box-sizing:border-box}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form button{border:0;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}
+.record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(15,23,42,.06)}.record-table{width:100%;min-width:1100px;border-collapse:collapse;font-size:14px;background:#fff}.record-table th{padding:13px 14px;text-align:left;background:#f3f7fb;color:#243447;font-weight:700;border-bottom:2px solid #d9e2ec;white-space:nowrap}.record-table td{padding:11px 14px;border-bottom:1px solid #e7edf3;color:#334155;vertical-align:middle;white-space:nowrap}.record-table tbody tr:hover{background:#f8fbff}.record-table .empty{text-align:center;padding:28px;color:#64748b}
+.status-on{display:inline-flex;align-items:center;gap:5px;color:#087f46;font-weight:800}.status-off{display:inline-flex;align-items:center;gap:5px;color:#c62828;font-weight:800}.btn{display:inline-block;text-decoration:none;border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;font-size:12px}.btn-update{background:#16834d;color:#fff}.btn-delete{background:#dc3545!important;color:#fff!important;border:1px solid #c82333!important}.btn-delete:hover{background:#b91c2b!important;color:#fff!important}.btn-open{background:#1769aa;color:#fff}.btn-download{background:#5b3aa4;color:#fff}.btn-cancel{background:#64748b;color:#fff}.action-row{display:flex;gap:7px;align-items:center}.month-table td{padding:14px}.month-table{min-width:620px}.month-title{font-weight:800;color:#173a61}.month-actions{display:flex;gap:8px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.back-link{font-weight:700;text-decoration:none;color:#1769aa}.filter-bar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:15px}.filter-bar label{display:flex;flex-direction:column;gap:5px;font-weight:700;color:#203c5d}.filter-bar input,.filter-bar select{padding:9px 10px;border:1px solid #cbd9e8;border-radius:8px}.day-summary{font-weight:800;color:#173a61}
+.edit-form{display:none!important;margin-top:8px;padding:12px;background:#f7fafc;border:1px solid #dce6ef;border-radius:9px}.edit-form.open{display:grid!important;grid-template-columns:repeat(4,minmax(120px,1fr));gap:8px}.edit-form input,.edit-form select{padding:7px;border:1px solid #cbd9e8;border-radius:7px}.edit-form button{padding:7px 10px;border-radius:7px;border:0;font-weight:700;cursor:pointer}
+@media(max-width:1000px){.ssa-content .card form{grid-template-columns:repeat(2,minmax(180px,1fr))}.edit-form.open{grid-template-columns:repeat(2,minmax(120px,1fr))}}
+@media(max-width:700px){.ssa-content{margin-left:280px!important;min-width:700px}.ssa-content .card form{grid-template-columns:1fr}.edit-form.open{grid-template-columns:1fr}}
 </style>
-</head><body><div class="ssa-shell"><aside class="ssa-sidebar">
+</head>
+<body>
+<div class="ssa-shell">
+<aside class="ssa-sidebar">
   <div class="ssa-brand"><div class="ssa-brand-title">SYSTEM SUPER ADMINISTRATOR</div><div class="ssa-brand-scope">GLOBAL / HIGHEST AUTHORITY</div></div>
   <nav class="ssa-nav">
     <div class="ssa-nav-group">Main</div>
-    <a class="" href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
-    <a class="" href="/system_super_administrator/income-management"><span class="ssa-ico">↗</span>Income Management</a>
-    <a class="" href="/system_super_administrator/expense-management"><span class="ssa-ico">↘</span>Expense Management</a>
+    <a href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
+    <a href="/system_super_administrator/income-management"><span class="ssa-ico">↗</span>Income Management</a>
+    <a href="/system_super_administrator/expense-management"><span class="ssa-ico">↘</span>Expense Management</a>
     <a class="active" href="/system_super_administrator/meal-management"><span class="ssa-ico">◉</span>Meal Management</a>
-    <a class="" href="/system_super_administrator/savings-management"><span class="ssa-ico">▣</span>Savings Management</a>
-    <a class="" href="/system_super_administrator/information-directory"><span class="ssa-ico">▤</span>Information Directory</a>
-    <a class="" href="/system_super_administrator/blood-donor-management"><span class="ssa-ico">🩸</span>Blood Donor Management</a>
+    <a href="/system_super_administrator/savings-management"><span class="ssa-ico">▣</span>Savings Management</a>
+    <a href="/system_super_administrator/information-directory"><span class="ssa-ico">▤</span>Information Directory</a>
+    <a href="/system_super_administrator/blood-donor-management"><span class="ssa-ico">🩸</span>Blood Donor Management</a>
     <div class="ssa-nav-group">System</div>
-    <a class="" href="/system_super_administrator/system-overview"><span class="ssa-ico">◫</span>System Overview</a>
-    <a class="" href="/system_super_administrator/branch-management"><span class="ssa-ico">▥</span>Branch Management</a>
-    <a class="" href="/system_super_administrator/member-management"><span class="ssa-ico">♟</span>Member Management</a>
-    <a class="" href="/system_super_administrator/department-management"><span class="ssa-ico">▦</span>Department Management</a>
-    <a class="" href="/system_super_administrator/financial-management"><span class="ssa-ico">৳</span>Financial Management</a>
-    <a class="" href="/system_super_administrator/reports"><span class="ssa-ico">▥</span>Reports</a>
-    <a class="" href="/system_super_administrator/access-management"><span class="ssa-ico">⚿</span>Access Management</a>
-    <a class="" href="/system_super_administrator/member-audit"><span class="ssa-ico">◌</span>Member Audit</a>
-    <a class="" href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
-    <a class="" href="/system_super_administrator/import"><span class="ssa-ico">⇩</span>Import</a>
-    <a class="" href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
-    <a class="" href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
+    <a href="/system_super_administrator/system-overview"><span class="ssa-ico">◫</span>System Overview</a>
+    <a href="/system_super_administrator/branch-management"><span class="ssa-ico">▥</span>Branch Management</a>
+    <a href="/system_super_administrator/member-management"><span class="ssa-ico">♟</span>Member Management</a>
+    <a href="/system_super_administrator/department-management"><span class="ssa-ico">▦</span>Department Management</a>
+    <a href="/system_super_administrator/financial-management"><span class="ssa-ico">৳</span>Financial Management</a>
+    <a href="/system_super_administrator/reports"><span class="ssa-ico">▥</span>Reports</a>
+    <a href="/system_super_administrator/access-management"><span class="ssa-ico">⚿</span>Access Management</a>
+    <a href="/system_super_administrator/member-audit"><span class="ssa-ico">◌</span>Member Audit</a>
+    <a href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
+    <a href="/system_super_administrator/import"><span class="ssa-ico">⇩</span>Import</a>
+    <a href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
+    <a href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
   </nav>
   <div class="ssa-profile">
     <a class="ssa-profile-link" href="/system_super_administrator/profile"><span class="ssa-avatar">SA</span><span><strong>{{ session.get('username','blue') }}</strong><small>System Super Administrator</small></span></a>
     <a class="ssa-logout" href="/logout">Logout</a>
   </div>
-</aside><div class="ssa-content"><main class="page"><header><h1>Meal Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}<section class="card"><h2>Entry</h2><form method="post"><label>Member<select name="member_name"><option value="">Select Member</option>{% for x in options.members %}<option>{{ x }}</option>{% endfor %}</select></label><label>Branch Name<select name="branch_name"><option value="">Select Branch</option>{% for x in options.branches %}<option>{{ x }}</option>{% endfor %}</select></label><label>Month<select name="month"><option value="">Select Month</option><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select></label><label>Date<input name="date"></label><label>Quantity<input name="quantity"></label><label>Meal Type<select name="type"><option value="">Select Meal Type</option><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Extra</option><option>Meal</option></select></label><label>Meal Charge<input name="meal_charge"></label><label>Rice Charge<input name="rice_charge"></label><label>Note<input name="note"></label><input type="hidden" name="action" value="save"><button>Save</button></form></section><section class="card"><h2>Records</h2><form method="get"><input name="search" placeholder="Search" value="{{ request.args.get('search','') }}"><button>Search</button></form><div class="record-table-wrap"><table class="record-table"><thead><tr><th>SL</th><th>Date</th><th>Time</th><th>Member</th><th>Branch</th><th>Meal Type</th><th>Meal</th><th>Meal Charge</th><th>Rice Charge</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td>{{ r.get("date","") }}</td><td>{{ r.get("time","") }}</td><td>{{ r.get("member","") }}</td><td>{{ r.get("branch","") }}</td><td>{{ r.get("meal_type","") }}</td><td>{{ r.get("meal","") }}</td><td>{{ r.get("meal_charge","") }}</td><td>{{ r.get("rice_charge","") }}</td><td><form method="post" class="inline-action"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><button class="danger" type="submit">Delete</button></form></td></tr>{% else %}<tr><td colspan="10" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div></section></main></div></div>
+</aside>
+
+<div class="ssa-content"><main class="page">
+<header style="display:flex;align-items:center;gap:15px"><h1>Meal Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>
+{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}
+
+{% if view == 'month' %}
+<section class="card">
+  <div class="section-head">
+    <div><h2 style="margin-bottom:5px">{{ month_label }}{% if member %} → {{ member }}{% endif %} → Member-wise Meal Record</h2><div class="day-summary">ON days show all member meal records. OFF days show only OFF.</div></div>
+    <div><a class="back-link" href="{{ url_for('system_super_administrator_meal_management_bp.page') }}">← Meal Status List</a> <a class="btn btn-download" href="{{ url_for('system_super_administrator_meal_management_bp.download_month', month=month_key) }}{% if member %}?member={{ member|urlencode }}{% endif %}">↓ Download</a></div>
+  </div>
+  <form class="filter-bar" method="get">
+    <input type="hidden" name="month" value="{{ month_key }}">
+    <label>Search<input name="search" value="{{ search }}" placeholder="Member / Branch / Meal Type"></label>
+    <button class="btn btn-open" type="submit">Search</button>
+  </form>
+  <div class="record-table-wrap">
+  <table class="record-table">
+    <thead><tr><th>SL</th><th>Date</th><th>Day</th><th>Member</th><th>Branch</th><th>Meal Type</th><th>Meal</th><th>Meal Charge</th><th>Rice Charge</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for row in month_rows %}
+      {% if row.status == 'OFF' %}
+      <tr><td>{{ loop.index }}</td><td>{{ row.date }}</td><td>{{ row.day }}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="status-off">🔴 OFF</span></td><td>—</td></tr>
+      {% else %}
+      {% for r in row.records %}
+      <tr>
+        <td>{{ loop.index }}</td><td>{{ row.date }}</td><td>{{ row.day }}</td><td>{{ r.member }}</td><td>{{ r.branch }}</td><td>{{ r.meal_type }}</td><td>{{ r.meal }}</td><td>{{ r.meal_charge }}</td><td>{{ r.rice_charge }}</td><td><span class="status-on">🟢 ON</span></td>
+        <td><div class="action-row"><button class="btn btn-update" type="button" onclick="toggleEdit('{{ r.id }}')">Update</button>
+        <form method="post" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this meal record?')"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.id }}"><input type="hidden" name="return_month" value="{{ month_key }}"><button class="btn btn-delete" type="submit">Delete</button></form></div>
+        <form id="edit-{{ r.id }}" class="edit-form" style="display:none!important" method="post"><input type="hidden" name="action" value="update"><input type="hidden" name="record_id" value="{{ r.id }}"><input type="hidden" name="return_month" value="{{ month_key }}">
+          <input name="date" value="{{ r.date }}"><input name="member_name" value="{{ r.member }}"><input name="branch_name" value="{{ r.branch }}"><select name="type"><option {% if r.meal_type=='Breakfast' %}selected{% endif %}>Breakfast</option><option {% if r.meal_type=='Lunch' %}selected{% endif %}>Lunch</option><option {% if r.meal_type=='Dinner' %}selected{% endif %}>Dinner</option><option {% if r.meal_type=='Extra' %}selected{% endif %}>Extra</option><option {% if r.meal_type=='Meal' %}selected{% endif %}>Meal</option></select><input name="quantity" value="{{ r.meal }}"><input name="meal_charge" value="{{ r.meal_charge }}"><input name="rice_charge" value="{{ r.rice_charge }}"><input name="note" value="{{ r.note }}"><button class="btn btn-update" type="submit">Save Update</button>
+        </form></td>
+      </tr>
+      {% endfor %}
+      {% endif %}
+    {% else %}
+      <tr><td colspan="11" class="empty">No records found for this month.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</section>
+
+{% else %}
+<section class="card">
+  <h2>Meal Entry</h2>
+  <form method="post">
+    <label>Member
+      <select name="member_name"><option value="">Select Member</option>{% for x in options.members %}<option>{{ x }}</option>{% endfor %}</select>
+    </label>
+    <label>Branch Name
+      <select name="branch_name"><option value="">Select Branch</option>{% for x in options.branches %}<option>{{ x }}</option>{% endfor %}</select>
+    </label>
+    <label>Month
+      <select name="month"><option value="">Select Month</option>{% for x in month_names %}<option>{{ x }}</option>{% endfor %}</select>
+    </label>
+    <label>Date<input name="date" type="date" value="{{ today }}"></label>
+    <label>Quantity<input name="quantity" type="number" min="0" step="1"></label>
+    <label>Meal Type
+      <select name="type"><option value="">Select Meal Type</option><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Extra</option><option>Meal</option></select>
+    </label>
+    <label>Meal Charge<input name="meal_charge" type="number" min="0" step="0.01"></label>
+    <label>Rice Charge<input name="rice_charge" type="number" min="0" step="0.01"></label>
+    <label>Note<input name="note"></label>
+    <input type="hidden" name="action" value="save"><button>Save</button>
+  </form>
+</section>
+
+<section class="card">
+  <div class="section-head">
+    <div><h2>📋 Meal Status List</h2><div>Each Member and each Month + Year is shown separately.</div></div>
+  </div>
+  <div class="record-table-wrap">
+    <table class="record-table month-table">
+      <thead><tr><th>SL</th><th>Member</th><th>Mobile</th><th>Month + Year</th><th>Action</th></tr></thead>
+      <tbody>
+      {% for m in member_rows %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td class="month-title">{{ m.member }}</td>
+          <td>{{ m.mobile }}</td>
+          <td><strong>{{ m.label }}</strong></td>
+          <td>
+            <div class="month-actions">
+              <a class="btn btn-open" href="{{ url_for('system_super_administrator_meal_management_bp.page', month=m.month, member=m.member) }}">Open ↓</a>
+              <a class="btn btn-download" href="{{ url_for('system_super_administrator_meal_management_bp.download_month', month=m.month) }}?member={{ m.member|urlencode }}">Download</a>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5" class="empty">No member meal records found.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+</main></div></div>
 <script>
-(function(){
-  function pad(n){return String(n).padStart(2,"0");}
-  function setCurrent(){
-    const now=new Date();
-    const date=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
-    const time=pad(now.getHours())+":"+pad(now.getMinutes());
-    document.querySelectorAll('input[name="date"]').forEach(function(el){ if(!el.value) el.value=date; });
-    document.querySelectorAll('input[name="time"]').forEach(function(el){ if(!el.value) el.value=time; });
-  }
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",setCurrent); else setCurrent();
-})();
+function toggleEdit(id){var x=document.getElementById('edit-'+id); if(!x)return; var isOpen=x.classList.toggle('open'); x.style.setProperty('display', isOpen ? 'grid' : 'none', 'important'); if(isOpen){var first=x.querySelector('input,select'); if(first) first.focus();}}
 </script>
 </body></html>
