@@ -8,50 +8,95 @@ BASE = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location(f"{ROLE}_{PAGE}_services", BASE / "services.py")
 service = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(service)
-bp = Blueprint("system_super_administrator_member_management_bp", __name__, url_prefix="/system_super_administrator/member-management")
+
+bp = Blueprint(
+    "system_super_administrator_member_management_bp",
+    __name__,
+    url_prefix="/system_super_administrator/member-management",
+)
+
 
 def _context():
-    return {"role": session.get("role"), "user_id": session.get("user_id"), "username": session.get("username"), "branch_id": session.get("branch_id"), "branch_name": session.get("branch_name")}
+    return {
+        "role": session.get("role"),
+        "user_id": session.get("user_id"),
+        "username": session.get("username"),
+        "branch_id": session.get("branch_id"),
+        "branch_name": session.get("branch_name"),
+    }
 
-def _form_options():
-    from DATABASE.mongodb import get_database
-    db = get_database()
-    branch_names = set()
-    for collection_name in ("branches", "branch_management"):
-        for x in db[collection_name].find({}):
-            value = str(x.get("branch_name") or x.get("name") or x.get("branch") or "").strip()
-            if value:
-                branch_names.add(value)
-    branches = sorted(branch_names, key=str.casefold)
-    departments=sorted({str(x.get("department_name") or x.get("name") or "").strip() for x in db["departments"].find({}) if str(x.get("department_name") or x.get("name") or "").strip()})
-    return {'branches': branches, 'departments': departments}
 
-@bp.route("/", methods=["GET", "POST"])
+def _authorized():
+    return session.get("authenticated") is True and session.get("role") == ROLE
+
+
+@bp.route("/", methods=["GET", "POST"], strict_slashes=False)
 def page():
-    if session.get("authenticated") is not True or session.get("role") != ROLE:
+    if not _authorized():
         return redirect(url_for("login"))
+
     message = None
     error = None
-    records = []
-    try:
-        options = _form_options()
-    except Exception as exc:
-        options = {'branches': [], 'departments': []}
-        error = f"Option loading error: {exc}"
     try:
         if request.method == "POST":
-            action = request.form.get("action", "save")
-            data = dict(request.form)
+            action = request.form.get("action", "").strip()
+            record_id = request.form.get("record_id", "").strip()
             if action == "delete":
-                service.delete_record(_context(), request.form.get("record_id", ""))
-                message = "Deleted successfully."
+                service.delete_record(_context(), record_id)
+                message = "Account permanently deleted."
+            elif action == "deactivate":
+                service.deactivate_record(_context(), record_id)
+                message = "Account marked Inactive."
+            elif action == "activate":
+                service.activate_record(_context(), record_id)
+                message = "Account marked Active."
             elif action == "update":
-                service.update_record(_context(), request.form.get("record_id", ""), data)
-                message = "Updated successfully."
+                service.update_record(_context(), record_id, request.form)
+                message = "Account updated successfully."
             else:
-                service.create_record(_context(), data)
-                message = "Saved successfully."
-        records = service.list_records(_context(), request.args.to_dict())
+                raise ValueError("Unsupported action.")
+
+        service.ensure_member_ids(_context())
+        branches = service.list_branches(_context())
+        filters = {
+            "branch": request.args.get("branch", "").strip(),
+            "search": request.args.get("search", "").strip(),
+            "role": request.args.get("role", "").strip(),
+            "status": request.args.get("status", "").strip(),
+        }
+        records = service.list_records(_context(), filters) if filters["branch"] else []
+        edit_id = request.args.get("edit", "").strip()
+        edit_record = service.get_record(_context(), edit_id) if edit_id else None
+        view_id = request.args.get("view", "").strip()
+        view_record = service.get_record(_context(), view_id) if view_id else None
     except Exception as exc:
+        branches = locals().get("branches", [])
+        filters = locals().get("filters", {
+            "branch": request.args.get("branch", "").strip(),
+            "search": request.args.get("search", "").strip(),
+            "role": request.args.get("role", "").strip(),
+            "status": request.args.get("status", "").strip(),
+        })
+        records = locals().get("records", [])
+        edit_record = locals().get("edit_record")
+        view_record = locals().get("view_record")
         error = str(exc)
-    return render_template("SYSTEM_SUPER_ADMINISTRATOR/member_management/member_management.html", records=records, message=message, error=error, session=session, options=options)
+
+    roles = [
+        "SYSTEM_SUPER_ADMINISTRATOR", "DISTRICT_DIRECTORY", "BRANCH_OFFICER",
+        "ACCOUNT_OFFICER", "MEAL_MANAGER", "BLOOD_DONOR", "OPERATOR", "MEMBER",
+    ]
+    statuses = ["Active", "Inactive", "Suspended"]
+    return render_template(
+        "SYSTEM_SUPER_ADMINISTRATOR/member_management/member_management.html",
+        records=records,
+        branches=branches,
+        filters=filters,
+        edit_record=edit_record,
+        view_record=view_record,
+        roles=roles,
+        statuses=statuses,
+        message=message,
+        error=error,
+        session=session,
+    )
