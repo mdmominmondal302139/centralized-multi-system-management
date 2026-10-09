@@ -3,6 +3,7 @@ import re
 from pymongo import ASCENDING, ReturnDocument
 
 from bson import ObjectId
+from werkzeug.security import generate_password_hash
 from DATABASE.mongodb import get_database, clean
 
 ROLE = "SYSTEM_SUPER_ADMINISTRATOR"
@@ -155,14 +156,7 @@ def _validate_member_id(users, record_id, data):
 def list_branches(context):
     _guard(context)
     db = get_database()
-    names = set()
-    for collection_name in ("branches", "branch_management"):
-        if collection_name not in db.list_collection_names():
-            continue
-        for branch in db[collection_name].find({}):
-            name = _text(branch.get("branch_name") or branch.get("name") or branch.get("branch"))
-            if name:
-                names.add(name)
+    names = set(list_active_branches(context))
     # Include branch labels already used on accounts, so legacy account records
     # remain filterable even if the branch collection uses a different schema.
     for user in db[COLLECTION].find({}, {"branch": 1, "branch_name": 1, "branchName": 1, "branch_label": 1}):
@@ -326,3 +320,138 @@ def delete_record(context, record_id):
     if not result.deleted_count:
         raise ValueError("The selected account was not found.")
     return result.deleted_count
+
+
+def list_active_branches(context):
+    """List only active branch records from supported branch collections."""
+    _guard(context)
+    db = get_database()
+    found = {}
+    for collection_name in ("branches", "branch_management"):
+        if collection_name not in db.list_collection_names():
+            continue
+        for branch in db[collection_name].find({}):
+            name = _text(branch.get("branch_name") or branch.get("name") or branch.get("branch"))
+            if not name:
+                continue
+            status = _text(branch.get("status", "Active")).casefold()
+            active_flag = branch.get("is_active", branch.get("active", None))
+            if status not in ("active", "enabled", "approved", ""):
+                continue
+            if active_flag is False or (isinstance(active_flag, str) and active_flag.strip().casefold() in ("false", "0", "inactive", "disabled", "no")):
+                continue
+            found[name.casefold()] = name
+    return sorted(found.values(), key=str.casefold)
+
+
+def list_department_roles(context):
+    """Departments are populated from roles already present in the database."""
+    _guard(context)
+    db = get_database()
+    role_names = set()
+    if COLLECTION in db.list_collection_names():
+        for doc in db[COLLECTION].find({"role": {"$exists": True, "$nin": ["", None]}}, {"role": 1}):
+            role = _text(doc.get("role"))
+            if role:
+                role_names.add(role.upper())
+    # Include known system roles so a new installation can still show its role choices.
+    role_names.update({
+        "SYSTEM_SUPER_ADMINISTRATOR", "DISTRICT_DIRECTORY", "BRANCH_OFFICER",
+        "ACCOUNT_OFFICER", "MEAL_MANAGER", "BLOOD_DONOR", "OPERATOR", "MEMBER",
+    })
+    return sorted(role_names, key=str.casefold)
+
+
+def create_member(context, data, files=None):
+    """Create a regular MEMBER account; selected database role is stored as department."""
+    _guard(context)
+    data = dict(data or {})
+    full_name = _text(data.get("full_name"))
+    username = _text(data.get("username"))
+    phone = _text(data.get("phone"))
+    password = _text(data.get("password"))
+    confirm = _text(data.get("confirm_password"))
+    branch_name = _text(data.get("branch_name"))
+    department = _text(data.get("department"))
+    joining_date = _text(data.get("joining_date"))
+    member_id = _text(data.get("member_id"))
+    if not all((full_name, username, phone, branch_name, joining_date, password, confirm)):
+        raise ValueError("Please complete all required fields.")
+    if password != confirm:
+        raise ValueError("Password and Confirm Password do not match.")
+    if len(password) < 8:
+        raise ValueError("Password must contain at least 8 characters.")
+    if not re.fullmatch(r"[A-Za-z0-9_.-]{3,40}", username):
+        raise ValueError("Username must be 3–40 characters and may contain letters, numbers, dots, underscores or hyphens.")
+    if not re.fullmatch(r"01\d{9}", phone):
+        raise ValueError("Enter a valid Bangladesh mobile number (01XXXXXXXXX).")
+    if data.get("email"):
+        email = _text(data.get("email")).lower()
+    else:
+        email = ""
+    db = get_database()
+    users = db[COLLECTION]
+    if users.find_one({"username": {"$regex": "^" + re.escape(username) + "$", "$options": "i"}}, {"_id": 1}):
+        raise ValueError("This username is already in use.")
+    if email and users.find_one({"email": {"$regex": "^" + re.escape(email) + "$", "$options": "i"}}, {"_id": 1}):
+        raise ValueError("This email address is already in use.")
+    # Validate branch against the active branch list, not user-submitted arbitrary values.
+    active_branches = list_active_branches(context)
+    if branch_name.casefold() not in {b.casefold() for b in active_branches}:
+        raise ValueError("Please select an active branch.")
+    if department and department.upper() not in list_department_roles(context):
+        raise ValueError("Please select a valid department/role.")
+    if member_id:
+        if users.find_one({"member_id": member_id}, {"_id": 1}):
+            raise ValueError(f"Member ID '{member_id}' is already in use.")
+        member_id_mode = "manual"
+    else:
+        member_id = _next_member_id(users)
+        member_id_mode = "automatic"
+    now = datetime.now(timezone.utc)
+    password_hash = generate_password_hash(password)
+    document = {
+        "full_name": full_name,
+        "name": full_name,
+        "username": username,
+        "email": email,
+        "phone": phone,
+        "gender": _text(data.get("gender")),
+        "date_of_birth": _text(data.get("date_of_birth")),
+        "blood_group": _text(data.get("blood_group")),
+        "present_address": _text(data.get("present_address")),
+        "permanent_address": _text(data.get("permanent_address")),
+        "branch": branch_name,
+        "branch_name": branch_name,
+        "department": department,
+        "joining_date": joining_date,
+        "status": _text(data.get("status")) if _text(data.get("status")) in ("Active", "Inactive") else "Active",
+        "role": "MEMBER",
+        "member_id": member_id,
+        "member_id_mode": member_id_mode,
+        "password": password_hash,
+        "password_hash": password_hash,
+        "created_at": now,
+        "updated_at": now,
+    }
+    photo = (files or {}).get("profile_photo") if files else None
+    if photo and getattr(photo, "filename", ""):
+        from werkzeug.utils import secure_filename
+        filename = secure_filename(photo.filename)
+        content_type = _text(getattr(photo, "mimetype", "")).lower()
+        if content_type not in ("image/jpeg", "image/png") or not filename.lower().endswith((".jpg", ".jpeg", ".png")):
+            raise ValueError("Profile photo must be a JPG or PNG image.")
+        photo_bytes = photo.read(2 * 1024 * 1024 + 1)
+        if len(photo_bytes) > 2 * 1024 * 1024:
+            raise ValueError("Profile photo must be 2 MB or smaller.")
+        if photo_bytes:
+            document["profile_photo"] = photo_bytes
+            document["profile_photo_filename"] = filename
+            document["profile_photo_mime"] = content_type
+    try:
+        users.insert_one(document)
+    except Exception as exc:
+        if "duplicate key" in str(exc).lower() or getattr(exc, "code", None) == 11000:
+            raise ValueError("Member ID, username or email is already in use.") from exc
+        raise
+    return member_id
