@@ -41,7 +41,10 @@ def page():
         if request.method == "POST":
             action = request.form.get("action", "").strip()
             record_id = request.form.get("record_id", "").strip()
-            if action == "delete":
+            if action == "create_member":
+                created_member_id = service.create_member(_context(), request.form, request.files)
+                message = f"Member created successfully. Member ID: {created_member_id}"
+            elif action == "delete":
                 service.delete_record(_context(), record_id)
                 message = "Account permanently deleted."
             elif action == "deactivate":
@@ -58,6 +61,8 @@ def page():
 
         service.ensure_member_ids(_context())
         branches = service.list_branches(_context())
+        active_branches = service.list_active_branches(_context())
+        department_roles = service.list_department_roles(_context())
         filters = {
             "branch": request.args.get("branch", "").strip(),
             "search": request.args.get("search", "").strip(),
@@ -71,6 +76,8 @@ def page():
         view_record = service.get_record(_context(), view_id) if view_id else None
     except Exception as exc:
         branches = locals().get("branches", [])
+        active_branches = locals().get("active_branches", [])
+        department_roles = locals().get("department_roles", [])
         filters = locals().get("filters", {
             "branch": request.args.get("branch", "").strip(),
             "search": request.args.get("search", "").strip(),
@@ -96,6 +103,9 @@ def page():
         view_record=view_record,
         roles=roles,
         statuses=statuses,
+        active_branches=active_branches,
+        department_roles=department_roles,
+        create_open=request.args.get("create", "").strip() == "1" or (request.method == "POST" and request.form.get("action") == "create_member" and bool(error)),
         message=message,
         error=error,
         session=session,
