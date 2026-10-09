@@ -1,63 +1,403 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Profile</title><link rel="stylesheet" href="/static/app.css"><style>
-/* Permanent System Super Administrator sidebar. */
-.ssa-shell{min-height:100vh}
-.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.06);display:flex;flex-direction:column;z-index:1000}
-.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #e7edf4;flex:0 0 auto}
-.ssa-brand-title{font-size:16px;font-weight:800;color:#12355e;line-height:1.25}
-.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:5px;letter-spacing:.6px}
-.ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1 1 auto}
-.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}
-.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap}
-.ssa-nav a:hover{background:#eef6ff;color:#0d65bd}
-.ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}
-.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
-.ssa-profile{flex:0 0 auto;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}
-.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}
-.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}
-.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}
-.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
-.ssa-content{margin-left:280px;min-height:100vh}
-.ssa-content>.page{max-width:none;margin:0;padding:24px 24px 32px}
-@media(max-width:700px){.ssa-sidebar{width:280px}.ssa-content{margin-left:280px;min-width:820px}}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profile | System Super Administrator</title>
+<link rel="stylesheet" href="/static/app.css">
+<style>
+:root{--ink:#102a43;--muted:#718096;--line:#dce6f0;--soft:#f5f8fc;--blue:#1269c7;--blue2:#0b4f9b;--green:#138a59;--red:#d83b4b;--gold:#b7791f}
+*{box-sizing:border-box}.profile-shell{min-height:100vh;background:#f4f7fb}.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:1000}.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #edf1f6}.ssa-brand-title{font-size:15px;font-weight:600;color:#24486d;line-height:1.35}.ssa-brand-scope{font-size:11px;color:var(--muted);margin-top:5px}.ssa-nav{padding:12px 10px;overflow-y:auto;flex:1}.ssa-nav-group{font-size:11px;color:#8997a8;padding:10px 9px 6px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#40546b;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:400;white-space:nowrap}.ssa-nav a:hover{background:#f0f7ff;color:#176bb7}.ssa-nav a.active{background:var(--blue-soft);color:#176bb7}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
+/* Bright Light Administrator Profile Dropdown */
+.ssa-profile {
+  position: relative;
+  flex-shrink: 0;
+  border-top: 1px solid #e4ecf7;
+  padding: 12px;
+  background: #ffffff;
+}
 
-.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity strong{font-weight:800}.ssa-page-identity span{color:#73869c;font-size:11px}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form label:has(textarea){grid-column:span 2}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus,.ssa-content .card form textarea:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form textarea{min-height:90px;resize:vertical}.ssa-content .card form input[type=hidden]{display:none}.ssa-content .card form button{grid-column:span 1;border:0;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}.ssa-content .card form button:hover{filter:brightness(.96)}@media(max-width:1000px){.ssa-content .card form{grid-template-columns:repeat(2,minmax(180px,1fr))}}@media(max-width:700px){.ssa-content .card form{grid-template-columns:1fr}.ssa-content .card form label:has(textarea){grid-column:span 1}}
+.ssa-profile-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e3edfa;
+  border-radius: 11px;
+  background: #f4f8ff;
+  color: #25364b;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+}
 
-/* v17: keep the sidebar permanently left and keep all working content in the right scroll area. */
-.ssa-sidebar{position:fixed !important;left:0 !important;top:0 !important;bottom:0 !important;width:280px !important;height:100vh !important;overflow:hidden !important;}
-.ssa-nav{overflow-y:auto !important;overflow-x:hidden !important;min-height:0 !important;}
-.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:0 !important;box-sizing:border-box !important;overflow-x:hidden !important;}
-.ssa-content>.page{width:100% !important;max-width:none !important;box-sizing:border-box !important;min-width:0 !important;}
-.ssa-content .card{max-width:100% !important;box-sizing:border-box !important;}
-.ssa-content table{max-width:100%;}
-.table-wrap{width:100%;max-width:100%;overflow-x:auto;box-sizing:border-box;}
-@media(max-width:700px){.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:700px !important;}}
-</style></head><body><div class="ssa-shell"><aside class="ssa-sidebar">
-  <div class="ssa-brand"><div class="ssa-brand-title">SYSTEM SUPER ADMINISTRATOR</div><div class="ssa-brand-scope">GLOBAL / HIGHEST AUTHORITY</div></div>
+.ssa-profile-toggle:hover,
+.ssa-profile.is-open .ssa-profile-toggle {
+  background: #eaf3ff;
+  border-color: #c7defb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, .07);
+}
+
+.ssa-avatar {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: #dceaff;
+  color: #2166c2;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+
+.ssa-profile-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ssa-profile-info strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: #25364b;
+  line-height: 1.4;
+}
+
+.ssa-profile-info small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 400;
+  color: #718096;
+  line-height: 1.4;
+}
+
+.ssa-profile-chevron {
+  width: 16px;
+  min-width: 16px;
+  color: #718096;
+  font-size: 13px;
+  text-align: center;
+  transition: transform .2s;
+}
+
+.ssa-profile.is-open .ssa-profile-chevron {
+  transform: rotate(180deg);
+}
+
+.ssa-profile-dropdown {
+  display: none;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(100% + 8px);
+  margin-top: 0;
+  padding: 5px;
+  border: 1px solid #e5edf7;
+  border-radius: 11px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(37, 65, 100, .09);
+}
+
+.ssa-profile.is-open .ssa-profile-dropdown {
+  display: block;
+  animation: ssaDropdownIn .16s ease-out;
+}
+
+.ssa-profile-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 11px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background .15s;
+}
+
+.ssa-profile-dropdown .ssa-profile-action {
+  color: #2869bd;
+}
+
+.ssa-profile-dropdown .ssa-profile-action:hover {
+  background: #edf5ff;
+}
+
+.ssa-profile-dropdown .ssa-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 3px 0 0;
+  padding: 10px 11px;
+  background: #fff3f3;
+  color: #d43d48;
+  text-align: left;
+  border-radius: 8px;
+}
+
+.ssa-profile-dropdown .ssa-logout:hover {
+  background: #ffe5e5;
+}
+
+.ssa-profile-dropdown .ssa-menu-icon {
+  width: 18px;
+  min-width: 18px;
+  text-align: center;
+  font-size: 15px;
+}
+
+@keyframes ssaDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ssa-profile-toggle:focus-visible,
+.ssa-profile-dropdown a:focus-visible {
+  outline: 2px solid #75aef4;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ssa-profile-toggle,
+  .ssa-profile-chevron {
+    transition: none;
+  }
+
+  .ssa-profile.is-open .ssa-profile-dropdown {
+    animation: none;
+  }
+}
+
+/* Profile footer typography: regular weight and clear light-blue tones */
+.ssa-profile-info strong{font-size:13px!important;font-weight:400!important;color:#2878c7!important;line-height:1.4}
+.ssa-profile-info small{font-size:10px!important;font-weight:400!important;color:#8aa6c5!important;line-height:1.4}
+.ssa-profile-toggle{font-weight:400!important}
+.ssa-profile-dropdown a{font-weight:400!important;color:#2878c7}
+.ssa-content{margin-left:260px!important;width:calc(100% - 260px)!important;min-height:100vh;overflow-x:hidden}.profile-page{width:100%;padding:28px 32px 48px}.topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:22px}.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--blue);font-weight:900;text-transform:uppercase}.page-title{margin:5px 0 0;font-size:32px;line-height:1;font-weight:950;color:var(--ink);letter-spacing:-.7px}.overview{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.4px}.notice{padding:12px 15px;border-radius:10px;margin:0 0 16px;font-weight:800}.ok{background:#e9f8f1;color:#087447;border:1px solid #bde9d4}.err{background:#fff0f1;color:#b42333;border:1px solid #f2c4ca}.hero{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 32px rgba(16,42,67,.07);padding:28px;display:flex;align-items:center;justify-content:space-between;gap:24px}.identity{display:flex;align-items:center;gap:20px;min-width:0}.avatar{width:94px;height:94px;min-width:94px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#0b4f9b,#248be4);color:#fff;font-size:28px;font-weight:950;box-shadow:0 8px 22px rgba(18,105,199,.28);border:5px solid #edf6ff}.identity h2{margin:0;color:var(--ink);font-size:28px;line-height:1.1;font-weight:950;text-transform:uppercase}.username{margin:7px 0 12px;color:#718096;font-weight:700}.badges{display:flex;gap:8px;flex-wrap:wrap}.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.2px}.badge.active{background:#e8f8f0;color:#087447}.badge.role{background:#e9f2ff;color:#0757a1}.dot{width:7px;height:7px;border-radius:50%;background:#17a765}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:900;cursor:pointer;font-size:12px;transition:.18s}.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--blue);color:#fff}.btn-dark{background:#12263f;color:#fff}.btn-light{background:#f2f6fa;color:#17324e;border:1px solid #d9e4ef}.btn-danger{background:#fff0f1;color:#b42333;border:1px solid #f0c4ca}.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(16,42,67,.045);overflow:hidden}.card-head{padding:17px 20px;border-bottom:1px solid #e6edf4;background:linear-gradient(180deg,#fff,#fbfdff)}.card-head h3{margin:0;color:var(--ink);font-size:14px;font-weight:950;letter-spacing:.3px;text-transform:uppercase}.card-head p{margin:4px 0 0;color:var(--muted);font-size:11px}.info-grid{display:grid;grid-template-columns:1fr 1fr;padding:4px 20px 14px}.info-item{padding:15px 10px 13px 0;border-bottom:1px solid #edf2f7}.info-label{font-size:10px;color:#8291a3;font-weight:900;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}.info-value{font-size:14px;color:var(--ink);font-weight:800;word-break:break-word}.security{margin-top:18px}.security-row{display:grid;grid-template-columns:1.3fr 1fr auto;align-items:center;gap:18px;padding:17px 20px;border-bottom:1px solid #edf2f7}.security-row:last-child{border-bottom:0}.security-title{font-size:12px;font-weight:900;color:var(--ink)}.security-desc{font-size:11px;color:var(--muted);margin-top:4px}.masked{letter-spacing:3px;font-weight:900;color:#53677d}.status-red{color:#b42333;background:#fff0f1;padding:6px 10px;border-radius:999px;font-size:10px;font-weight:900}.status-green{color:#087447;background:#e8f8f0;padding:6px 10px;border-radius:999px;font-size:10px;font-weight:900}.account-footer{margin-top:18px;background:#12263f;color:#fff;border-radius:15px;padding:17px 21px;display:flex;justify-content:space-between;align-items:center}.account-footer small{opacity:.65;display:block;text-transform:uppercase;letter-spacing:1px;font-weight:800;font-size:9px}.account-footer strong{font-size:15px}.footer-active{color:#7ff0b5;font-weight:950}.modal{display:none;position:fixed;inset:0;background:rgba(5,18,32,.58);backdrop-filter:blur(5px);z-index:2000;padding:35px 20px;overflow:auto}.modal.open{display:flex;align-items:flex-start;justify-content:center}.modal-box{width:min(860px,100%);background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.25);overflow:hidden}.modal-head{padding:20px 24px;background:#12263f;color:#fff;display:flex;align-items:center;justify-content:space-between}.modal-head h3{margin:0;font-size:18px;font-weight:950}.close{background:transparent;border:0;color:#fff;font-size:26px;cursor:pointer}.form-body{padding:24px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:10px;color:#65798f;font-weight:950;text-transform:uppercase;letter-spacing:.7px}.field input,.field textarea{border:1px solid #ccd9e7;border-radius:10px;padding:12px;background:#fff;color:var(--ink);font-size:14px;outline:none;width:100%}.field input:focus,.field textarea:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.11)}.field textarea{min-height:82px;resize:vertical}.protected{background:#f4f7fb!important;color:#718096!important}.modal-foot{padding:16px 24px;border-top:1px solid #e7edf4;display:flex;justify-content:flex-end;gap:9px}.records{margin-top:18px}.record-search{padding:16px 20px;border-bottom:1px solid #e7edf4;display:flex;gap:9px}.record-search input{flex:1;border:1px solid #ccd9e7;border-radius:9px;padding:10px}.table-wrap{width:100%;overflow:auto}.records table{width:100%;border-collapse:collapse}.records th,.records td{padding:12px 15px;border-bottom:1px solid #edf2f7;text-align:left;font-size:12px;vertical-align:top}.records th{font-size:10px;text-transform:uppercase;color:#718096;background:#f8fafc}.records pre{white-space:pre-wrap;margin:0;max-width:550px;font-size:11px;color:#42566d}.inline-form{margin:0}.password-note{font-size:11px;color:var(--muted);margin-top:3px}@media(max-width:900px){.section-grid{grid-template-columns:1fr}.hero{align-items:flex-start;flex-direction:column}.hero-actions{justify-content:flex-start}.security-row{grid-template-columns:1fr}.profile-page{padding:22px 18px 40px}}@media(max-width:700px){.ssa-content{min-width:700px!important}.topbar{align-items:flex-start}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.info-grid{grid-template-columns:1fr}.identity h2{font-size:22px}}
+
+/* Modal layout fix: keep global app.css rules from squeezing forms/buttons */
+.modal{align-items:flex-start!important;justify-content:center!important;}
+.modal-box{width:min(860px,calc(100vw - 40px))!important;max-width:860px!important;min-width:0!important;flex:0 1 860px!important;margin:0 auto!important;}
+.modal form{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;}
+.modal .form-body{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;padding:24px!important;}
+.modal .form-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;width:100%!important;max-width:none!important;}
+.modal .field{display:flex!important;flex-direction:column!important;width:100%!important;min-width:0!important;max-width:none!important;}
+.modal .field.full{grid-column:1/-1!important;}
+.modal .field input,.modal .field textarea{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:42px!important;}
+.modal .field textarea{min-height:82px!important;}
+.modal .modal-foot{display:flex!important;position:static!important;align-items:center!important;justify-content:flex-end!important;flex-wrap:wrap!important;gap:10px!important;width:100%!important;height:auto!important;min-height:0!important;padding:16px 24px!important;}
+.modal .modal-foot .btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;width:auto!important;min-width:100px!important;max-width:none!important;height:auto!important;min-height:42px!important;padding:11px 16px!important;white-space:normal!important;}
+.modal .modal-head{width:100%!important;min-height:88px!important;}
+@media(max-width:600px){.modal{padding:14px 10px!important}.modal-box{width:calc(100vw - 20px)!important;max-width:none!important}.modal .form-grid{grid-template-columns:minmax(0,1fr)!important}.modal .field.full{grid-column:auto!important}.modal .form-body{padding:18px!important}.modal .modal-foot{padding:14px 18px!important}}
+
+
+/* Central Administration Office: larger, brighter, readable profile typography */
+.redesigned-profile{font-size:15px;color:#163b62}
+.redesigned-profile .eyebrow{font-size:14px;letter-spacing:1.4px;color:#0879df;font-weight:800}
+.redesigned-profile .page-title{font-size:38px;color:#123e6d}
+.redesigned-profile .page-subtitle{font-size:16px;color:#527ba5;line-height:1.6}
+.redesigned-profile .overview{font-size:14px;color:#176fc1;font-weight:800}
+.redesigned-profile .hero-kicker{font-size:13px;color:#167bd0;font-weight:800}
+.redesigned-profile .hero-copy h2{font-size:32px;color:#123e6d}
+.redesigned-profile .hero-username{font-size:16px;color:#4e78a2}
+.redesigned-profile .tag{font-size:13px;padding:8px 12px}
+.redesigned-profile .fact small{font-size:12px;color:#6083a7}
+.redesigned-profile .fact strong{font-size:15px;color:#1d4e7d}
+.redesigned-profile .profile-tabs a{font-size:13px;color:#3f6387}
+.redesigned-profile .card-head h3{font-size:16px;color:#174a7c}
+.redesigned-profile .card-head p{font-size:13px;color:#6a8bad}
+.redesigned-profile .detail small{font-size:11px;color:#6486a8}
+.redesigned-profile .detail strong{font-size:15px;color:#214f7a;line-height:1.6}
+.redesigned-profile .authority-item strong,.redesigned-profile .security-line strong{font-size:14px;color:#244f78}
+.redesigned-profile .authority-item p,.redesigned-profile .security-line p{font-size:12px;color:#6c8bab}
+.redesigned-profile .btn,.redesigned-profile .text-action{font-size:13px}
+.redesigned-profile .profile-footer p{font-size:12px;color:#d2e6fb}
+</style>
+
+<style>
+/* Profile-page-only styling; scoped to .redesigned-profile so other pages are untouched. */
+.redesigned-profile{max-width:1600px;margin:0 auto;color:#19324d}.redesigned-profile .page-subtitle{margin:9px 0 0;color:#73859a;font-size:13px}.redesigned-profile .profile-hero{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px;background:linear-gradient(120deg,#fff 0%,#f4f9ff 100%);border:1px solid #dce8f5;border-radius:20px;box-shadow:0 12px 30px rgba(22,60,99,.07)}.redesigned-profile .hero-person{display:flex;align-items:center;gap:18px;min-width:0}.redesigned-profile .hero-avatar{width:92px;height:92px;min-width:92px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(145deg,#0755a4,#45a7f5);color:#fff;font-size:27px;font-weight:800;box-shadow:0 9px 22px #1269c72b}.redesigned-profile .hero-kicker{font-size:10px;font-weight:700;letter-spacing:1.5px;color:#3478b8}.redesigned-profile .hero-copy h2{font-size:27px;margin:5px 0 4px;color:#122b45;font-weight:750}.redesigned-profile .hero-username{color:#68809a;font-size:13px}.redesigned-profile .hero-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}.redesigned-profile .tag{display:inline-flex;align-items:center;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:650}.redesigned-profile .tag-blue{background:#e6f2ff;color:#1767ad}.redesigned-profile .tag-green{background:#e5f8ef;color:#08764a}.redesigned-profile .tag-red{background:#fff0f1;color:#b42333}.redesigned-profile .tag-neutral{background:#edf2f7;color:#52677e}.redesigned-profile .hero-actions{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap}.redesigned-profile .quick-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:15px}.redesigned-profile .fact{display:flex;align-items:center;gap:12px;min-width:0;padding:16px;background:#fff;border:1px solid #e0e9f2;border-radius:13px}.redesigned-profile .fact-icon{width:37px;height:37px;min-width:37px;border-radius:11px;display:grid;place-items:center;background:#eaf4ff;color:#176fc1;font-size:17px}.redesigned-profile .fact small,.redesigned-profile .fact strong{display:block}.redesigned-profile .fact small{font-size:10px;color:#7c8da0;margin-bottom:5px}.redesigned-profile .fact strong{font-size:12px;color:#29435e;font-weight:650;overflow-wrap:anywhere}.redesigned-profile .profile-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:20px 0 14px;padding:7px;background:#edf3f9;border-radius:12px}.redesigned-profile .profile-tabs a{padding:9px 12px;border-radius:8px;color:#50677f;text-decoration:none;font-size:11px;font-weight:650}.redesigned-profile .profile-tabs a:hover{background:#fff;color:#0969bd}.redesigned-profile .profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}.redesigned-profile .profile-card{min-width:0;border-radius:16px;border:1px solid #e0e8f1;box-shadow:0 7px 20px rgba(22,60,99,.04)}.redesigned-profile .card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;background:#fff}.redesigned-profile .card-head h3{font-size:13px;letter-spacing:.15px;text-transform:none;font-weight:750}.redesigned-profile .card-head p{font-size:11px;margin-top:5px}.redesigned-profile .text-action{background:none;border:0;color:#176fc1;font-size:11px;font-weight:700;text-decoration:none;cursor:pointer;white-space:nowrap}.redesigned-profile .card-icon{width:33px;height:33px;display:grid;place-items:center;border-radius:10px;background:#edf6ff;color:#176fc1}.redesigned-profile .detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:3px 20px 18px;column-gap:20px}.redesigned-profile .detail{padding:13px 0;border-bottom:1px solid #edf1f6;min-width:0}.redesigned-profile .detail-wide{grid-column:1/-1}.redesigned-profile .detail small{display:block;color:#8493a4;font-size:9px;letter-spacing:.65px;text-transform:uppercase;margin-bottom:6px}.redesigned-profile .detail strong{display:block;font-size:12px;line-height:1.55;color:#2c4560;font-weight:600;overflow-wrap:anywhere}.redesigned-profile .photo-note{display:flex;align-items:center;gap:11px;margin:0 20px 18px;padding:13px;background:#f6faff;border:1px solid #e3effb;border-radius:12px}.redesigned-profile .photo-note-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:#e4f1ff;color:#176fc1}.redesigned-profile .photo-note div{flex:1;min-width:0}.redesigned-profile .photo-note strong{font-size:12px}.redesigned-profile .photo-note p{margin:4px 0 0;color:#7a8da1;font-size:10px}.redesigned-profile .btn-small{padding:8px 10px;font-size:10px}.redesigned-profile .authority-list,.redesigned-profile .security-list{padding:0 20px 15px}.redesigned-profile .authority-item{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid #edf1f6}.redesigned-profile .authority-item:last-child{border-bottom:0}.redesigned-profile .authority-symbol{width:35px;height:35px;min-width:35px;display:grid;place-items:center;border-radius:10px;background:#edf6ff;color:#176fc1}.redesigned-profile .authority-item div{flex:1;min-width:0}.redesigned-profile .authority-item strong,.redesigned-profile .security-line strong{font-size:12px;color:#29435e;font-weight:700}.redesigned-profile .authority-item p,.redesigned-profile .security-line p{font-size:10px;color:#7b8da0;margin:4px 0 0;line-height:1.5}.redesigned-profile .authority-status,.redesigned-profile .state-pill{background:#f0f5fa;color:#668099;border-radius:7px;padding:6px 8px;font-size:9px;white-space:nowrap}.redesigned-profile .disclaimer{margin:0 20px 18px;padding:10px 12px;background:#fff9e9;color:#88641d;border-radius:8px;font-size:10px;line-height:1.5}.redesigned-profile .security-line{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1px solid #edf1f6}.redesigned-profile .security-line:last-child{border-bottom:0}.redesigned-profile .security-line>div{min-width:0;flex:1}.redesigned-profile .security-value{font-size:10px;color:#536b82;text-align:right;overflow-wrap:anywhere}.redesigned-profile .activity-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 20px 16px}.redesigned-profile .activity-summary>div{padding:12px;background:#f6f9fc;border-radius:10px;min-width:0}.redesigned-profile .activity-summary strong,.redesigned-profile .activity-summary small{display:block;overflow-wrap:anywhere}.redesigned-profile .activity-summary strong{font-size:13px;color:#24415e}.redesigned-profile .activity-summary small{font-size:9px;color:#8191a3;margin-top:5px}.redesigned-profile .activity-table th{font-size:9px}.redesigned-profile .activity-table td{font-size:11px}.redesigned-profile .activity-table pre{max-width:420px}.redesigned-profile .empty-state{color:#7c8da0;padding:22px}.redesigned-profile .profile-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;padding:18px 21px;background:#f4f9ff;color:#5b8fc4;border:1px solid #dcecff;border-radius:14px;box-shadow:0 5px 16px rgba(35,105,170,.05)}.redesigned-profile .profile-footer strong{font-size:19px;font-weight:400;color:#4388c9}.redesigned-profile .profile-footer p{margin:7px 0 0;color:#82a9d0;font-size:15px;font-weight:400;line-height:1.6}.redesigned-profile .footer-actions{display:flex;gap:8px;flex-wrap:wrap}.redesigned-profile .btn{min-height:38px;padding:10px 13px;font-size:11px;border-radius:9px;white-space:normal}.redesigned-profile .btn-light{background:#f4f8fc;color:#24415e;border:1px solid #dce6f0}.redesigned-profile .modal{align-items:flex-start;justify-content:center}.redesigned-profile .modal-box{width:min(760px,100%);max-height:calc(100vh - 50px);overflow:auto}.modal .form-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.modal .field{min-width:0}.modal .field input,.modal .field textarea{min-width:0;width:100%;font-size:14px}.modal .modal-foot{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap}.modal .modal-foot .btn{width:auto!important;min-width:110px;height:auto!important;min-height:40px;flex:0 0 auto;padding:11px 16px;white-space:normal}.modal .form-body{padding:24px}.modal .modal-head{min-height:68px}.modal .modal-head h3{font-size:17px}
+@media(max-width:1100px){.redesigned-profile .profile-hero{align-items:flex-start;flex-direction:column}.redesigned-profile .hero-actions{justify-content:flex-start}.redesigned-profile .quick-facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:780px){.redesigned-profile .profile-grid{grid-template-columns:1fr}.redesigned-profile .profile-tabs{overflow-x:auto;flex-wrap:nowrap}.redesigned-profile .profile-tabs a{flex:0 0 auto}.redesigned-profile .profile-footer{align-items:flex-start;flex-direction:column}.redesigned-profile .modal-box{width:100%;max-height:calc(100vh - 20px)}.modal .form-grid{grid-template-columns:1fr}.modal .field.full{grid-column:auto}}
+@media(max-width:520px){.redesigned-profile .quick-facts{grid-template-columns:1fr}.redesigned-profile .hero-person{align-items:flex-start;flex-direction:column}.redesigned-profile .detail-grid{grid-template-columns:1fr}.redesigned-profile .detail-wide{grid-column:auto}.redesigned-profile .activity-summary{grid-template-columns:1fr}.redesigned-profile .authority-status{display:none}.redesigned-profile .security-line{align-items:flex-start;flex-direction:column}.redesigned-profile .profile-page{padding:16px 12px 28px}}
+@media print{.ssa-sidebar,.redesigned-profile .profile-tabs,.redesigned-profile .hero-actions,.redesigned-profile .text-action,.redesigned-profile .footer-actions,.redesigned-profile .photo-note button{display:none!important}.ssa-content{margin-left:0!important;width:100%!important}.redesigned-profile .profile-grid{grid-template-columns:1fr 1fr}}
+</style>
+
+</head>
+<body>
+<div class="profile-shell">
+<aside class="ssa-sidebar">
+  <div class="ssa-brand"><div class="ssa-brand-title">System Super Administrator</div><div class="ssa-brand-scope">Global administration</div></div>
   <nav class="ssa-nav">
     <div class="ssa-nav-group">Main</div>
-    <a class="" href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
-    <a class="" href="/system_super_administrator/income-management"><span class="ssa-ico">↗</span>Income Management</a>
-    <a class="" href="/system_super_administrator/expense-management"><span class="ssa-ico">↘</span>Expense Management</a>
-    <a class="" href="/system_super_administrator/meal-management"><span class="ssa-ico">◉</span>Meal Management</a>
-    <a class="" href="/system_super_administrator/savings-management"><span class="ssa-ico">▣</span>Savings Management</a>
-    <a class="" href="/system_super_administrator/information-directory"><span class="ssa-ico">▤</span>Information Directory</a>
-    <a class="" href="/system_super_administrator/blood-donor-management"><span class="ssa-ico">🩸</span>Blood Donor Management</a>
+    <a href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
+    <a href="/system_super_administrator/income-management"><span class="ssa-ico">↗</span>Income Management</a>
+    <a href="/system_super_administrator/expense-management"><span class="ssa-ico">↘</span>Expense Management</a>
+    <a href="/system_super_administrator/meal-management/"><span class="ssa-ico">◉</span>Meal Management</a>
+    <a href="/system_super_administrator/savings-management"><span class="ssa-ico">▣</span>Savings Management</a>
+    <a href="/system_super_administrator/information-directory"><span class="ssa-ico">▤</span>Information Directory</a>
+    <a href="/system_super_administrator/blood-donor-management"><span class="ssa-ico">♡</span>Blood Donor Management</a>
     <div class="ssa-nav-group">System</div>
-    <a class="" href="/system_super_administrator/system-overview"><span class="ssa-ico">◫</span>System Overview</a>
-    <a class="" href="/system_super_administrator/branch-management"><span class="ssa-ico">▥</span>Branch Management</a>
-    <a class="" href="/system_super_administrator/member-management"><span class="ssa-ico">♟</span>Member Management</a>
-    <a class="" href="/system_super_administrator/department-management"><span class="ssa-ico">▦</span>Department Management</a>
-    <a class="" href="/system_super_administrator/financial-management"><span class="ssa-ico">৳</span>Financial Management</a>
-    <a class="" href="/system_super_administrator/reports"><span class="ssa-ico">▥</span>Reports</a>
-    <a class="" href="/system_super_administrator/access-management"><span class="ssa-ico">⚿</span>Access Management</a>
-    <a class="" href="/system_super_administrator/member-audit"><span class="ssa-ico">◌</span>Member Audit</a>
-    <a class="" href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
-    <a class="" href="/system_super_administrator/import"><span class="ssa-ico">⇩</span>Import</a>
-    <a class="" href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
-    <a class="" href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
+    <a href="/system_super_administrator/system-overview"><span class="ssa-ico">◫</span>System Overview</a>
+    <a href="/system_super_administrator/branch-management"><span class="ssa-ico">▥</span>Branch Management</a>
+    <a href="/system_super_administrator/member-management"><span class="ssa-ico">♟</span>Member Management</a>
+    <a href="/system_super_administrator/department-management"><span class="ssa-ico">▦</span>Department Management</a>
+    <a href="/system_super_administrator/financial-management"><span class="ssa-ico">৳</span>Financial Management</a>
+    <a href="/system_super_administrator/reports"><span class="ssa-ico">▥</span>Reports</a>
+    <a href="/system_super_administrator/access-management"><span class="ssa-ico">⚿</span>Access Management</a>
+    <a href="/system_super_administrator/member-audit"><span class="ssa-ico">◌</span>Member Audit</a>
+    <a href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
+    <a href="/system_super_administrator/import"><span class="ssa-ico">⇩</span>Import</a>
+    <a href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
+    <a href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
   </nav>
-  <div class="ssa-profile">
-    <a class="ssa-profile-link" href="/system_super_administrator/profile"><span class="ssa-avatar">SA</span><span><strong>{{ session.get('username','blue') }}</strong><small>System Super Administrator</small></span></a>
-    <a class="ssa-logout" href="/logout">Logout</a>
+  
+{% set profile_name = session.get('full_name', session.get('name', session.get('username', 'SAblue'))) %}
+{% set profile_parts = profile_name.split() %}
+{% set profile_initials = (profile_parts[0][0] ~ profile_parts[1][0])|upper if profile_parts|length > 1 else profile_parts[0][:2]|upper if profile_parts|length == 1 else 'SA' %}
+
+<div class="ssa-profile" id="ssaProfileMenu">
+  <button
+    class="ssa-profile-toggle"
+    type="button"
+    id="ssaProfileToggle"
+    aria-expanded="false"
+    aria-controls="ssaProfileDropdown"
+  >
+    <span class="ssa-avatar">{{ profile_initials }}</span>
+
+    <span class="ssa-profile-info">
+      <strong>{{ profile_name }}</strong>
+      <small title="System Super Administrator">System Super Administrator</small>
+    </span>
+
+    <span class="ssa-profile-chevron" aria-hidden="true">⌄</span>
+  </button>
+
+  <div class="ssa-profile-dropdown" id="ssaProfileDropdown">
+    <a class="ssa-profile-action" href="/system_super_administrator/profile">
+      <span class="ssa-menu-icon" aria-hidden="true">♙</span>
+      <span>Profile</span>
+    </a>
+
+    <a class="ssa-logout" href="/logout">
+      <span class="ssa-menu-icon" aria-hidden="true">↪</span>
+      <span>Logout</span>
+    </a>
   </div>
-</aside><div class="ssa-content"><main class="page"><header><h1>Profile</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}<section class="card"><h2>Entry</h2><form method="post"><label>Username<input name="username"></label><label>Email<input name="email"></label><label>Phone<input name="phone"></label><label>Status<input name="status"></label><input type="hidden" name="action" value="save"><button>Save</button></form></section><section class="card"><h2>Records</h2><form method="get"><input name="search" placeholder="Search" value="{{ request.args.get('search','') }}"><button>Search</button></form><table><thead><tr><th>SL</th><th>Record</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td><pre>{{ r|tojson(indent=2) }}</pre></td><td><form method="post"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><button class="danger">Delete</button></form></td></tr>{% else %}<tr><td colspan="3">No records found.</td></tr>{% endfor %}</tbody></table></section></main></div></div></body></html>
+</div>
+</aside>
+<div class="ssa-content">
+<main class="profile-page redesigned-profile">
+<div class="topbar"><div><div class="eyebrow">CENTRAL ADMINISTRATION OFFICE</div><h1 class="page-title">Administrator Profile</h1><p class="page-subtitle">Global administration · Central Administration Office</p></div><div class="overview">BRANCH ACCESS: ALL BRANCHES</div></div>
+{% if message %}<div class="notice ok">✓ {{ message }}</div>{% endif %}{% if error %}<div class="notice err">⚠ {{ error }}</div>{% endif %}
+<section class="profile-hero">
+ <div class="hero-person"><div class="hero-avatar">{{ (profile.get('name') or profile.get('username') or 'CC')[:2]|upper }}</div><div class="hero-copy"><div class="hero-kicker">CENTRAL ADMINISTRATION OFFICE</div><h2>{{ profile.get('name') or profile.get('username') or 'Central Controller' }}</h2><div class="hero-username">@{{ profile.get('username') or session.get('username','administrator') }}</div><div class="hero-tags"><span class="tag tag-blue">✦ Designation: Global super administration</span><span class="tag tag-green">Branch Name: Central Administration Office</span><span class="tag tag-neutral">Branch Access: All Branches</span><span class="tag {{ 'tag-green' if (profile.get('status','ACTIVE')|upper == 'ACTIVE') else 'tag-red' }}">● {{ profile.get('status','ACTIVE')|upper }}</span><span class="tag tag-neutral">Administrator ID: {{ profile.get('administrator_id') or 'Assigning ID...' }}</span></div></div></div>
+</section>
+<section class="quick-facts">
+ <div class="fact"><span class="fact-icon">✉</span><div><small>Email Address</small><strong>{{ profile.get('email') or 'Not provided' }}</strong></div></div>
+ <div class="fact"><span class="fact-icon">☎</span><div><small>Mobile Number</small><strong>{{ profile.get('phone') or 'Not provided' }}</strong></div></div>
+ <div class="fact"><span class="fact-icon">▦</span><div><small>Account Created</small><strong>{{ profile.get('created_at', 'Not recorded in MongoDB') }}</strong></div></div>
+ <div class="fact"><span class="fact-icon">◷</span><div><small>Last Login</small><strong>{{ profile.get('last_login') or session.get('last_login') or 'Not available' }}</strong></div></div>
+</section>
+<nav class="profile-tabs"><a href="#personal-section">Personal Information</a><a href="#account-section">Account Information</a><a href="#authority-section">Authority</a><a href="#security-section">Security & Login</a><a href="#activity-section">Activity & Audit</a></nav>
+<div class="profile-grid">
+<section class="card profile-card" id="personal-section"><div class="card-head"><div><h3>Personal Information</h3><p>Your personal and contact details</p></div><button class="text-action" type="button" onclick="openModal('editModal')">Edit details ↗</button></div><div class="detail-grid">
+<div class="detail"><small>Full Name</small><strong>{{ profile.get('name') or '—' }}</strong></div><div class="detail"><small>Father's Name</small><strong>{{ profile.get('father_name') or 'Not provided' }}</strong></div>
+<div class="detail"><small>Mother's Name</small><strong>{{ profile.get('mother_name') or 'Not provided' }}</strong></div><div class="detail"><small>Date of Birth</small><strong>{{ profile.get('date_of_birth') or 'Not provided' }}</strong></div>
+<div class="detail"><small>Gender</small><strong>{{ profile.get('gender') or 'Not provided' }}</strong></div><div class="detail"><small>Mobile Number</small><strong>{{ profile.get('phone') or '—' }}</strong></div>
+<div class="detail"><small>Email Address</small><strong>{{ profile.get('email') or '—' }}</strong></div><div class="detail"><small>Designation</small><strong>{{ profile.get('designation') or 'Central Controller' }}</strong></div>
+<div class="detail detail-wide"><small>Present Address</small><strong>{{ profile.get('present_address') or profile.get('address') or 'Not provided' }}</strong></div><div class="detail detail-wide"><small>Permanent Address</small><strong>{{ profile.get('permanent_address') or 'Not provided' }}</strong></div>
+</div><div class="photo-note"><span class="photo-note-icon">▣</span><div><strong>Profile Photo</strong><p>Photo upload and change can be connected to your profile upload route.</p></div><button class="btn btn-light btn-small" type="button" onclick="openModal('editModal')">Change Photo</button></div></section>
+<section class="card profile-card" id="account-section"><div class="card-head"><div><h3>Account Information</h3><p>Identity, status and account security metadata</p></div><span class="card-icon">▤</span></div><div class="detail-grid">
+<div class="detail"><small>Administrator ID</small><strong>{{ profile.get('administrator_id') or 'Assigning ID...' }}</strong></div><div class="detail"><small>Username</small><strong>{{ profile.get('username') or '—' }}</strong></div>
+<div class="detail"><small>Designation / Role</small><strong>{{ (profile.get('designation') or profile.get('role') or 'Central Controller')|replace('_',' ')|title }}</strong></div><div class="detail"><small>Account Status</small><strong>{{ profile.get('status','ACTIVE')|upper }}</strong></div>
+<div class="detail"><small>Account Created</small><strong>{{ profile.get('created_at', 'Not recorded in MongoDB') }}</strong></div><div class="detail"><small>Last Updated</small><strong>{{ profile.get('updated_at', 'Not recorded in MongoDB') }}</strong></div>
+<div class="detail"><small>Last Password Change</small><strong>{{ profile.get('last_password_change', 'Not recorded in MongoDB') }}</strong></div><div class="detail"><small>2FA Status</small><strong>{{ 'Enabled' if profile.get('two_factor_enabled') is sameas true else ('Disabled' if profile.get('two_factor_enabled') is sameas false else 'Not configured in MongoDB') }}</strong></div>
+<div class="detail"><small>Failed Login Attempts</small><strong>{{ profile.get('failed_login_attempts', 'Not tracked in MongoDB') }}</strong></div><div class="detail"><small>Account Lock Status</small><strong>{{ profile.get('account_lock_status', 'Not tracked in MongoDB') }}</strong></div>
+<div class="detail detail-wide"><small>Branch Scope</small><strong>{{ profile.get('branch_name') or session.get('branch_name') or 'GLOBAL / ALL BRANCHES' }}</strong></div></div></section>
+<section class="card profile-card" id="authority-section"><div class="card-head"><div><h3>Central Controller Authority</h3><p>Administrative access overview</p></div><span class="card-icon">♜</span></div><div class="authority-list">
+<div class="authority-item"><span class="authority-symbol">▥</span><div><strong>Branch Management</strong><p>View, create, edit and manage branches</p></div><span class="authority-status">System scope</span></div>
+<div class="authority-item"><span class="authority-symbol">♟</span><div><strong>Member & Role Management</strong><p>Manage member accounts, roles, status and access</p></div><span class="authority-status">System scope</span></div>
+<div class="authority-item"><span class="authority-symbol">৳</span><div><strong>Financial Management</strong><p>Income, expense, meal, savings and financial reports</p></div><span class="authority-status">System scope</span></div>
+<div class="authority-item"><span class="authority-symbol">⌑</span><div><strong>Security & Audit</strong><p>Access permissions, login history and audit records</p></div><span class="authority-status">System scope</span></div>
+</div><p class="disclaimer">This is a display summary. Actual permissions must be enforced by the server-side authorization system.</p></section>
+<section class="card profile-card" id="security-section"><div class="card-head"><div><h3>Security & Login</h3><p>Protect your administrator account</p></div><span class="card-icon">♢</span></div><div class="security-list">
+<div class="security-line"><div><strong>Password</strong><p>Your current password and stored password hash are never displayed.</p></div><button class="btn btn-light btn-small" type="button" onclick="openModal('passwordModal')">Change Password</button></div>
+<div class="security-line"><div><strong>Two-Factor Authentication</strong><p>Extra verification for administrator sign-in.</p></div><span class="state-pill">{{ 'Enabled' if profile.get('two_factor_enabled') is sameas true else ('Disabled' if profile.get('two_factor_enabled') is sameas false else 'Not configured in MongoDB') }}</span></div>
+<div class="security-line"><div><strong>Active Sessions</strong><p>Review and revoke sessions on other devices.</p></div><span class="state-pill">{{ profile.get('active_sessions_count', 'Not available') }}</span></div>
+<div class="security-line"><div><strong>Recent Login History</strong><p>Latest successful login recorded by the system.</p></div><strong class="security-value">{{ profile.get('last_login') or session.get('last_login') or 'Not available' }}</strong></div>
+<div class="security-line"><div><strong>Device / Browser</strong><p>Device information requires login-event tracking.</p></div><span class="state-pill">{{ profile.get('last_login_device') or 'Not available' }}</span></div>
+<div class="security-line"><div><strong>Account Recovery</strong><p>{{ profile.get('recovery_email') or profile.get('email') or 'Recovery email not configured' }} · {{ profile.get('recovery_phone') or profile.get('phone') or 'Recovery phone not configured' }}</p></div><button class="btn btn-light btn-small" type="button" onclick="openModal('editModal')">Review details</button></div>
+</div></section>
+<section class="card profile-card" id="activity-section"><div class="card-head"><div><h3>System Activity & Audit</h3><p>Recent administrative records available to this page</p></div><a class="text-action" href="/system_super_administrator/member-audit">Open Audit ↗</a></div>
+<div class="activity-summary"><div><strong>{{ records|length }}</strong><small>Available profile records</small></div><div><strong>{{ profile.get('last_action') or '—' }}</strong><small>Last recorded action</small></div><div><strong>{{ profile.get('last_action_at') or 'Not available' }}</strong><small>Action date & time</small></div></div>
+<div class="table-wrap"><table class="activity-table"><thead><tr><th>SL</th><th>Record / Activity</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td><pre>{{ r|tojson(indent=2) }}</pre></td><td><form class="inline-form" method="post" onsubmit="return confirm('Delete this record? This cannot be undone.');"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><button class="btn btn-danger btn-small">Delete</button></form></td></tr>{% else %}<tr><td colspan="3" class="empty-state">No activity records are available here yet. Full audit history must be recorded by the backend.</td></tr>{% endfor %}</tbody></table></div>
+</section>
+</div>
+<div class="profile-footer"><div><strong>Central Controller Account</strong><p>Keep your contact details and security settings up to date.</p></div><div class="footer-actions"><button class="btn btn-light" type="button" onclick="window.print()">Print Profile</button><button class="btn btn-primary" type="button" onclick="openModal('editModal')">Save / Edit Details</button></div></div>
+</main></div></div>
+
+<div class="modal" id="editModal"><div class="modal-box"><div class="modal-head"><h3>✎ EDIT FULL PROFILE</h3><button class="close" onclick="closeModal('editModal')">×</button></div><form method="post"><input type="hidden" name="action" value="update_profile"><div class="form-body"><div class="form-grid">
+<div class="field"><label>Full Name</label><input name="name" value="{{ profile.get('name','') }}" required></div>
+<div class="field"><label>Username</label><input name="username" value="{{ profile.get('username','') }}" required></div>
+<div class="field"><label>Email Address</label><input type="email" name="email" value="{{ profile.get('email','') }}" required></div>
+<div class="field"><label>Phone Number</label><input name="phone" value="{{ profile.get('phone','') }}"></div>
+<div class="field"><label>Father's Name</label><input name="father_name" value="{{ profile.get('father_name','') }}"></div>
+<div class="field"><label>Mother's Name</label><input name="mother_name" value="{{ profile.get('mother_name','') }}"></div>
+<div class="field"><label>Date of Birth</label><input type="date" name="date_of_birth" value="{{ profile.get('date_of_birth','') }}"></div>
+<div class="field"><label>Gender</label><input name="gender" value="{{ profile.get('gender','') }}"></div>
+<div class="field full"><label>Present Address</label><textarea name="address">{{ profile.get('address','') }}</textarea></div>
+<div class="field full"><label>Permanent Address</label><textarea name="permanent_address">{{ profile.get('permanent_address','') }}</textarea></div>
+<div class="field"><label>Designation</label><input name="designation" value="{{ profile.get('designation','') }}"></div>
+<div class="field"><label>Department</label><input name="department" value="{{ profile.get('department','Administration') }}"></div>
+<div class="field"><label>Branch</label><input name="branch_name" value="{{ profile.get('branch_name',session.get('branch_name','GLOBAL / ALL BRANCHES')) }}"></div>
+<div class="field"><label>Role <span style="color:#b42333">Protected</span></label><input class="protected" value="{{ profile.get('role','SYSTEM SUPER ADMINISTRATOR')|replace('_',' ')|upper }}" disabled></div>
+<div class="field"><label>Account Status <span style="color:#b42333">Protected</span></label><input class="protected" value="{{ profile.get('status','ACTIVE')|upper }}" disabled></div>
+</div></div><div class="modal-foot"><button class="btn btn-light" type="button" onclick="closeModal('editModal')">CANCEL</button><button class="btn btn-primary">SAVE PROFILE</button></div></form></div></div>
+
+<div class="modal" id="passwordModal"><div class="modal-box" style="max-width:560px"><div class="modal-head"><h3>🔐 CHANGE PASSWORD</h3><button class="close" onclick="closeModal('passwordModal')">×</button></div><form method="post"><input type="hidden" name="action" value="change_password"><div class="form-body"><div class="field"><label>Current Password</label><input type="password" name="current_password" autocomplete="current-password" required></div><br><div class="field"><label>New Password</label><input type="password" name="new_password" minlength="8" autocomplete="new-password" required><div class="password-note">Minimum 8 characters.</div></div><br><div class="field"><label>Confirm New Password</label><input type="password" name="confirm_password" minlength="8" autocomplete="new-password" required></div></div><div class="modal-foot"><button class="btn btn-light" type="button" onclick="closeModal('passwordModal')">CANCEL</button><button class="btn btn-dark">UPDATE PASSWORD</button></div></form></div></div>
+<script>
+(function(){
+ const menu=document.getElementById('ssaProfileMenu');
+ const toggle=document.getElementById('ssaProfileToggle');
+ if(!menu||!toggle)return;
+ toggle.addEventListener('click',function(){
+   const open=menu.classList.toggle('is-open');
+   toggle.setAttribute('aria-expanded',open?'true':'false');
+ });
+ document.addEventListener('click',function(event){
+   if(!menu.contains(event.target)){
+     menu.classList.remove('is-open');
+     toggle.setAttribute('aria-expanded','false');
+   }
+ });
+ document.addEventListener('keydown',function(event){
+   if(event.key==='Escape'){
+     menu.classList.remove('is-open');
+     toggle.setAttribute('aria-expanded','false');
+   }
+ });
+})();
+</script>
+<script>function openModal(id){document.getElementById(id).classList.add('open')}function closeModal(id){document.getElementById(id).classList.remove('open')}document.querySelectorAll('.modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open')})});document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(function(m){m.classList.remove('open')})});</script>
+</body></html>
