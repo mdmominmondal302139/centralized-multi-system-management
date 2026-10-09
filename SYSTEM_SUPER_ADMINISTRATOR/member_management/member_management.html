@@ -8,7 +8,185 @@
 <style>
 :root{color-scheme:light;--bg:#f5f8fc;--surface:#fff;--line:#e1e8f0;--text:#25364b;--muted:#718096;--blue:#2783df;--blue-soft:#eaf4ff;--green:#178b58;--green-soft:#e8f8ef;--red:#d94444;--red-soft:#fff0f0;--amber:#9a6700;--amber-soft:#fff7df}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:400;line-height:1.5}
-.ssa-shell{min-height:100vh}.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:1000}.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #edf1f6}.ssa-brand-title{font-size:15px;font-weight:600;color:#24486d;line-height:1.35}.ssa-brand-scope{font-size:11px;color:var(--muted);margin-top:5px}.ssa-nav{padding:12px 10px;overflow-y:auto;flex:1}.ssa-nav-group{font-size:11px;color:#8997a8;padding:10px 9px 6px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#40546b;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:400;white-space:nowrap}.ssa-nav a:hover{background:#f0f7ff;color:#176bb7}.ssa-nav a.active{background:var(--blue-soft);color:#176bb7}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}.ssa-profile{border-top:1px solid #edf1f6;padding:12px 13px;background:#fcfdff}.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#24486d}.ssa-avatar{width:34px;height:34px;border-radius:50%;background:var(--blue-soft);display:grid;place-items:center;color:#176bb7}.ssa-profile strong{font-size:12px;font-weight:500}.ssa-profile small{display:block;color:var(--muted);margin-top:2px}.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:var(--red-soft);color:#bd3333;border-radius:7px;padding:8px;font-weight:400}
+.ssa-shell{min-height:100vh}.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:1000}.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #edf1f6}.ssa-brand-title{font-size:15px;font-weight:600;color:#24486d;line-height:1.35}.ssa-brand-scope{font-size:11px;color:var(--muted);margin-top:5px}.ssa-nav{padding:12px 10px;overflow-y:auto;flex:1}.ssa-nav-group{font-size:11px;color:#8997a8;padding:10px 9px 6px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#40546b;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:400;white-space:nowrap}.ssa-nav a:hover{background:#f0f7ff;color:#176bb7}.ssa-nav a.active{background:var(--blue-soft);color:#176bb7}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
+/* Bright Light Administrator Profile Dropdown */
+.ssa-profile {
+  position: relative;
+  flex-shrink: 0;
+  border-top: 1px solid #e4ecf7;
+  padding: 12px;
+  background: #ffffff;
+}
+
+.ssa-profile-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e3edfa;
+  border-radius: 11px;
+  background: #f4f8ff;
+  color: #25364b;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+}
+
+.ssa-profile-toggle:hover,
+.ssa-profile.is-open .ssa-profile-toggle {
+  background: #eaf3ff;
+  border-color: #c7defb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, .07);
+}
+
+.ssa-avatar {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: #dceaff;
+  color: #2166c2;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+
+.ssa-profile-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ssa-profile-info strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: #25364b;
+  line-height: 1.4;
+}
+
+.ssa-profile-info small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 400;
+  color: #718096;
+  line-height: 1.4;
+}
+
+.ssa-profile-chevron {
+  width: 16px;
+  min-width: 16px;
+  color: #718096;
+  font-size: 13px;
+  text-align: center;
+  transition: transform .2s;
+}
+
+.ssa-profile.is-open .ssa-profile-chevron {
+  transform: rotate(180deg);
+}
+
+.ssa-profile-dropdown {
+  display: none;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(100% + 8px);
+  margin-top: 0;
+  padding: 5px;
+  border: 1px solid #e5edf7;
+  border-radius: 11px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(37, 65, 100, .09);
+}
+
+.ssa-profile.is-open .ssa-profile-dropdown {
+  display: block;
+  animation: ssaDropdownIn .16s ease-out;
+}
+
+.ssa-profile-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 11px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background .15s;
+}
+
+.ssa-profile-dropdown .ssa-profile-action {
+  color: #2869bd;
+}
+
+.ssa-profile-dropdown .ssa-profile-action:hover {
+  background: #edf5ff;
+}
+
+.ssa-profile-dropdown .ssa-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 3px 0 0;
+  padding: 10px 11px;
+  background: #fff3f3;
+  color: #d43d48;
+  text-align: left;
+  border-radius: 8px;
+}
+
+.ssa-profile-dropdown .ssa-logout:hover {
+  background: #ffe5e5;
+}
+
+.ssa-profile-dropdown .ssa-menu-icon {
+  width: 18px;
+  min-width: 18px;
+  text-align: center;
+  font-size: 15px;
+}
+
+@keyframes ssaDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ssa-profile-toggle:focus-visible,
+.ssa-profile-dropdown a:focus-visible {
+  outline: 2px solid #75aef4;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ssa-profile-toggle,
+  .ssa-profile-chevron {
+    transition: none;
+  }
+
+  .ssa-profile.is-open .ssa-profile-dropdown {
+    animation: none;
+  }
+}
 .ssa-content{margin-left:260px;width:calc(100% - 260px);min-height:100vh;overflow-x:hidden}.page{padding:28px 30px 48px;max-width:1600px;margin:0 auto}.page header{display:flex;align-items:center;gap:18px;margin-bottom:22px;flex-wrap:wrap}.page header h1{margin:0;font-size:27px;font-weight:500;color:#23466b}.subtitle{color:var(--muted);margin-top:4px}.ssa-page-identity{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;padding:8px 13px;border:1px solid var(--line);border-radius:10px;background:#fff}.ssa-page-identity strong{font-size:13px;color:#24486d;font-weight:500}.ssa-page-identity span{font-size:11px;color:var(--muted)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:21px;margin-bottom:20px;box-shadow:0 3px 12px rgba(35,70,107,.035)}.card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}.card h2{margin:0;font-size:18px;font-weight:500;color:#294c70}.hint{font-size:12px;color:var(--muted)}
 .filters{display:grid;grid-template-columns:repeat(5,minmax(140px,1fr));gap:12px;align-items:end}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:13px;color:#4b6077;font-weight:400}.field input,.field select{width:100%;min-width:0;border:1px solid #d4deea;border-radius:8px;padding:10px 11px;background:#fff;color:var(--text);font:inherit}.field input:focus,.field select:focus{outline:0;border-color:#79b6f0;box-shadow:0 0 0 3px #eaf4ff}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid transparent;border-radius:8px;padding:9px 13px;font:inherit;font-weight:400;text-decoration:none;cursor:pointer;white-space:nowrap}.btn-blue{background:#eaf4ff;color:#176bb7;border-color:#d6eaff}.btn-green{background:var(--green-soft);color:#137548;border-color:#d1f0dd}.btn-red{background:var(--red-soft);color:#bd3333;border-color:#ffdede}.btn-neutral{background:#f3f6fa;color:#52657a;border-color:#e2e8f0}.btn:focus-visible{outline:2px solid #75b8f2;outline-offset:2px}.filter-actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -151,6 +329,36 @@ html body .ssa-content .page .member-edit-card > form > .member-edit-footer {
   justify-content: space-between !important;
 }
 
+
+/* New Member form: bright, page-scoped styling */
+.new-member-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.btn-new-member{background:linear-gradient(135deg,#1675df,#3699ff);color:#fff;border:1px solid #1675df;box-shadow:0 5px 14px rgba(22,117,223,.18);font-weight:700;padding:11px 17px}
+.btn-new-member:hover{filter:brightness(.97);box-shadow:0 7px 18px rgba(22,117,223,.23)}
+.create-member-card{padding:0;overflow:hidden;border-color:#cfe3fb;box-shadow:0 8px 28px rgba(36,105,180,.08)}
+.create-member-hero{padding:23px 25px;background:linear-gradient(115deg,#eaf4ff 0%,#f8fbff 55%,#fff 100%);border-bottom:1px solid #dceafa;display:flex;align-items:center;gap:14px}
+.create-member-icon{width:49px;height:49px;border-radius:15px;background:#d7eaff;color:#1769c2;display:grid;place-items:center;font-size:24px}
+.create-member-hero h2{font-size:22px;color:#155ca8;font-weight:700;margin:0}
+.create-member-hero p{margin:4px 0 0;color:#647d98;font-size:13px}
+.create-member-card{display:block;width:100%;max-width:none;min-width:0;box-sizing:border-box}
+.create-member-card > form{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;grid-template-columns:minmax(0,1fr)!important;grid-column:1/-1!important;margin:0!important;padding:0!important;box-sizing:border-box!important}
+.create-member-card .create-member-body{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;padding:24px!important;box-sizing:border-box!important}
+.create-member-section{display:block;width:100%;max-width:none;min-width:0;box-sizing:border-box;padding:19px;border:1px solid #e0eafa;border-radius:13px;margin:0 0 18px;background:linear-gradient(180deg,#fff,#fcfdff)}
+.create-member-section h3{margin:0 0 17px;display:flex;align-items:center;gap:10px;color:#1769b7;font-size:15px;font-weight:700}
+.create-member-section h3 span{width:30px;height:30px;display:grid;place-items:center;background:#eaf4ff;border-radius:9px;color:#1769b7}
+.create-member-grid{display:grid!important;width:100%!important;max-width:100%;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px 18px;box-sizing:border-box}
+.create-member-grid .field{display:flex;flex-direction:column;width:100%;min-width:0;max-width:100%;box-sizing:border-box}
+.create-member-grid .field label{color:#344f6d;font-weight:600}
+.create-member-grid .field input,.create-member-grid .field select,.create-member-grid .field textarea{display:block;min-height:44px;border:1px solid #cbdcf0;border-radius:9px;background:#fff;color:#25364b;font:inherit;padding:11px 12px;width:100%!important;max-width:100%;min-width:0;box-sizing:border-box}
+.create-member-grid .field textarea{min-height:82px;resize:vertical}
+.create-member-grid .field input:focus,.create-member-grid .field select:focus,.create-member-grid .field textarea:focus{outline:none;border-color:#4598ed;box-shadow:0 0 0 3px #e8f3ff}
+.create-member-span-2{grid-column:1/-1}
+.create-member-card > form > .create-member-footer{display:flex!important;width:100%!important;max-width:none!important;min-width:0;grid-column:1/-1!important;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 24px;background:#f8fbff;border-top:1px solid #e1ecf8;box-sizing:border-box}
+.create-member-footer small{color:#6b7f96}
+.create-member-submit{background:#1674d2;color:#fff;border-color:#1674d2;font-weight:700;padding:11px 19px}
+.create-member-submit:hover{background:#105fae}
+.create-member-cancel{background:#fff;color:#52657a;border-color:#d6e1ee}
+@media(max-width:650px){.create-member-card .create-member-body{padding:13px!important}.create-member-section{padding:13px}.create-member-grid{grid-template-columns:minmax(0,1fr)!important}.create-member-span-2{grid-column:auto}.create-member-card > form > .create-member-footer{padding:15px}.create-member-hero{padding:17px}}
+
 </style>
 </head>
 <body>
@@ -180,7 +388,41 @@ html body .ssa-content .page .member-edit-card > form > .member-edit-footer {
     <a href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
     <a href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
   </nav>
-  <div class="ssa-profile"><a class="ssa-profile-link" href="/system_super_administrator/profile"><span class="ssa-avatar">SA</span><span><strong>{{ session.get('username','blue') }}</strong><small>System Super Administrator</small></span></a><a class="ssa-logout" href="/logout">Logout</a></div>
+  
+{% set profile_name = session.get('full_name', session.get('name', session.get('username', 'SAblue'))) %}
+{% set profile_parts = profile_name.split() %}
+{% set profile_initials = (profile_parts[0][0] ~ profile_parts[1][0])|upper if profile_parts|length > 1 else profile_parts[0][:2]|upper if profile_parts|length == 1 else 'SA' %}
+
+<div class="ssa-profile" id="ssaProfileMenu">
+  <button
+    class="ssa-profile-toggle"
+    type="button"
+    id="ssaProfileToggle"
+    aria-expanded="false"
+    aria-controls="ssaProfileDropdown"
+  >
+    <span class="ssa-avatar">{{ profile_initials }}</span>
+
+    <span class="ssa-profile-info">
+      <strong>{{ profile_name }}</strong>
+      <small title="System Super Administrator">System Super Administrator</small>
+    </span>
+
+    <span class="ssa-profile-chevron" aria-hidden="true">⌄</span>
+  </button>
+
+  <div class="ssa-profile-dropdown" id="ssaProfileDropdown">
+    <a class="ssa-profile-action" href="/system_super_administrator/profile">
+      <span class="ssa-menu-icon" aria-hidden="true">♙</span>
+      <span>Profile</span>
+    </a>
+
+    <a class="ssa-logout" href="/logout">
+      <span class="ssa-menu-icon" aria-hidden="true">↪</span>
+      <span>Logout</span>
+    </a>
+  </div>
+</div>
 </aside>
 <div class="ssa-content">
 <main class="page">
@@ -190,6 +432,60 @@ html body .ssa-content .page .member-edit-card > form > .member-edit-footer {
   </header>
   {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
   {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+
+  <section class="card new-member-toolbar">
+    <div><h2 style="margin:0 0 4px;color:#24517d">Member Registration</h2><div class="hint">Create a member account and assign an active branch.</div></div>
+    <a class="btn btn-new-member" href="{{ url_for('system_super_administrator_member_management_bp.page', create=1, branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">＋ New Member</a>
+  </section>
+
+  {% if create_open %}
+  <section class="card create-member-card" id="new-member-form">
+    <div class="create-member-hero"><div class="create-member-icon">♟</div><div><h2>Create New Member</h2><p>Member Management / Register Member</p></div></div>
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('system_super_administrator_member_management_bp.page', create=1, branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">
+      <input type="hidden" name="action" value="create_member">
+      <div class="create-member-body">
+        <section class="create-member-section">
+          <h3><span>01</span> Personal Information</h3>
+          <div class="create-member-grid">
+            <div class="field"><label for="new_full_name">Full Name *</label><input id="new_full_name" name="full_name" placeholder="Enter full name" required value="{{ request.form.get('full_name','') if request.method == 'POST' else '' }}"></div>
+            <div class="field"><label for="new_member_id">Member ID</label><input id="new_member_id" name="member_id" placeholder="Leave blank for auto-generated ID" value="{{ request.form.get('member_id','') if request.method == 'POST' else '' }}"><small class="hint">Blank = automatic serial (001, 002...). Admin may enter a unique ID.</small></div>
+            <div class="field"><label for="new_username">Username *</label><input id="new_username" name="username" placeholder="Choose username" required autocomplete="username" value="{{ request.form.get('username','') if request.method == 'POST' else '' }}"></div>
+            <div class="field"><label for="new_gender">Gender</label><select id="new_gender" name="gender"><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+            <div class="field"><label for="new_dob">Date of Birth</label><input id="new_dob" name="date_of_birth" type="date"></div>
+            <div class="field"><label for="new_blood_group">Blood Group</label><select id="new_blood_group" name="blood_group"><option value="">Select blood group</option>{% for blood in ['A+','A-','B+','B-','AB+','AB-','O+','O-'] %}<option value="{{ blood }}">{{ blood }}</option>{% endfor %}</select></div>
+          </div>
+        </section>
+        <section class="create-member-section">
+          <h3><span>02</span> Contact Information</h3>
+          <div class="create-member-grid">
+            <div class="field"><label for="new_phone">Phone Number *</label><input id="new_phone" name="phone" type="tel" placeholder="01XXXXXXXXX" pattern="01[0-9]{9}" required value="{{ request.form.get('phone','') if request.method == 'POST' else '' }}"></div>
+            <div class="field"><label for="new_email">Email Address</label><input id="new_email" name="email" type="email" placeholder="member@example.com" value="{{ request.form.get('email','') if request.method == 'POST' else '' }}"></div>
+            <div class="field create-member-span-2"><label for="new_present_address">Present Address</label><textarea id="new_present_address" name="present_address" placeholder="Village, Post Office, Upazila, District"></textarea></div>
+            <div class="field create-member-span-2"><label for="new_permanent_address">Permanent Address</label><textarea id="new_permanent_address" name="permanent_address" placeholder="Enter permanent address"></textarea></div>
+          </div>
+        </section>
+        <section class="create-member-section">
+          <h3><span>03</span> Organization Information</h3>
+          <div class="create-member-grid">
+            <div class="field"><label for="new_branch">Branch Name *</label><select id="new_branch" name="branch_name" required><option value="">Select active branch</option>{% for b in active_branches %}<option value="{{ b }}">{{ b }}</option>{% endfor %}</select>{% if not active_branches %}<small class="hint">No active branch was found in the database. Activate/create a branch first.</small>{% endif %}</div>
+            <div class="field"><label for="new_department">Department</label><select id="new_department" name="department"><option value="">Select department / role</option>{% for r in department_roles %}<option value="{{ r }}">{{ r.replace('_',' ').title() }}</option>{% endfor %}</select></div>
+            <div class="field"><label for="new_joining_date">Joining Date *</label><input id="new_joining_date" name="joining_date" type="date" required value="{{ request.form.get('joining_date','') if request.method == 'POST' else '' }}"></div>
+            <div class="field"><label for="new_status">Member Status</label><select id="new_status" name="status"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+          </div>
+        </section>
+        <section class="create-member-section">
+          <h3><span>04</span> Account &amp; Security</h3>
+          <div class="create-member-grid">
+            <div class="field"><label for="new_password">Password *</label><input id="new_password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required></div>
+            <div class="field"><label for="new_confirm_password">Confirm Password *</label><input id="new_confirm_password" name="confirm_password" type="password" minlength="8" autocomplete="new-password" placeholder="Re-enter password" required></div>
+            <div class="field create-member-span-2"><label for="new_profile_photo">Profile Photo</label><input id="new_profile_photo" name="profile_photo" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png"><small class="hint">JPG, PNG · Optional</small></div>
+          </div>
+        </section>
+      </div>
+      <div class="create-member-footer"><small>* Required fields. Account role is fixed to MEMBER; the selected role is saved as Department.</small><div class="filter-actions"><a class="btn create-member-cancel" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">Cancel</a><button class="btn create-member-submit" type="submit">＋ Create Member</button></div></div>
+    </form>
+  </section>
+  {% endif %}
 
   <section class="card">
     <div class="card-heading"><h2>Account List Filters</h2><span class="hint">Choose a branch to display accounts.</span></div>
@@ -417,5 +713,35 @@ html body .ssa-content .page .member-edit-card > form > .member-edit-footer {
   </section>
 </main>
 </div></div>
+
+<script>
+(function () {
+  const profileMenu = document.getElementById('ssaProfileMenu');
+  const profileToggle = document.getElementById('ssaProfileToggle');
+  const profileDropdown = document.getElementById('ssaProfileDropdown');
+  if (!profileMenu || !profileToggle || !profileDropdown) return;
+
+  function closeProfileMenu() {
+    profileMenu.classList.remove('is-open');
+    profileToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  profileToggle.addEventListener('click', function (event) {
+    event.preventDefault();
+    const shouldOpen = !profileMenu.classList.contains('is-open');
+    profileMenu.classList.toggle('is-open', shouldOpen);
+    profileToggle.setAttribute('aria-expanded', String(shouldOpen));
+  });
+
+  document.addEventListener('click', function (event) {
+    if (!profileMenu.contains(event.target)) closeProfileMenu();
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') closeProfileMenu();
+  });
+})();
+</script>
+
 </body>
 </html>
