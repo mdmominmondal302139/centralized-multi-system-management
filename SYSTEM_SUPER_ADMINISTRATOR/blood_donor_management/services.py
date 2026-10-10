@@ -966,3 +966,18 @@ def recent_audit_logs(context):
         .sort("_id", -1)
         .limit(30)
     ]
+
+
+def clean(value):
+    """Convert MongoDB values into template/JSON-friendly primitives."""
+    from bson import ObjectId
+    from datetime import date, datetime
+    if isinstance(value, dict):
+        return {str(k): clean(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [clean(v) for v in value]
+    if isinstance(value, ObjectId):
+        return str(value)
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+    return value
