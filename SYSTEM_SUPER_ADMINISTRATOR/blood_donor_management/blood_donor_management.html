@@ -66,6 +66,28 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,Hel
 .ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1;min-height:0}.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap;height:40px;min-height:40px;line-height:20px;overflow:hidden}.ssa-nav a:hover{background:#eef6ff;color:#0d65bd}.ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}.ssa-profile-box{flex:none;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}.ssa-profile{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
 .ssa-main-shell{margin-left:280px;width:calc(100% - 280px);min-height:100vh;overflow-x:hidden}.ssa-main-shell>.content{width:100%;min-height:100vh}
 @media(max-width:650px){.ssa-sidebar{position:fixed!important;width:280px!important}.ssa-main-shell{margin-left:280px;width:calc(100% - 280px);min-width:820px}}
+
+/* Requested bright-light, regular-weight typography */
+.ssa-shell,.ssa-shell *,.content,.content *{font-weight:400!important}
+.ssa-brand-title,.ssa-nav-group,.ssa-nav a.active,.ssa-profile strong,.title,.card h2,.card h3,.work-tab strong{font-weight:400!important}
+.ssa-shell{background:#ffffff!important;color:#24425f!important}
+.ssa-sidebar{background:#ffffff!important;border-right:1px solid #e7edf5!important;box-shadow:2px 0 16px rgba(42,92,145,.04)!important}
+.ssa-brand{background:#ffffff!important}
+.ssa-brand-title{color:#1769aa!important}
+.ssa-nav a{color:#365775!important}
+.ssa-nav a:hover,.ssa-nav a.active{background:#edf7ff!important;color:#086bc4!important}
+.ssa-profile-box{background:#ffffff!important}
+.ssa-profile{width:100%;border:0;background:transparent;cursor:pointer;text-align:left;padding:4px 2px;color:#1769aa!important;font:inherit!important}
+.ssa-profile-text{min-width:0;flex:1;overflow-wrap:anywhere}
+.ssa-profile strong{display:block;font-size:12px;color:#1769aa!important}
+.ssa-profile small{display:block;color:#5e7892!important;margin-top:3px}
+.ssa-profile-chevron{margin-left:auto;color:#1769aa}
+.ssa-profile-menu{margin-top:10px;padding:6px;border:1px solid #e0ebf5;border-radius:10px;background:#fff;box-shadow:0 8px 24px rgba(25,76,125,.10)}
+.ssa-profile-menu[hidden]{display:none!important}
+.ssa-profile-menu a{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:7px;color:#245276;text-decoration:none;font-size:13px}
+.ssa-profile-menu a:hover{background:#eef7ff;color:#086bc4}
+.ssa-profile-menu a:last-child:hover{background:#fff1f1;color:#c3313b}
+
 </style>
 
 </head>
@@ -97,8 +119,15 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,Hel
     <a href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
   </nav>
   <div class="ssa-profile-box">
-    <a class="ssa-profile" href="/system_super_administrator/profile"><span class="ssa-avatar">SA</span><span><strong>{{ session.get('username','blue') }}</strong><small>System Super Administrator</small></span></a>
-    <a class="ssa-logout" href="/logout">Logout</a>
+    <button class="ssa-profile" id="ssaProfileToggle" type="button" aria-expanded="false" aria-controls="ssaProfileMenu">
+      <span class="ssa-avatar">SA</span>
+      <span class="ssa-profile-text"><strong>{{ profile_full_name }}</strong><small>System Super Administrator</small></span>
+      <span class="ssa-profile-chevron">⌄</span>
+    </button>
+    <div class="ssa-profile-menu" id="ssaProfileMenu" hidden>
+      <a href="/system_super_administrator/profile"><span>◉</span> Profile</a>
+      <a href="/logout"><span>↪</span> Logout</a>
+    </div>
   </div>
 </aside>
 
@@ -110,7 +139,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,Hel
 <h1 class="title">Blood Donor & Management System</h1>
 <div class="subtitle">Donor recruitment → verification → donation → request → matching → response → fulfilment → history → safety → reporting</div>
 </div>
-<div class="identity"><strong>{{ session.get('username','admin') }}</strong><small>System Super Administrator</small></div>
+<div class="identity"><strong>{{ profile_full_name }}</strong><small>System Super Administrator</small></div>
 </div>
 
 {% if message %}<div class="alert ok">✓ {{ message }}</div>{% endif %}
@@ -122,7 +151,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,Hel
 <button class="work-tab" data-panel="donors"><div class="icon">👥</div><strong>Donors</strong><span>Search & manage</span></button>
 <button class="work-tab" data-panel="requests"><div class="icon">🚨</div><strong>Blood Requests</strong><span>Emergency & matching</span></button>
 <button class="work-tab" data-panel="donations"><div class="icon">💉</div><strong>Donations</strong><span>History & screening</span></button>
-<button class="work-tab" data-panel="audit"><div class="icon">🛡</div><strong>Audit Logs</strong><span>Trace management actions</span></button>
+<button class="work-tab" data-panel="inventory"><div class="icon">🧊</div><strong>Inventory</strong><span>Blood stock</span></button><button class="work-tab" data-panel="notifications"><div class="icon">🔔</div><strong>Notifications</strong><span>Updates</span></button><button class="work-tab" data-panel="reports"><div class="icon">📈</div><strong>Reports</strong><span>Summary</span></button><button class="work-tab" data-panel="audit"><div class="icon">🛡</div><strong>Audit Logs</strong><span>Trace management actions</span></button>
 </div>
 
 <section id="dashboard" class="panel active">
@@ -329,6 +358,29 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,Hel
 </div>
 </section>
 
+
+<section id="inventory" class="panel">
+<div class="card">
+<h2>🧊 Blood Inventory</h2>
+<p class="muted">Track blood units by group, branch, expiry date and status.</p>
+<form method="post" class="grid">
+<input type="hidden" name="_csrf" value="{{ csrf_token }}"><input type="hidden" name="action" value="save_unit">
+<label class="field">Blood Group<select name="blood_group" required>{% for g in blood_groups %}<option>{{ g }}</option>{% endfor %}</select></label>
+<label class="field">Units<input name="units" type="number" min="1" required></label>
+<label class="field">Branch<select name="branch_name"><option value="">Central</option>{% for b in options.branches %}<option>{{ b }}</option>{% endfor %}</select></label>
+<label class="field">Collection Date<input name="collection_date" type="date" value="{{ today_date }}" required></label>
+<label class="field">Expiry Date<input name="expiry_date" type="date" required></label>
+<label class="field">Status<select name="status"><option>Available</option><option>Reserved</option><option>Issued</option><option>Quarantined</option><option>Rejected</option></select></label>
+<div class="actions"><button class="btn green">ADD INVENTORY UNIT</button></div>
+</form>
+<div class="table-wrap"><table><thead><tr><th>Blood Group</th><th>Units</th><th>Branch</th><th>Collected</th><th>Expiry</th><th>Status</th></tr></thead><tbody>
+{% for u in inventory %}<tr><td>{{ u.get('blood_group','-') }}</td><td>{{ u.get('units',0) }}</td><td>{{ u.get('branch_name','Central') }}</td><td>{{ u.get('collection_date','-') }}</td><td>{{ u.get('expiry_date','-') }}</td><td>{{ u.get('status','Available') }}</td></tr>{% else %}<tr><td colspan="6" class="empty">No inventory records yet.</td></tr>{% endfor %}
+</tbody></table></div>
+</div>
+</section>
+<section id="notifications" class="panel"><div class="card"><h2>🔔 Notifications</h2><p class="muted">Recent donor and blood-request notifications.</p><div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Title</th><th>Message</th><th>Status</th></tr></thead><tbody>{% for n in notifications %}<tr><td>{{ n.get('created_at','-') }}</td><td>{{ n.get('type','System') }}</td><td>{{ n.get('title','-') }}</td><td>{{ n.get('message','-') }}</td><td>{{ n.get('status','Unread') }}</td></tr>{% else %}<tr><td colspan="5" class="empty">No notifications yet.</td></tr>{% endfor %}</tbody></table></div></div></section>
+<section id="reports" class="panel"><div class="card"><h2>📈 Reports</h2><p>Summary based on the current donor, request, donation and inventory records.</p><div class="stats"><div class="stat"><label>Total Donors</label><b>{{ stats.get('total_donors',0) }}</b></div><div class="stat"><label>Active Donors</label><b>{{ stats.get('active_donors',0) }}</b></div><div class="stat"><label>Open Requests</label><b>{{ stats.get('open_requests',0) }}</b></div><div class="stat"><label>Inventory Units</label><b>{{ inventory_total }}</b></div></div><a class="btn green" href="{{ url_for('system_super_administrator_blood_donor_management_bp.export_report') }}">DOWNLOAD CSV REPORT</a></div></section>
+
 <section id="audit" class="panel">
 <div class="card">
 <h2>🛡 Audit Log</h2>
@@ -441,5 +493,32 @@ document.addEventListener('DOMContentLoaded',function(){
 
 </div>
 </div>
+
+<script>
+(function () {
+  const toggle = document.getElementById('ssaProfileToggle');
+  const menu = document.getElementById('ssaProfileMenu');
+  if (!toggle || !menu) return;
+  toggle.addEventListener('click', function (event) {
+    event.stopPropagation();
+    const isOpen = !menu.hidden;
+    menu.hidden = isOpen;
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+  });
+  document.addEventListener('click', function (event) {
+    if (!menu.hidden && !menu.contains(event.target) && !toggle.contains(event.target)) {
+      menu.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      menu.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
