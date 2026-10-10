@@ -20,7 +20,7 @@
 .ssa-content>.page{max-width:none;margin:0;padding:24px 24px 32px}
 @media(max-width:700px){.ssa-sidebar{width:280px}.ssa-content{margin-left:280px;min-width:820px}}
 
-.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity strong{font-weight:800}.ssa-page-identity span{color:#73869c;font-size:11px}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form label:has(textarea){grid-column:span 2}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus,.ssa-content .card form textarea:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form textarea{min-height:90px;resize:vertical}.ssa-content .card form input[type=hidden]{display:none}.ssa-content .card form button{grid-column:span 1;border:0;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}.ssa-content .card form button:hover{filter:brightness(.96)}@media(max-width:1000px){.ssa-content .card form{grid-template-columns:repeat(2,minmax(180px,1fr))}}@media(max-width:700px){.ssa-content .card form{grid-template-columns:1fr}.ssa-content .card form label:has(textarea){grid-column:span 1}}
+.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity strong{font-weight:800}.ssa-page-identity span{color:#73869c;font-size:11px}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form label:has(textarea){grid-column:span 2}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus,.ssa-content .card form textarea:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form textarea{min-height:90px;resize:vertical}.ssa-content .card form input[type=hidden]{display:none}.ssa-content .card form button{grid-column:span 1;border:0;outline:0;box-shadow:none;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}.ssa-content .card form button:hover{filter:brightness(.96)}@media(max-width:1000px){.ssa-content .card form{grid-template-columns:repeat(2,minmax(180px,1fr))}}@media(max-width:700px){.ssa-content .card form{grid-template-columns:1fr}.ssa-content .card form label:has(textarea){grid-column:span 1}}
 
 /* v17: keep the sidebar permanently left and keep all working content in the right scroll area. */
 .ssa-sidebar{position:fixed !important;left:0 !important;top:0 !important;bottom:0 !important;width:280px !important;height:100vh !important;overflow:hidden !important;}
@@ -41,7 +41,37 @@
 .record-table .empty{text-align:center;padding:28px;color:#64748b}
 .inline-action{margin:0}
 .inline-action .danger{padding:8px 14px;border:0;border-radius:8px;cursor:pointer;font-weight:600}
+
+.records-tools{display:flex;justify-content:flex-start;margin:0 0 14px}
+.csv-download{border:0!important;outline:0!important;box-shadow:none!important;border-radius:9px;background:#e6f3ff;color:#075da8;padding:10px 15px;cursor:pointer;font-size:14px;font-weight:500}
+.csv-download:hover{background:#d7ebff}
+.ssa-content .card form button{border:0!important;outline:0!important;box-shadow:none!important}
 </style>
+
+<style>
+/* Same click-to-open Profile + Logout menu as Income Management. */
+.ssa-sidebar{background:#ffffff;color:#24364b}
+.ssa-brand{background:#ffffff}
+.ssa-nav a{font-weight:400;color:#334b65}
+.ssa-nav a.active{font-weight:500;background:#eaf4ff;color:#1769b2}
+.ssa-profile{position:relative;flex:0 0 auto;border-top:1px solid #e4edf6;padding:10px;background:#fff}
+.ssa-profile-trigger{width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:1px solid transparent;background:#fff;border-radius:11px;padding:9px 8px;cursor:pointer;color:#24364b;font:inherit}
+.ssa-profile-trigger:hover,.ssa-profile-trigger[aria-expanded="true"]{background:#f2f8ff;border-color:#dceafa}
+.ssa-avatar{width:38px;height:38px;min-width:38px;border-radius:50%;background:#e3f0ff;color:#2366a8;display:grid;place-items:center;font-size:13px;font-weight:500}
+.ssa-profile-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.ssa-profile-name{font-size:12px;line-height:1.3;font-weight:400;color:#263b53;white-space:normal}
+.ssa-profile-role{font-size:11px;line-height:1.3;font-weight:400;color:#71839a}
+.ssa-profile-chevron{font-size:15px;color:#71839a;transform:rotate(0deg);transition:transform .15s}
+.ssa-profile-trigger[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(180deg)}
+.ssa-profile-dropdown{position:absolute;left:10px;right:10px;bottom:calc(100% + 8px);z-index:1200;background:#fff;border:1px solid #dce7f3;border-radius:12px;padding:6px;box-shadow:0 12px 30px rgba(31,62,96,.15)}
+.ssa-profile-dropdown.drop-down{top:calc(100% + 8px);bottom:auto}
+.ssa-profile-dropdown[hidden]{display:none}
+.ssa-profile-dropdown a{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:8px;text-decoration:none;color:#334b65;font-size:13px;font-weight:400}
+.ssa-profile-dropdown a:hover{background:#f0f7ff;color:#1769b2}
+.ssa-profile-dropdown a.logout-option{color:#d94848}
+.ssa-profile-dropdown a.logout-option:hover{background:#fff1f1;color:#c62828}
+</style>
+
 </head><body><div class="ssa-shell"><aside class="ssa-sidebar">
   <div class="ssa-brand"><div class="ssa-brand-title">SYSTEM SUPER ADMINISTRATOR</div><div class="ssa-brand-scope">GLOBAL / HIGHEST AUTHORITY</div></div>
   <nav class="ssa-nav">
@@ -67,11 +97,18 @@
     <a class="" href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
     <a class="" href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
   </nav>
-  <div class="ssa-profile">
-    <a class="ssa-profile-link" href="/system_super_administrator/profile"><span class="ssa-avatar">SA</span><span><strong>{{ session.get('username','blue') }}</strong><small>System Super Administrator</small></span></a>
-    <a class="ssa-logout" href="/logout">Logout</a>
+  <div class="ssa-profile" id="ssaProfileMenu">
+    <button class="ssa-profile-trigger" type="button" aria-expanded="false" aria-controls="ssaProfileDropdown" id="ssaProfileTrigger">
+      <span class="ssa-avatar">SA</span>
+      <span class="ssa-profile-copy"><span class="ssa-profile-name">{{ session.get('username','blue') }}</span><span class="ssa-profile-role">System Super Administrator</span></span>
+      <span class="ssa-profile-chevron" aria-hidden="true">⌃</span>
+    </button>
+    <div class="ssa-profile-dropdown" id="ssaProfileDropdown" hidden>
+      <a href="/system_super_administrator/profile"><span aria-hidden="true">♙</span> Profile</a>
+      <a class="logout-option" href="/logout"><span aria-hidden="true">↪</span> Logout</a>
+    </div>
   </div>
-</aside><div class="ssa-content"><main class="page"><header><h1>Savings Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}<section class="card"><h2>Entry</h2><form method="post"><label>Member<select name="member_name"><option value="">Select Member</option>{% for x in options.members %}<option>{{ x }}</option>{% endfor %}</select></label><label>Branch Name<select name="branch_name"><option value="">Select Branch</option>{% for x in options.branches %}<option>{{ x }}</option>{% endfor %}</select></label><label>Amount<input name="amount"></label><label>Savings Type<select name="type"><option value="">Select Savings Type</option><option>Monthly Savings</option><option>General Savings</option><option>Emergency Savings</option><option>Other</option></select></label><label>Date<input name="date"></label><label>Method<select name="method"><option value="">Select Method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Other</option></select></label><label>Note<input name="note"></label><input type="hidden" name="action" value="save"><button>Save</button></form></section><section class="card"><h2>Records</h2><form method="get"><input name="search" placeholder="Search" value="{{ request.args.get('search','') }}"><button>Search</button></form><div class="record-table-wrap"><table class="record-table"><thead><tr><th>SL</th><th>Date</th><th>Time</th><th>Amount</th><th>Member</th><th>Branch</th><th>Type</th><th>Method</th><th>Note</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td>{{ r.get("date","") }}</td><td>{{ r.get("time","") }}</td><td>{{ r.get("amount","") }}</td><td>{{ r.get("member","") }}</td><td>{{ r.get("branch","") }}</td><td>{{ r.get("type","") }}</td><td>{{ r.get("method","") }}</td><td>{{ r.get("note","") }}</td><td><form method="post" class="inline-action"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><button class="danger" type="submit">Delete</button></form></td></tr>{% else %}<tr><td colspan="10" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div></section></main></div></div>
+</aside><div class="ssa-content"><main class="page"><header><h1>Savings Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}<section class="card"><h2>Entry</h2><form method="post"><label>Member<select name="member_name" required><option value="">Select Member</option>{% for x in options.members %}<option>{{ x }}</option>{% endfor %}</select></label><label>Amount<input name="amount" type="number" min="0.01" step="0.01" required></label><label>Savings Type<select name="type" required><option value="">Select Savings Type</option><option>Monthly Savings</option><option>General Savings</option><option>Emergency Savings</option><option>Other</option></select></label><label>Date<input name="date" type="date" required></label><label>Time<input name="time" type="time" required></label><label>Method<select name="method" required><option value="">Select Method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Other</option></select></label><label>Note<input name="note" required></label><input type="hidden" name="action" value="save"><button>Save</button></form></section><section class="card"><h2>Records</h2><div class="records-tools"><button type="button" id="downloadSavingsCsv" class="csv-download">⇩ Download CSV</button></div><form method="get"><input name="search" placeholder="Search" value="{{ request.args.get('search','') }}"><button>Search</button></form><div class="record-table-wrap"><table class="record-table"><thead><tr><th>SL</th><th>Date</th><th>Time</th><th>Amount</th><th>Member</th><th>Type</th><th>Method</th><th>Note</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td>{{ r.get("date","") }}</td><td>{{ r.get("time","") }}</td><td>{{ r.get("amount","") }}</td><td>{{ r.get("member","") }}</td><td>{{ r.get("type","") }}</td><td>{{ r.get("method","") }}</td><td>{{ r.get("note","") }}</td><td><form method="post" class="inline-action"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><button class="danger" type="submit">Delete</button></form></td></tr>{% else %}<tr><td colspan="9" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div></section></main></div></div>
 <script>
 (function(){
   function pad(n){return String(n).padStart(2,"0");}
@@ -85,4 +122,69 @@
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",setCurrent); else setCurrent();
 })();
 </script>
+<script>
+(function(){
+  const entryForm=document.querySelector('.ssa-content section.card form[method="post"]');
+  if(entryForm){
+    entryForm.addEventListener('submit',function(e){
+      const required=Array.from(entryForm.querySelectorAll('[required]'));
+      let missing=false;
+      required.forEach(function(el){
+        if(!String(el.value||'').trim()){el.setCustomValidity('Please fill in this field.');missing=true;}
+        else el.setCustomValidity('');
+      });
+      const amount=entryForm.querySelector('input[name="amount"]');
+      if(amount && Number(amount.value)<=0){amount.setCustomValidity('Amount must be greater than zero.');missing=true;} else if(amount){amount.setCustomValidity('');}
+      if(missing){e.preventDefault();entryForm.reportValidity();}
+    });
+    entryForm.querySelectorAll('[required]').forEach(function(el){el.addEventListener('input',function(){el.setCustomValidity('');});el.addEventListener('change',function(){el.setCustomValidity('');});});
+  }
+  document.querySelectorAll('.inline-action input[name="action"][value="delete"]').forEach(function(action){
+    const form=action.closest('form');
+    if(form) form.addEventListener('submit',function(e){if(!window.confirm('Are you sure you want to delete this savings record?')) e.preventDefault();});
+  });
+  const csvButton=document.getElementById('downloadSavingsCsv');
+  if(csvButton){csvButton.addEventListener('click',function(){
+    const table=document.querySelector('.record-table'); if(!table)return;
+    const rows=Array.from(table.querySelectorAll('tr')).map(function(row){
+      return Array.from(row.querySelectorAll('th,td')).filter(function(cell){return !cell.querySelector('form');}).map(function(cell){
+        let value=(cell.innerText||'').replace(/\s+/g,' ').trim();
+        return '"'+value.replace(/"/g,'""')+'"';
+      }).join(',');
+    });
+    const blob=new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='savings_records.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  });}
+})();
+</script>
+
+<script>
+(function(){
+  const trigger=document.getElementById('ssaProfileTrigger');
+  const menu=document.getElementById('ssaProfileDropdown');
+  const shell=document.getElementById('ssaProfileMenu');
+  if(!trigger||!menu||!shell)return;
+  function positionMenu(){
+    if(menu.hidden)return;
+    menu.classList.remove('drop-down');
+    const rect=shell.getBoundingClientRect();
+    const menuHeight=menu.offsetHeight||100;
+    const below=window.innerHeight-rect.bottom;
+    const above=rect.top;
+    if(below>=menuHeight+16 || below>=above){menu.classList.add('drop-down');}
+  }
+  function closeMenu(){menu.hidden=true;trigger.setAttribute('aria-expanded','false');menu.classList.remove('drop-down');}
+  trigger.addEventListener('click',function(event){
+    event.stopPropagation();
+    if(!menu.hidden){closeMenu();return;}
+    menu.hidden=false;trigger.setAttribute('aria-expanded','true');
+    requestAnimationFrame(positionMenu);
+  });
+  document.addEventListener('click',function(event){if(!shell.contains(event.target))closeMenu();});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'){closeMenu();trigger.focus();}});
+  window.addEventListener('resize',positionMenu);
+  window.addEventListener('scroll',positionMenu,true);
+})();
+</script>
+
 </body></html>
