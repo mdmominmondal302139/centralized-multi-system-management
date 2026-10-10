@@ -27,9 +27,27 @@ def branch_overview(context):
     branch_id = _context_branch(context)
     client, database = db.get_mongo()
     try:
-        branch = database["branches"].find_one({"_id": _object_id(branch_id)}) if _object_id_valid(branch_id) else database["branches"].find_one({"_id": branch_id})
-        if not branch:
-            branch = database["branches"].find_one({"id": branch_id})
+        branches = database["branches"]
+
+branch = None
+
+if _object_id_valid(branch_id):
+    branch = branches.find_one({"_id": _object_id(branch_id)})
+
+if not branch:
+    branch = branches.find_one({"_id": branch_id})
+
+if not branch:
+    branch = branches.find_one({"id": branch_id})
+
+if not branch:
+    branch = branches.find_one({"branch_id": branch_id})
+
+if not branch:
+    branch = branches.find_one({"branch_code": branch_id})
+
+if not branch:
+    branch = branches.find_one({"branch_reg_no": branch_id})
         member_count = database["members"].count_documents({"branch_id": branch_id})
         active_count = database["members"].count_documents({"branch_id": branch_id, "$or":[{"active":True},{"status":{"$in":["Active","active"]}}]})
         return {
@@ -290,6 +308,3 @@ def delete_record(context, record_id):
 
 def get_branch(context):
     return branch_overview(context)
-
-def update_branch(context, data):
-    return update_branch(context, data)
