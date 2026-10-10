@@ -14,7 +14,7 @@
 .ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity span{color:#73869c;font-size:11px}
 .ssa-content .card{max-width:100%;box-sizing:border-box}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form button{border:0;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}
 .record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(15,23,42,.06)}.record-table{width:100%;min-width:1100px;border-collapse:collapse;font-size:14px;background:#fff}.record-table th{padding:13px 14px;text-align:left;background:#f3f7fb;color:#243447;font-weight:700;border-bottom:2px solid #d9e2ec;white-space:nowrap}.record-table td{padding:11px 14px;border-bottom:1px solid #e7edf3;color:#334155;vertical-align:middle;white-space:nowrap}.record-table tbody tr:hover{background:#f8fbff}.record-table .empty{text-align:center;padding:28px;color:#64748b}
-.status-on{display:inline-flex;align-items:center;gap:5px;color:#087f46;font-weight:800}.status-off{display:inline-flex;align-items:center;gap:5px;color:#c62828;font-weight:800}.btn{display:inline-block;text-decoration:none;border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;font-size:12px}.btn-update{background:#16834d;color:#fff}.btn-delete{background:#dc3545!important;color:#fff!important;border:1px solid #c82333!important}.btn-delete:hover{background:#b91c2b!important;color:#fff!important}.btn-open{background:#1769aa;color:#fff}.btn-download{background:#5b3aa4;color:#fff}.btn-cancel{background:#64748b;color:#fff}.action-row{display:flex;gap:7px;align-items:center}.month-table td{padding:14px}.month-table{min-width:620px}.month-title{font-weight:800;color:#173a61}.month-actions{display:flex;gap:8px}
+.status-on{display:inline-flex;align-items:center;gap:5px;color:#087f46;font-weight:800}.status-off{display:inline-flex;align-items:center;gap:5px;color:#c62828;font-weight:800}.btn{display:inline-block;text-decoration:none;border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;font-size:12px}.btn-update{background:#16834d;color:#fff}.btn-delete{background:#ffe3e3!important;color:#171717!important;border:1px solid #ffc2c2!important}.btn-delete:hover{background:#ffd1d1!important;color:#000!important}.btn-open{background:#1769aa;color:#fff}.btn-download{background:#5b3aa4;color:#fff}.btn-cancel{background:#64748b;color:#fff}.action-row{display:flex;gap:7px;align-items:center}.month-table td{padding:14px}.month-table{min-width:620px}.month-title{font-weight:800;color:#173a61}.month-actions{display:flex;gap:8px}
 .section-head{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.back-link{font-weight:700;text-decoration:none;color:#1769aa}.filter-bar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:15px}.filter-bar label{display:flex;flex-direction:column;gap:5px;font-weight:700;color:#203c5d}.filter-bar input,.filter-bar select{padding:9px 10px;border:1px solid #cbd9e8;border-radius:8px}.day-summary{font-weight:800;color:#173a61}
 .edit-form{display:none!important;margin-top:8px;padding:12px;background:#f7fafc;border:1px solid #dce6ef;border-radius:9px}.edit-form.open{display:grid!important;grid-template-columns:repeat(4,minmax(120px,1fr));gap:8px}.edit-form input,.edit-form select{padding:7px;border:1px solid #cbd9e8;border-radius:7px}.edit-form button{padding:7px 10px;border-radius:7px;border:0;font-weight:700;cursor:pointer}
 /* Clean modal editor: keep edit controls in a centered dialog, not inside the table */
@@ -105,7 +105,7 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
 .record-table tbody tr:hover{background:#f0f7ff!important}
 .record-table .empty{color:#7489a2!important}
 .status-on{color:#07824b!important}.status-off{color:#d12f43!important}
-.btn-update{background:#138653!important}.btn-delete{background:#e34652!important}.btn-open{background:#1675c8!important}.btn-download{background:#6545b5!important}
+.btn-update{background:#138653!important}.btn-delete{background:#ffe3e3!important;color:#171717!important;border-color:#ffc2c2!important}.btn-delete:hover{background:#ffd1d1!important;color:#000!important}.btn-open{background:#1675c8!important}.btn-download{background:#6545b5!important}
 .month-table th{background:#edf5ff!important}
 .month-title,.day-summary{color:#183e68!important}
 .edit-form{background:#f6faff!important;border-color:#dce8f5!important}
@@ -140,6 +140,38 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
 .ssa-content button,.ssa-nav a,.ssa-content table,.ssa-content th,.ssa-content td {font-weight:400!important}
 .ssa-content h1{font-weight:500!important}.ssa-content h2,.ssa-content h3{font-weight:500!important}
 
+
+/* Final Delete-only override: keep the Delete button pale red with black text */
+.ssa-content .card form button.btn-delete,
+.ssa-content .card form button.btn-delete:visited {
+  background: #ffe3e3 !important;
+  background-color: #ffe3e3 !important;
+  color: #171717 !important;
+  border: 1px solid #ffc2c2 !important;
+  box-shadow: none !important;
+}
+.ssa-content .card form button.btn-delete:hover,
+.ssa-content .card form button.btn-delete:focus {
+  background: #ffd1d1 !important;
+  background-color: #ffd1d1 !important;
+  color: #000 !important;
+}
+
+
+/* Collapsible sidebar account menu: profile and logout appear only after clicking the user row. */
+.ssa-profile-toggle{width:100%;display:flex;align-items:center;gap:10px;padding:4px 0;border:0;background:transparent;text-align:left;color:#173c67;cursor:pointer;font:inherit}
+.ssa-profile-toggle:hover{opacity:.88}
+.ssa-profile-user{display:block;min-width:0;flex:1}
+.ssa-profile-user strong{font-size:12px;display:block}
+.ssa-profile-user small{display:block;color:#657f9f;margin-top:2px;font-size:11px}
+.ssa-profile-chevron{margin-left:auto;font-size:14px;color:#71849a;transform:rotate(180deg);transition:transform .18s ease}
+.ssa-profile-toggle[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(0deg)}
+.ssa-profile-actions{padding-top:9px;display:grid;gap:7px}
+.ssa-profile-actions[hidden]{display:none!important}
+.ssa-profile-action{display:block;text-align:center;text-decoration:none;background:#eaf3ff;color:#155da5;border:1px solid #d5e6fb;border-radius:7px;padding:8px;font-weight:500}
+.ssa-profile-action:hover{background:#dcecff}
+.ssa-profile-actions .ssa-logout{margin-top:0}
+
 </style>
 </head>
 <body>
@@ -169,15 +201,22 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
     <a href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
     <a href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
   </nav>
-  <div class="ssa-profile">
-    <a class="ssa-profile-link" href="/system_super_administrator/profile"><span class="ssa-avatar">SA</span><span><strong>{{ session.get('username','blue') }}</strong><small>System Super Administrator</small></span></a>
-    <a class="ssa-logout" href="/logout">Logout</a>
+  <div class="ssa-profile" id="ssa-profile-menu">
+    <button type="button" class="ssa-profile-toggle" id="ssa-profile-toggle" aria-expanded="false" aria-controls="ssa-profile-actions">
+      <span class="ssa-avatar">SA</span>
+      <span class="ssa-profile-user"><strong>{{ session.get('username','blue') }}</strong><small>System Super Administrator</small></span>
+      <span class="ssa-profile-chevron" aria-hidden="true">⌃</span>
+    </button>
+    <div class="ssa-profile-actions" id="ssa-profile-actions" hidden>
+      <a class="ssa-profile-action" href="/system_super_administrator/profile">Profile</a>
+      <a class="ssa-logout" href="/logout">Logout</a>
+    </div>
   </div>
 </aside>
 
 <div class="ssa-content"><main class="page">
 <header style="display:flex;align-items:center;gap:15px"><h1>Meal Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>
-{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}
+{% if message %}<div class="ok" id="meal-server-success" data-message="{{ message|e }}" style="display:none">{{ message }}</div>{% endif %}{% if error %}<div class="err" id="meal-server-error" data-message="{{ error|e }}" style="display:none">{{ error }}</div>{% endif %}
 
 {% if view == 'month' %}
 <section class="card">
@@ -202,8 +241,8 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
       <tr>
         <td>{{ loop.index }}</td><td>{{ row.date }}</td><td>{{ row.day }}</td><td>{{ r.member }}</td><td>{{ r.branch }}</td><td>{{ r.meal_type }}</td><td>{{ r.meal }}</td><td>{{ r.meal_charge }}</td><td>{{ r.rice_charge }}</td><td><span class="status-on">🟢 ON</span></td>
         <td><div class="action-row"><button class="btn btn-update" type="button" onclick="toggleEdit('{{ r.id }}')">Update</button>
-        <form method="post" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this meal record?')"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.id }}"><input type="hidden" name="return_month" value="{{ month_key }}"><button class="btn btn-delete" type="submit">Delete</button></form></div>
-        <form id="edit-{{ r.id }}" class="edit-form" style="display:none!important" method="post"><input type="hidden" name="action" value="update"><input type="hidden" name="record_id" value="{{ r.id }}"><input type="hidden" name="return_month" value="{{ month_key }}">
+        <form method="post" style="display:inline" onsubmit="return showDeleteConfirm(this)"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.id }}"><input type="hidden" name="return_month" value="{{ month_key }}"><input type="hidden" name="return_member" value="{{ member }}"><button class="btn btn-delete" type="submit">Delete</button></form></div>
+        <form id="edit-{{ r.id }}" class="edit-form" style="display:none!important" method="post"><input type="hidden" name="action" value="update"><input type="hidden" name="record_id" value="{{ r.id }}"><input type="hidden" name="return_month" value="{{ month_key }}"><input type="hidden" name="return_member" value="{{ member }}">
           <label>Date (DD.MM.YYYY)<input name="date" value="{{ r.date }}" placeholder="DD.MM.YYYY" required></label>
           <label>Member Name<input name="member_name" value="{{ r.member }}" required></label>
           <label>Branch Name<input name="branch_name" value="{{ r.branch }}" required></label>
@@ -419,6 +458,124 @@ document.addEventListener('DOMContentLoaded',function(){
   });}
 });
 
+</script>
+
+
+<!-- Delete confirmation: affects only the Delete action -->
+<div id="meal-delete-modal" class="meal-delete-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="meal-delete-title">
+  <div class="meal-delete-box">
+    <div class="meal-delete-icon">!</div>
+    <h2 id="meal-delete-title">Delete this meal record?</h2>
+    <p>Are you sure you want to delete this meal record? This action cannot be undone.</p>
+    <div class="meal-delete-actions">
+      <button type="button" class="meal-delete-cancel" onclick="closeDeleteConfirm()">Cancel</button>
+      <button type="button" class="meal-delete-confirm" onclick="confirmMealDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+<style>
+.btn-delete{background:#ffe3e3!important;color:#171717!important;border:1px solid #ffc2c2!important}.btn-delete:hover{background:#ffd1d1!important;color:#000!important}
+.meal-delete-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,32,54,.48);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px}
+.meal-delete-overlay.open{display:flex}
+.meal-delete-box{width:min(420px,100%);box-sizing:border-box;background:#fff;border:1px solid #e5eaf1;border-radius:18px;padding:28px 26px 22px;text-align:center;box-shadow:0 22px 70px rgba(12,35,64,.25);animation:mealDeleteIn .18s ease-out}
+.meal-delete-icon{width:48px;height:48px;margin:0 auto 13px;border-radius:50%;display:grid;place-items:center;background:#fff0f0;border:1px solid #ffd0d0;color:#d12f43;font-size:27px;font-weight:600}
+.meal-delete-box h2{font-size:21px;margin:0 0 9px;color:#17365c;font-weight:500}
+.meal-delete-box p{font-size:14px;line-height:1.6;color:#68788c;margin:0 0 23px}
+.meal-delete-actions{display:flex;justify-content:center;gap:10px}
+.meal-delete-actions button{border-radius:9px;padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer}
+.meal-delete-cancel{background:#f3f6fa;color:#34465b;border:1px solid #d9e2ec}
+.meal-delete-cancel:hover{background:#e9eef5}
+.meal-delete-confirm{background:#ffe3e3;color:#171717;border:1px solid #ffc2c2}
+.meal-delete-confirm:hover{background:#ffd1d1}
+@keyframes mealDeleteIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){.meal-delete-box{padding:23px 18px}.meal-delete-actions button{flex:1}}
+</style>
+<script>
+let mealDeleteFormPending=null;
+function showDeleteConfirm(form){if(form.dataset.deleteConfirmed==='yes'){form.dataset.deleteConfirmed='';return true;}mealDeleteFormPending=form;const modal=document.getElementById('meal-delete-modal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';return false;}
+function closeDeleteConfirm(){const modal=document.getElementById('meal-delete-modal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';mealDeleteFormPending=null;}
+function confirmMealDelete(){if(!mealDeleteFormPending)return;const form=mealDeleteFormPending;form.dataset.deleteConfirmed='yes';closeDeleteConfirm();form.requestSubmit();}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeDeleteConfirm();}});
+document.getElementById('meal-delete-modal').addEventListener('click',function(e){if(e.target===this)closeDeleteConfirm();});
+</script>
+
+
+<!-- Separate 5-second success/error toast for Update and Delete results -->
+<div id="meal-result-toast" class="meal-result-overlay" aria-live="polite" aria-atomic="true" role="status" hidden>
+  <div class="meal-result-box" id="meal-result-box">
+    <div class="meal-result-icon" id="meal-result-icon">✓</div>
+    <div class="meal-result-title" id="meal-result-title">Success</div>
+    <div class="meal-result-message" id="meal-result-message"></div>
+    <div class="meal-result-progress"><span id="meal-result-progress-bar"></span></div>
+  </div>
+</div>
+<style>
+.meal-result-overlay{position:fixed;inset:0;z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,32,54,.20);backdrop-filter:blur(2px)}
+.meal-result-overlay[hidden]{display:none!important}
+.meal-result-box{width:min(500px,calc(100vw - 36px));box-sizing:border-box;background:#fff;border:1px solid #dce6f1;border-radius:22px;padding:34px 32px 25px;text-align:center;box-shadow:0 24px 80px rgba(16,42,75,.25);animation:mealResultIn .22s ease-out}
+.meal-result-icon{width:66px;height:66px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;background:#e5f8ed;border:1px solid #b8ebcc;color:#11834f;font-size:36px;font-weight:600}
+.meal-result-title{font-size:25px;line-height:1.25;font-weight:600;color:#17365c;margin-bottom:9px}
+.meal-result-message{font-size:15px;line-height:1.65;color:#5d7189;overflow-wrap:anywhere}
+.meal-result-progress{height:5px;background:#edf1f6;border-radius:99px;overflow:hidden;margin-top:25px}
+.meal-result-progress span{display:block;height:100%;width:100%;background:#168653;border-radius:99px;transform-origin:left;animation:mealResultCountdown 1s linear forwards}
+.meal-result-box.is-delete .meal-result-icon{background:#fff0f0;border-color:#ffd0d0;color:#c92f3d}
+.meal-result-box.is-delete .meal-result-progress span{background:#e24b55}
+.meal-result-box.is-error .meal-result-icon{background:#fff6df;border-color:#ffe4a3;color:#a66b00}
+.meal-result-box.is-error .meal-result-progress span{background:#e5a126}
+@keyframes mealResultIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes mealResultCountdown{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media(max-width:520px){.meal-result-box{padding:27px 20px 21px}.meal-result-title{font-size:22px}}
+</style>
+<script>
+(function(){
+  const success=document.getElementById('meal-server-success');
+  const error=document.getElementById('meal-server-error');
+  const source=success||error;
+  if(!source)return;
+  const raw=(source.dataset.message||source.textContent||'').trim();
+  if(!raw)return;
+  // Prevent the same server message from appearing again on a browser reload.
+  // A different server message is still shown normally.
+  const noticeKey='meal-management-last-notice';
+  const noticeSignature=location.pathname+'|'+location.search+'|'+(error?'error':'success')+'|'+raw;
+  try {
+    if (sessionStorage.getItem(noticeKey) === noticeSignature) {
+      source.remove();
+      return;
+    }
+    sessionStorage.setItem(noticeKey, noticeSignature);
+  } catch (e) { /* Continue showing the message if session storage is unavailable. */ }
+  const low=raw.toLowerCase();
+  const isDelete=/delet|removed|remove/.test(low);
+  const isUpdate=/updat|edit|chang|saved|save|success/.test(low);
+  const isError=!!error;
+  const overlay=document.getElementById('meal-result-toast');
+  const box=document.getElementById('meal-result-box');
+  document.getElementById('meal-result-title').textContent=isError?'Action not completed':(isDelete?'Meal Deleted Successfully':(isUpdate?'Meal Updated Successfully':'Operation Successful'));
+  document.getElementById('meal-result-icon').textContent=isError?'!':(isDelete?'✓':(isUpdate?'✓':'✓'));
+  document.getElementById('meal-result-message').textContent=raw;
+  if(isDelete)box.classList.add('is-delete');
+  if(isError)box.classList.add('is-error');
+  overlay.hidden=false;
+  window.setTimeout(function(){overlay.hidden=true;},5000);
+})();
+</script>
+
+
+<script>
+(function(){
+  const toggle=document.getElementById('ssa-profile-toggle');
+  const actions=document.getElementById('ssa-profile-actions');
+  if(!toggle||!actions)return;
+  toggle.addEventListener('click',function(){
+    const opening=toggle.getAttribute('aria-expanded')!=='true';
+    toggle.setAttribute('aria-expanded',String(opening));
+    actions.hidden=!opening;
+  });
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape'&&!actions.hidden){actions.hidden=true;toggle.setAttribute('aria-expanded','false');toggle.focus();}
+  });
+})();
 </script>
 
 </body></html>
