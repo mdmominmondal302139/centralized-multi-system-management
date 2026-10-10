@@ -65,7 +65,8 @@ def page():
     if session.get("authenticated") is not True or session.get("role") != ROLE:
         return redirect(url_for("login"))
 
-    message = None
+    # Consume the last action notice once, so refreshing the page won't repeat it.
+    message = session.pop("_meal_management_notice", None)
     error = None
     try:
         options = _form_options()
@@ -113,13 +114,21 @@ def page():
                     })
                     if item["type"] not in ("Breakfast", "Lunch", "Dinner"):
                         continue
-                    service.create_record(_context(), item)
+                    service.save_or_update_record(_context(), item)
                 message = "Selected meals saved successfully."
             else:
                 service.create_record(_context(), data)
                 message = "Saved successfully."
-            if return_month:
-                return redirect(url_for("system_super_administrator_meal_management_bp.page", month=return_month))
+            # Post/Redirect/Get: store a one-time notice and preserve the month/member view.
+            session["_meal_management_notice"] = message
+            target_month = return_month or _month_key(request.form.get("month", ""))
+            target_member = str(request.args.get("member") or request.form.get("return_member") or "").strip()
+            if target_month:
+                args = {"month": target_month}
+                if target_member:
+                    args["member"] = target_member
+                return redirect(url_for("system_super_administrator_meal_management_bp.page", **args))
+            return redirect(url_for("system_super_administrator_meal_management_bp.page"))
     except Exception as exc:
         error = str(exc)
 
