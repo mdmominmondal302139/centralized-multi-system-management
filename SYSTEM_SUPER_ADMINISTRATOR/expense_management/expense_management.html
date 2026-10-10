@@ -12,10 +12,10 @@
 .ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}
 .ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
 .ssa-profile{flex:0 0 auto;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}
-.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}
+.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f;width:100%;border:0;background:transparent;cursor:pointer;text-align:left;padding:0;font:inherit}
 .ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}
 .ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}
-.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
+.ssa-profile-menu{display:none;margin-top:10px}.ssa-profile-menu.open{display:block}.ssa-profile-menu a{display:block;text-decoration:none;margin-top:7px;text-align:center;border-radius:7px;padding:8px;color:#245078;background:#eef6ff}.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#e9f3ff;color:#175b9d;border-radius:7px;padding:8px;font-weight:400}
 .ssa-content{margin-left:280px;min-height:100vh}
 .ssa-content>.page{max-width:none;margin:0;padding:24px 24px 32px}
 @media(max-width:700px){.ssa-sidebar{width:280px}.ssa-content{margin-left:280px;min-width:820px}}
@@ -31,6 +31,16 @@
 .ssa-content table{max-width:100%;}
 .table-wrap{width:100%;max-width:100%;overflow-x:auto;box-sizing:border-box;}
 @media(max-width:700px){.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:700px !important;}}
+/* Bright light, regular-weight styling */
+.ssa-shell,.ssa-shell *{font-weight:400 !important}
+.ssa-brand-title,.ssa-nav-group,.ssa-nav a.active,.ssa-content h1,.ssa-content h2,.ssa-content .card form label,.ssa-content .card form button,.record-table th{font-weight:400 !important}
+.ssa-nav a:hover{background:#edf6ff}
+.ssa-profile-menu{display:none}.ssa-profile-menu.open{display:block}
+.ssa-profile-menu a{font-weight:400 !important}
+.ssa-page-identity{margin-left:auto}
+.csv-download{display:inline-block;padding:9px 14px;border:1px solid #cbdff2;border-radius:8px;background:#edf6ff;color:#155b98;text-decoration:none;font-weight:400}
+.ssa-content .card form button.save-button{grid-column:auto;justify-self:start;width:auto;min-width:76px;padding:3px 11px;min-height:25px;line-height:1.1;border:1px solid #8ecfff;border-radius:6px;background:linear-gradient(180deg,#bfe8ff 0%,#8fd2ff 100%);color:#124b75;font-size:12px;font-weight:400;box-shadow:0 2px 5px rgba(62,157,220,.15);transition:background .15s ease,transform .15s ease}
+.ssa-content .card form button.save-button:hover{background:linear-gradient(180deg,#a9dfff 0%,#79c5f7 100%);transform:translateY(-1px);filter:none}
 </style><style>
 .record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(15,23,42,.06)}
 .record-table{width:100%;min-width:900px;border-collapse:collapse;font-size:15px;background:#fff}
@@ -42,7 +52,16 @@
 .inline-action{margin:0}
 .inline-action .danger{padding:8px 14px;border:0;border-radius:8px;cursor:pointer;font-weight:600}
 </style>
-</head><body><div class="ssa-shell"><aside class="ssa-sidebar">
+<style>
+/* Visible feedback and pale-red record actions */
+.ssa-content .ok{display:block;margin:12px 0;padding:11px 14px;border:1px solid #a7dfbf;border-radius:8px;background:#effbf3;color:#17663a;font-weight:400}
+.ssa-content .err{display:block;margin:12px 0;padding:11px 14px;border:1px solid #f0b7b7;border-radius:8px;background:#fff1f1;color:#9f2525;font-weight:400}
+.record-actions{display:flex;gap:7px;align-items:center;margin:0}
+.record-actions button{padding:6px 11px!important;min-height:29px;border-radius:7px;border:1px solid transparent;cursor:pointer;font-size:12px;white-space:nowrap}
+.record-actions .update-btn{background:#e5f3ff!important;border-color:#b9ddfb!important;color:#155b91!important}
+.record-actions .delete-btn{background:#ffe9e9!important;border-color:#f3bcbc!important;color:#a12d35!important}
+.record-actions button:hover{filter:brightness(.97)}
+</style></head><body><div class="ssa-shell"><aside class="ssa-sidebar">
   <div class="ssa-brand"><div class="ssa-brand-title">SYSTEM SUPER ADMINISTRATOR</div><div class="ssa-brand-scope">GLOBAL / HIGHEST AUTHORITY</div></div>
   <nav class="ssa-nav">
     <div class="ssa-nav-group">Main</div>
@@ -68,21 +87,49 @@
     <a class="" href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
   </nav>
   <div class="ssa-profile">
-    <a class="ssa-profile-link" href="/system_super_administrator/profile"><span class="ssa-avatar">SA</span><span><strong>{{ session.get('username','blue') }}</strong><small>System Super Administrator</small></span></a>
-    <a class="ssa-logout" href="/logout">Logout</a>
+    <button class="ssa-profile-link" type="button" id="ssaProfileToggle" aria-expanded="false" aria-controls="ssaProfileMenu"><span class="ssa-avatar">SA</span><span><strong>{{ full_name }}</strong><small>System Super Administrator</small></span></button>
+    <div class="ssa-profile-menu" id="ssaProfileMenu"><a href="/system_super_administrator/profile">Profile</a><a class="ssa-logout" href="/logout">Logout</a></div>
   </div>
-</aside><div class="ssa-content"><main class="page"><header><h1>Expense Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}<section class="card"><h2>Entry</h2><form method="post"><label>Amount<input name="amount"></label><label>Expense Type<select name="type"><option value="">Select Expense Type</option><option>Medical & Healthcare</option><option>Travel & Transport</option><option>Monthly Utility Bills</option><option>Food & Groceries</option><option>Mobile Recharge</option><option>Monthly Savings</option><option>Bicycle Repair</option><option>Personal Care</option><option>Home Travel</option><option>Program Fee</option><option>Meal Charge</option><option>Electricity Bill</option><option>Fixed Meal</option><option>House Rent</option><option>Mess Event</option><option>Dining Out</option><option>Water Bill</option><option>Notebooks</option><option>Shopping</option><option>Books</option><option>Others</option></select></label><label>Payment Method<select name="method"><option value="">Select Payment Method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Card</option><option>Other</option></select></label><label>Branch Name<select name="branch_name"><option value="">Select Branch</option>{% for x in options.branches %}<option>{{ x }}</option>{% endfor %}</select></label><label>Date<input name="date"></label><label>Time<input name="time"></label><label>Note<input name="note"></label><input type="hidden" name="action" value="save"><button>Save</button></form></section><section class="card"><h2>Records</h2><form method="get"><input name="search" placeholder="Search" value="{{ request.args.get('search','') }}"><button>Search</button></form><div class="record-table-wrap"><table class="record-table"><thead><tr><th>SL</th><th>Date</th><th>Time</th><th>Amount</th><th>Category</th><th>Method</th><th>Branch</th><th>Note</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td>{{ r.get("date","") }}</td><td>{{ r.get("time","") }}</td><td>{{ r.get("amount","") }}</td><td>{{ r.get("category","") }}</td><td>{{ r.get("method","") }}</td><td>{{ r.get("branch_name","") }}</td><td>{{ r.get("note","") }}</td><td><form method="post" class="inline-action"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><button class="danger" type="submit">Delete</button></form></td></tr>{% else %}<tr><td colspan="9" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div></section></main></div></div>
+</aside><div class="ssa-content"><main class="page"><header><h1>Expense Management</h1><div class="ssa-page-identity"><span>{{ full_name }}</span><span>System Super Administrator</span></div></header>{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}<section class="card"><h2>Entry</h2><form method="post" id="expenseEntryForm"><label>Amount<input id="expenseAmount" name="amount"></label><label>Expense Type<select id="expenseType" name="type"><option value="">Select Expense Type</option><option>Medical & Healthcare</option><option>Travel & Transport</option><option>Monthly Utility Bills</option><option>Food & Groceries</option><option>Mobile Recharge</option><option>Monthly Savings</option><option>Bicycle Repair</option><option>Personal Care</option><option>Home Travel</option><option>Program Fee</option><option>Meal Charge</option><option>Electricity Bill</option><option>Fixed Meal</option><option>House Rent</option><option>Mess Event</option><option>Dining Out</option><option>Water Bill</option><option>Notebooks</option><option>Shopping</option><option>Books</option><option>Others</option></select></label><label>Payment Method<select id="expenseMethod" name="method"><option value="">Select Payment Method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Card</option><option>Other</option></select></label><label>Date<input id="expenseDate" name="date" placeholder="DD.MM.YYYY" inputmode="numeric"></label><label>Time<input id="expenseTime" name="time" placeholder="hh:mm AM/PM"></label><label>Note<input id="expenseNote" name="note"></label><input type="hidden" name="action" id="expenseAction" value="save"><input type="hidden" name="record_id" id="expenseRecordId" value=""><button class="save-button" id="expenseSubmit" type="submit">Save</button><button type="button" id="cancelEdit" style="display:none">Cancel Update</button></form></section><section class="card"><h2>Records</h2><p><a class="csv-download" href="{{ url_for('system_super_administrator_expense_management_bp.export_csv', **request.args.to_dict()) }}">Download CSV</a></p><form method="get"><input name="search" placeholder="Search" value="{{ request.args.get('search','') }}"><button>Search</button></form><div class="record-table-wrap"><table class="record-table"><thead><tr><th>SL</th><th>Date</th><th>Time</th><th>Amount</th><th>Expense Type</th><th>Method</th><th>Note</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td>{{ format_date(r.get("date","")) }}</td><td>{{ format_time(r.get("time","")) }}</td><td>{{ r.get("amount","") }}</td><td>{{ r.get("category", r.get("type", "")) }}</td><td>{{ r.get("method","") }}</td><td>{{ r.get("note","") }}</td><td><div class="record-actions"><button type="button" class="update-btn" data-id="{{ r.get('_id','') }}" data-amount="{{ r.get('amount','') }}" data-type="{{ r.get('category', r.get('type', '')) }}" data-method="{{ r.get('method','') }}" data-date="{{ format_date(r.get('date','')) }}" data-time="{{ format_time(r.get('time','')) }}" data-note="{{ r.get('note','') }}">Update</button><form method="post" class="inline-action" onsubmit="return confirm('Are you sure you want to delete this expense record? This action cannot be undone.');"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><button class="delete-btn" type="submit">Delete</button></form></div></td></tr>{% else %}<tr><td colspan="8" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div></section></main></div></div>
 <script>
 (function(){
   function pad(n){return String(n).padStart(2,"0");}
   function setCurrent(){
     const now=new Date();
-    const date=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
-    const time=pad(now.getHours())+":"+pad(now.getMinutes());
+    const date=pad(now.getDate())+"."+pad(now.getMonth()+1)+"."+now.getFullYear();
+    let hours=now.getHours(); const suffix=hours>=12?"PM":"AM"; hours=hours%12||12;
+    const time=pad(hours)+":"+pad(now.getMinutes())+" "+suffix;
     document.querySelectorAll('input[name="date"]').forEach(function(el){ if(!el.value) el.value=date; });
     document.querySelectorAll('input[name="time"]').forEach(function(el){ if(!el.value) el.value=time; });
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",setCurrent); else setCurrent();
+})();
+</script>
+<script>
+(function(){
+  const toggle=document.getElementById('ssaProfileToggle'), menu=document.getElementById('ssaProfileMenu');
+  if(!toggle||!menu)return;
+  toggle.addEventListener('click',function(e){e.stopPropagation();const open=menu.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));});
+  document.addEventListener('click',function(e){if(!menu.contains(e.target)&&!toggle.contains(e.target)){menu.classList.remove('open');toggle.setAttribute('aria-expanded','false');}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){menu.classList.remove('open');toggle.setAttribute('aria-expanded','false');}});
+})();
+</script>
+<script>
+(function(){
+ const form=document.getElementById('expenseEntryForm'); if(!form)return;
+ const action=document.getElementById('expenseAction'), rid=document.getElementById('expenseRecordId'), submit=document.getElementById('expenseSubmit'), cancel=document.getElementById('cancelEdit');
+ document.querySelectorAll('.update-btn').forEach(function(btn){btn.addEventListener('click',function(){
+  document.getElementById('expenseAmount').value=btn.dataset.amount||'';
+  document.getElementById('expenseType').value=btn.dataset.type||'';
+  document.getElementById('expenseMethod').value=btn.dataset.method||'';
+  document.getElementById('expenseDate').value=btn.dataset.date||'';
+  document.getElementById('expenseTime').value=btn.dataset.time||'';
+  document.getElementById('expenseNote').value=btn.dataset.note||'';
+  action.value='update'; rid.value=btn.dataset.id||''; submit.textContent='Update'; cancel.style.display='inline-block';
+  form.scrollIntoView({behavior:'smooth',block:'center'});
+ });});
+ function resetEdit(){action.value='save';rid.value='';submit.textContent='Save';cancel.style.display='none';form.reset();}
+ cancel.addEventListener('click',resetEdit);
 })();
 </script>
 </body></html>
