@@ -9,7 +9,18 @@ def _guard(context):
         raise PermissionError("Access denied.")
 
 def _record_date(value):
+    # MongoDB records may store date as a native datetime/date, not only a string.
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
     value = str(value or "").strip()
+    # Support ISO date strings and ISO timestamps (including timezone suffixes).
+    if value:
+        try:
+            return datetime.fromisoformat(value.replace("Z", "+00:00")).date()
+        except Exception:
+            pass
     for fmt in ("%Y-%m-%d", "%d.%m.%Y", "%d-%m-%Y", "%Y/%m/%d"):
         try:
             return datetime.strptime(value, fmt).date()
@@ -45,6 +56,48 @@ def create_record(context, data):
     r = get_database()[COLLECTION].insert_one(item)
     return str(r.inserted_id)
 
+def save_or_update_record(context, data):
+    """Keep one row per date + member + branch + meal type.
+
+    Re-saving the same selection updates the existing record instead of adding a duplicate.
+    Any older duplicate records with the same identity are removed.
+    """
+    _guard(context)
+    item = dict(data or {})
+    target_date = _record_date(_record_value(item, "date"))
+    target_member = str(_record_value(item, "member_name", "member", "name", "username")).strip().casefold()
+    target_branch = str(_record_value(item, "branch_name", "branch")).strip().casefold()
+    target_type = str(_record_value(item, "type", "meal_type")).strip().casefold()
+    if not target_date or not target_member or not target_branch or not target_type:
+        return create_record(context, item)
+
+    collection = get_database()[COLLECTION]
+    matches = []
+    for old in collection.find({}).sort("_id", 1):
+        old_date = _record_date(_record_value(old, "date"))
+        old_member = str(_record_value(old, "member_name", "member", "name", "username")).strip().casefold()
+        old_branch = str(_record_value(old, "branch_name", "branch")).strip().casefold()
+        old_type = str(_record_value(old, "type", "meal_type")).strip().casefold()
+        if (old_date, old_member, old_branch, old_type) == (target_date, target_member, target_branch, target_type):
+            matches.append(old)
+
+    now = datetime.now(timezone.utc)
+    item.update({"updated_at": now, "created_by": context.get("user_id"), "created_by_role": ROLE})
+    if not matches:
+        item.setdefault("created_at", now)
+        result = collection.insert_one(item)
+        return str(result.inserted_id)
+
+    keep = matches[-1]
+    item.pop("_id", None)
+    item.setdefault("created_at", keep.get("created_at", now))
+    collection.update_one({"_id": keep["_id"]}, {"$set": item})
+    duplicate_ids = [x["_id"] for x in matches[:-1]]
+    if duplicate_ids:
+        collection.delete_many({"_id": {"$in": duplicate_ids}})
+    return str(keep["_id"])
+
+
 def update_record(context, record_id, data):
     _guard(context)
     oid=ObjectId(record_id) if ObjectId.is_valid(str(record_id)) else record_id
@@ -56,7 +109,28 @@ def update_record(context, record_id, data):
 def delete_record(context, record_id):
     _guard(context)
     oid=ObjectId(record_id) if ObjectId.is_valid(str(record_id)) else record_id
-    r=get_database()[COLLECTION].delete_one({"_id":oid})
+    collection = get_database()[COLLECTION]
+    target = collection.find_one({"_id": oid})
+    if not target:
+        return 0
+    target_date = _record_date(_record_value(target, "date"))
+    target_member = str(_record_value(target, "member_name", "member", "name", "username")).strip().casefold()
+    target_branch = str(_record_value(target, "branch_name", "branch")).strip().casefold()
+    target_type = str(_record_value(target, "type", "meal_type")).strip().casefold()
+    if target_date and target_member and target_branch and target_type:
+        ids = []
+        for old in collection.find({}):
+            identity = (
+                _record_date(_record_value(old, "date")),
+                str(_record_value(old, "member_name", "member", "name", "username")).strip().casefold(),
+                str(_record_value(old, "branch_name", "branch")).strip().casefold(),
+                str(_record_value(old, "type", "meal_type")).strip().casefold(),
+            )
+            if identity == (target_date, target_member, target_branch, target_type):
+                ids.append(old["_id"])
+        r = collection.delete_many({"_id": {"$in": ids}})
+        return r.deleted_count
+    r=collection.delete_one({"_id":oid})
     return r.deleted_count
 
 def _normalized_record(x):
@@ -85,6 +159,10 @@ def month_rows(context, month_key, search="", member=""):
     by_day = {}
     needle = str(search or "").strip().casefold()
     member_needle = str(member or "").strip().casefold()
+    # Collapse legacy duplicates but preserve separate rows for different members,
+    # branches, dates, or meal types. Since raw records are sorted oldest-first,
+    # the newest matching record is the one retained.
+    unique_records = {}
     for x in raw:
         r = _normalized_record(x)
         d = r["date_obj"]
@@ -94,7 +172,12 @@ def month_rows(context, month_key, search="", member=""):
             continue
         if needle and not any(needle in str(r[k]).casefold() for k in ("member","branch","meal_type","date")):
             continue
-        by_day.setdefault(d, []).append(r)
+        identity = (d, r["member"].strip().casefold(), r["branch"].strip().casefold(), r["meal_type"].strip().casefold())
+        unique_records[identity] = r
+    for r in unique_records.values():
+        by_day.setdefault(r["date_obj"], []).append(r)
+    for day_records in by_day.values():
+        day_records.sort(key=lambda r: (r["member"].casefold(), r["branch"].casefold(), r["meal_type"].casefold()))
 
     rows=[]
     cur=start
