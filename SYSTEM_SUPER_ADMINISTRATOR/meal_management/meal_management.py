@@ -4,6 +4,7 @@ import importlib.util
 from datetime import datetime, date
 import calendar
 import re
+import json
 
 ROLE = "SYSTEM_SUPER_ADMINISTRATOR"
 PAGE = "meal_management"
@@ -27,13 +28,19 @@ def _form_options():
             value = str(x.get("branch_name") or x.get("name") or x.get("branch") or "").strip()
             if value:
                 branch_names.add(value)
-    branches = sorted(branch_names, key=str.casefold)
-    members = sorted({
-        str(x.get("full_name") or x.get("name") or x.get("username") or "").strip()
-        for x in db["users"].find({"role":{"$regex":"^MEMBER$","$options":"i"},"status":{"$ne":"Inactive"}})
-        if str(x.get("full_name") or x.get("name") or x.get("username") or "").strip()
-    }, key=str.casefold)
-    return {"branches": branches, "members": members}
+
+    members = []
+    seen = set()
+    for x in db["users"].find({"role":{"$regex":"^MEMBER$","$options":"i"},"status":{"$ne":"Inactive"}}):
+        name = str(x.get("full_name") or x.get("name") or x.get("username") or "").strip()
+        if not name or name.casefold() in seen:
+            continue
+        seen.add(name.casefold())
+        # Member's branch is sourced from the account record created during registration.
+        member_branch = str(x.get("branch_name") or x.get("branch") or x.get("branchName") or "").strip()
+        members.append({"name": name, "branch": member_branch})
+    members.sort(key=lambda item: item["name"].casefold())
+    return {"branches": sorted(branch_names, key=str.casefold), "members": members}
 
 def _month_key(value):
     try:
@@ -77,6 +84,37 @@ def page():
             elif action == "update":
                 service.update_record(_context(), request.form.get("record_id", ""), data)
                 message = "Updated successfully."
+            elif action == "bulk_save":
+                try:
+                    entries = json.loads(request.form.get("meal_entries", "[]"))
+                except (TypeError, ValueError):
+                    entries = []
+                if not isinstance(entries, list) or not entries:
+                    raise ValueError("Please select at least one meal type before saving.")
+                common = {
+                    "member_name": request.form.get("member_name", "").strip(),
+                    "branch_name": request.form.get("branch_name", "").strip(),
+                    "month": request.form.get("month", "").strip(),
+                    "date": request.form.get("date", "").strip(),
+                    "note": request.form.get("note", "").strip(),
+                }
+                if not common["member_name"] or not common["branch_name"] or not common["date"]:
+                    raise ValueError("Please select Member, Branch and Date.")
+                for entry in entries:
+                    if not isinstance(entry, dict):
+                        continue
+                    item = dict(common)
+                    item.update({
+                        "type": str(entry.get("type", "")).strip(),
+                        "quantity": str(entry.get("quantity", "1")).strip(),
+                        "meal_charge": str(entry.get("meal_charge", "0")).strip(),
+                        "rice_charge": str(entry.get("rice_charge", "0")).strip(),
+                        "status": str(entry.get("status", "ON")).strip().upper(),
+                    })
+                    if item["type"] not in ("Breakfast", "Lunch", "Dinner"):
+                        continue
+                    service.create_record(_context(), item)
+                message = "Selected meals saved successfully."
             else:
                 service.create_record(_context(), data)
                 message = "Saved successfully."
@@ -99,7 +137,7 @@ def page():
             view="month", month_key=month_key, month_label=_month_label(month_key),
             month_rows=month_rows, search=str(request.args.get("search","")).strip(), member=member,
             message=message, error=error, session=session, options=options,
-            month_names=MONTH_NAMES, today=date.today().isoformat()
+            month_names=MONTH_NAMES, today=date.today().isoformat(), today_display=date.today().strftime("%d.%m.%Y"), current_month=date.today().strftime("%Y-%m"), current_year=date.today().year
         )
 
     try:
@@ -111,7 +149,7 @@ def page():
     return render_template(
         "SYSTEM_SUPER_ADMINISTRATOR/meal_management/meal_management.html",
         view="list", member_rows=member_rows, month_names=MONTH_NAMES,
-        today=date.today().isoformat(), message=message, error=error,
+        today=date.today().isoformat(), today_display=date.today().strftime("%d.%m.%Y"), current_month=date.today().strftime("%Y-%m"), current_year=date.today().year, message=message, error=error,
         session=session, options=options
     )
 
