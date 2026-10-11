@@ -14,6 +14,16 @@ service = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(service)
 bp = Blueprint("system_super_administrator_meal_management_bp", __name__, url_prefix="/system_super_administrator/meal-management")
 
+# Register the separate Bazar Duty page under its own URL, keeping it in its own folder.
+_bazar_duty_path = BASE / "bazar_duty" / "bazar_duty.py"
+_bazar_duty_spec = importlib.util.spec_from_file_location(
+    "system_super_administrator_bazar_duty_routes", _bazar_duty_path
+)
+_bazar_duty_module = importlib.util.module_from_spec(_bazar_duty_spec)
+_bazar_duty_spec.loader.exec_module(_bazar_duty_module)
+bp.register_blueprint(_bazar_duty_module.bazar_duty_bp)
+
+
 MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 
 def _context():
