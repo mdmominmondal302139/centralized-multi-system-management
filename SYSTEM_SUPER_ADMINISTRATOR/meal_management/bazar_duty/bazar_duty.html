@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monthly Bazar List</title>
+<style>
+/* Styles are scoped to this page; no global stylesheet is required. */
+.bazar-page{box-sizing:border-box;max-width:1180px;margin:24px auto;padding:20px;font-family:Arial,"Noto Sans Bengali",sans-serif;color:#16324f;background:#f3f7fc}
+.bazar-page *{box-sizing:border-box}
+.bazar-page .bazar-card{background:#fff;border:1px solid #d8e4f0;border-radius:16px;overflow:hidden;box-shadow:0 8px 26px #153d6410}
+.bazar-page .bazar-header{padding:26px 24px;text-align:center;color:#fff;background:linear-gradient(125deg,#10345d,#176ca1)}
+.bazar-page .bazar-account{font-size:clamp(22px,3vw,32px);font-weight:800;margin:0 0 8px;overflow-wrap:anywhere}
+.bazar-page .bazar-kicker{font-size:12px;letter-spacing:2px;color:#cfe8ff;margin:0 0 10px}
+.bazar-page .bazar-title{font-size:clamp(21px,2.6vw,28px);margin:0;color:#ffe16a}
+.bazar-page .bazar-body{padding:22px}
+.bazar-page .bazar-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-bottom:20px}
+.bazar-page .bazar-field{display:flex;flex-direction:column;gap:6px;min-width:150px;flex:1}
+.bazar-page label{font-weight:700;font-size:13px}
+.bazar-page input,.bazar-page select,.bazar-page textarea{width:100%;border:1px solid #c9d8e8;border-radius:9px;padding:10px 11px;background:#fff;color:#16324f;font:inherit;min-height:41px}
+.bazar-page textarea{min-height:76px;resize:vertical}
+.bazar-page .bazar-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:9px;padding:11px 14px;background:#1769a3;color:white;text-decoration:none;font-weight:700;cursor:pointer;min-height:40px}
+.bazar-page .bazar-btn.secondary{background:#e8f1fa;color:#17466e;border:1px solid #cbddec}
+.bazar-page .bazar-btn.danger{background:#fff0f0;color:#a52b2b;border:1px solid #f0caca}
+.bazar-page .bazar-section{border:1px solid #dce7f1;border-radius:12px;padding:16px;margin:18px 0}
+.bazar-page .bazar-section h2{font-size:17px;margin:0 0 14px}
+.bazar-page .bazar-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.bazar-page .bazar-table-wrap{width:100%;overflow-x:auto}
+.bazar-page table{width:100%;border-collapse:collapse;min-width:650px}
+.bazar-page th,.bazar-page td{padding:12px 10px;text-align:left;border-bottom:1px solid #e1eaf2;vertical-align:middle}
+.bazar-page th{background:#eaf3fb;color:#153d63;font-size:13px}
+.bazar-page .bazar-status{display:inline-block;padding:5px 9px;border-radius:20px;background:#fff4d6;color:#815800;font-size:12px;font-weight:700}
+.bazar-page .bazar-status.completed{background:#e1f7e9;color:#18703a}
+.bazar-page .bazar-status.missed{background:#ffe6e6;color:#a32727}
+.bazar-page .bazar-flash{padding:10px 12px;border-radius:8px;margin-bottom:10px;background:#eaf3fb}
+.bazar-page .bazar-actions{display:flex;gap:6px;flex-wrap:wrap}
+.bazar-page .bazar-note{padding:13px;border-radius:10px;background:#f0f6fc;color:#35536f;line-height:1.6}
+.bazar-page .bazar-empty{text-align:center;padding:26px;color:#647b91}
+@media(max-width:680px){.bazar-page{padding:10px;margin:8px auto}.bazar-page .bazar-body{padding:13px}.bazar-page .bazar-form-grid{grid-template-columns:1fr}.bazar-page .bazar-header{padding:22px 14px}}
+@media print{.bazar-page{max-width:none;margin:0;padding:0;background:#fff}.bazar-page .bazar-card{box-shadow:none;border:0}.bazar-page .no-print{display:none!important}.bazar-page .bazar-header{print-color-adjust:exact;-webkit-print-color-adjust:exact}.bazar-page th{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+/* Keep the original System Super Administrator sidebar visible on Bazar Duty */
+html,body{margin:0!important;min-height:100%;}
+body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
+.ssa-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:280px!important;height:100vh!important;overflow:hidden!important;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.06);display:flex;flex-direction:column;z-index:1000}
+.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #e7edf4;flex:0 0 auto}.ssa-brand-title{font-size:16px;font-weight:800;color:#12355e;line-height:1.25}.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:5px;letter-spacing:.6px}
+.ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1 1 auto}.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap}.ssa-nav a:hover{background:#eef6ff;color:#0d65bd}.ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
+.ssa-profile{flex:0 0 auto;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
+.ssa-content{margin-left:280px!important;width:calc(100% - 280px)!important;min-height:100vh;box-sizing:border-box;overflow-x:hidden;padding:1px 0}
+.bazar-page{width:100%;max-width:none;margin:20px auto;padding:20px;}
+@media(max-width:760px){.ssa-sidebar{width:230px!important}.ssa-content{margin-left:230px!important;width:calc(100% - 230px)!important}.bazar-page{padding:10px;margin:8px auto}}
+
+
+/* Bright-light theme: neutral, readable, regular-weight sidebar and working form */
+.ssa-sidebar{background:#ffffff!important;border-right:1px solid #e5eaf0!important;box-shadow:none!important;color:#526174!important}
+.ssa-brand{background:#ffffff!important;border-bottom:1px solid #edf0f4!important}
+.ssa-brand-title{color:#526174!important;font-weight:400!important}
+.ssa-brand-scope,.ssa-nav-group{color:#8793a2!important;font-weight:400!important}
+.ssa-nav a{background:transparent!important;color:#596779!important;font-weight:400!important}
+.ssa-nav a:hover,.ssa-nav a.active{background:#f2f6fa!important;color:#42556b!important;font-weight:400!important}
+.ssa-profile{background:#ffffff!important;border-top:1px solid #edf0f4!important;position:relative!important}
+.ssa-profile-toggle{display:flex;align-items:center;gap:10px;width:100%;padding:9px;background:#ffffff!important;border:1px solid #e4eaf1!important;border-radius:8px;text-align:left;color:#526174!important;cursor:pointer;font:inherit;font-weight:400!important}
+.ssa-avatar{background:#f1f5f9!important;color:#526174!important;font-weight:400!important}
+.ssa-profile strong{font-weight:400!important;color:#526174!important}
+.ssa-profile small{color:#7c8795!important;font-weight:400!important}
+.ssa-profile-chevron{margin-left:auto;color:#7c8795!important;font-weight:400!important}
+.ssa-profile-actions{position:absolute!important;left:12px!important;right:12px!important;bottom:calc(100% + 8px)!important;padding:8px!important;background:#ffffff!important;border:1px solid #e4eaf1!important;border-radius:10px!important;box-shadow:0 8px 24px rgba(30,50,75,.12)!important;z-index:1200!important;display:flex;flex-direction:column;gap:7px!important}.ssa-profile-actions[hidden]{display:none!important}
+.ssa-profile-action{display:block;padding:10px 12px;color:#526174!important;text-decoration:none;background:#f7f9fc!important;border:1px solid #e8edf3;border-radius:6px;font-weight:400!important}.ssa-profile-action:hover{background:#eef3f8!important}
+.ssa-logout{background:#f3f5f7!important;color:#526174!important;border:1px solid #e1e6ec!important;font-weight:400!important}
+.bazar-page{background:#f8fafc!important;color:#526174!important}
+.bazar-page .bazar-card{background:#ffffff!important;border:1px solid #e5eaf0!important;box-shadow:none!important}
+.bazar-page .bazar-header{background:#f4f7fa!important;color:#526174!important;border-bottom:1px solid #e5eaf0!important}
+.bazar-page .bazar-account,.bazar-page .bazar-title{color:#526174!important;font-weight:400!important}
+.bazar-page .bazar-kicker{color:#7d8998!important;font-weight:400!important}
+.bazar-page label,.bazar-page .bazar-section h2{color:#526174!important;font-weight:400!important}
+.bazar-page input,.bazar-page select,.bazar-page textarea{background:#ffffff!important;color:#526174!important;border-color:#dfe6ee!important;font-weight:400!important}
+.bazar-page .bazar-btn{background:#f1f5f9!important;color:#526174!important;border:1px solid #dfe6ee!important;font-weight:400!important}
+.bazar-page .bazar-btn.secondary{background:#ffffff!important;color:#526174!important;border:1px solid #dfe6ee!important;font-weight:400!important}
+.bazar-page .bazar-section{background:#ffffff!important;border-color:#e5eaf0!important}
+.bazar-page th{background:#f5f7fa!important;color:#526174!important;font-weight:400!important}
+.bazar-page .bazar-status,.bazar-page .bazar-status.completed,.bazar-page .bazar-status.missed{background:#f5f7fa!important;color:#657386!important;font-weight:400!important}
+.bazar-page .bazar-note,.bazar-page .bazar-flash{background:#f7f9fc!important;color:#596779!important}
+*{font-weight:400!important}
+
+</style>
+</head>
+<body>
+<aside class="ssa-sidebar">
+  <div class="ssa-brand"><div class="ssa-brand-title">SYSTEM SUPER ADMINISTRATOR</div><div class="ssa-brand-scope">GLOBAL / HIGHEST AUTHORITY</div></div>
+  <nav class="ssa-nav">
+    <div class="ssa-nav-group">Main</div>
+    <a href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
+    <a href="/system_super_administrator/income-management"><span class="ssa-ico">↗</span>Income Management</a>
+    <a href="/system_super_administrator/expense-management"><span class="ssa-ico">↘</span>Expense Management</a>
+    <a class="active" href="/system_super_administrator/meal-management"><span class="ssa-ico">◉</span>Meal Management</a>
+    <a href="/system_super_administrator/savings-management"><span class="ssa-ico">▣</span>Savings Management</a>
+    <a href="/system_super_administrator/information-directory"><span class="ssa-ico">▤</span>Information Directory</a>
+    <a href="/system_super_administrator/blood-donor-management"><span class="ssa-ico">🩸</span>Blood Donor Management</a>
+    <div class="ssa-nav-group">System</div>
+    <a href="/system_super_administrator/system-overview"><span class="ssa-ico">◫</span>System Overview</a>
+    <a href="/system_super_administrator/branch-management"><span class="ssa-ico">▥</span>Branch Management</a>
+    <a href="/system_super_administrator/member-management"><span class="ssa-ico">♟</span>Member Management</a>
+    <a href="/system_super_administrator/department-management"><span class="ssa-ico">▦</span>Department Management</a>
+    <a href="/system_super_administrator/financial-management"><span class="ssa-ico">৳</span>Financial Management</a>
+    <a href="/system_super_administrator/reports"><span class="ssa-ico">▥</span>Reports</a>
+    <a href="/system_super_administrator/access-management"><span class="ssa-ico">⚿</span>Access Management</a>
+    <a href="/system_super_administrator/member-audit"><span class="ssa-ico">◌</span>Member Audit</a>
+    <a href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
+    <a href="/system_super_administrator/import"><span class="ssa-ico">⇩</span>Import</a>
+    <a href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
+    <a href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
+  </nav>
+  <div class="ssa-profile" id="ssa-profile-menu">
+    <button type="button" class="ssa-profile-toggle" id="ssa-profile-toggle" aria-expanded="false" aria-controls="ssa-profile-actions">
+      <span class="ssa-avatar">SA</span>
+      <span class="ssa-profile-user"><strong>{{ session.get('full_name') or session.get('name') or session.get('username') or account_name }}</strong><small>System Super Administrator</small></span>
+      <span class="ssa-profile-chevron" aria-hidden="true">⌃</span>
+    </button>
+    <div class="ssa-profile-actions" id="ssa-profile-actions" hidden>
+      <a class="ssa-profile-action" href="/system_super_administrator/profile">Profile</a>
+      <a class="ssa-logout" href="/logout">Logout</a>
+    </div>
+  </div>
+</aside>
+<div class="ssa-content">
+<div class="bazar-page">
+  <main class="bazar-card">
+    <header class="bazar-header">
+      <p class="bazar-kicker">MONTHLY BAZAR DUTY LIST</p>
+      <h1 class="bazar-account">{{ header.header_name or account_name }}</h1>
+      <h2 class="bazar-title">{{ header.list_title or 'বাজার লিস্ট' }} — {{ month }}</h2>
+    </header>
+    <div class="bazar-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="bazar-flash">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <div class="bazar-toolbar no-print">
+        <form class="bazar-field" method="get" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}">
+          <label for="month">মাস নির্বাচন</label>
+          <input id="month" name="month" type="month" value="{{ month }}" required>
+          <button class="bazar-btn" type="submit">তালিকা দেখুন</button>
+        </form>
+        <button class="bazar-btn secondary" type="button" onclick="window.print()">Print / PDF</button>
+        <a class="bazar-btn secondary" href="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.print_monthly_bazar_list', month=month) }}">Print View</a>
+      </div>
+
+      <section class="bazar-section no-print">
+        <h2>Header Settings / হেডার সম্পাদনা</h2>
+        <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}">
+          <input type="hidden" name="action" value="save_header">
+          <input type="hidden" name="month" value="{{ month }}">
+          <div class="bazar-form-grid">
+            <div class="bazar-field">
+              <label for="header_name">Header Name</label>
+              <input id="header_name" name="header_name" maxlength="160" value="{{ header.header_name or account_name }}" placeholder="Account Full Name">
+            </div>
+            <div class="bazar-field">
+              <label for="list_title">List Title</label>
+              <input id="list_title" name="list_title" maxlength="120" value="{{ header.list_title or 'বাজার লিস্ট' }}" required>
+            </div>
+            <div class="bazar-field" style="grid-column:1/-1">
+              <label for="instruction">নির্দেশনা</label>
+              <textarea id="instruction" name="instruction" maxlength="1000">{{ header.instruction or '' }}</textarea>
+            </div>
+          </div>
+          <p><button class="bazar-btn" type="submit">হেডার Save করুন</button></p>
+        </form>
+      </section>
+
+      <section class="bazar-section no-print">
+        <h2>Create / Edit Duty</h2>
+        <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}" id="bazar-duty-form">
+          <input type="hidden" name="action" value="save_duty">
+          <input type="hidden" name="month" value="{{ month }}">
+          <input type="hidden" name="duty_id" id="duty_id" value="">
+          <div class="bazar-form-grid">
+            <div class="bazar-field">
+              <label for="duty_date">তারিখ</label>
+              <input id="duty_date" name="duty_date" type="date" value="{{ month }}-01" required>
+            </div>
+            <div class="bazar-field">
+              <label for="bazar_time">বাজারের সময়</label>
+              <input id="bazar_time" name="bazar_time" value="দুপুর ২:০০টা – বিকেল ৫:৩০টা" maxlength="100">
+            </div>
+            <div class="bazar-field">
+              <label for="member_one">প্রথম সদস্য</label>
+              <input id="member_one" name="member_one" type="text" list="bazar-duty-member-suggestions" maxlength="160" required autocomplete="off" placeholder="প্রথম সদস্যের নাম লিখুন">
+            </div>
+            <div class="bazar-field">
+              <label for="member_two">দ্বিতীয় সদস্য</label>
+              <input id="member_two" name="member_two" type="text" list="bazar-duty-member-suggestions" maxlength="160" required autocomplete="off" placeholder="দ্বিতীয় সদস্যের নাম লিখুন">
+              <datalist id="bazar-duty-member-suggestions">
+                {% for member in members %}<option value="{{ member.name }}">{% endfor %}
+              </datalist>
+            </div>
+            <div class="bazar-field">
+              <label for="status">Status</label>
+              <select id="status" name="status">
+                <option>Pending</option><option>Completed</option><option>Missed</option>
+              </select>
+            </div>
+            <div class="bazar-field">
+              <label for="note">নোট</label>
+              <input id="note" name="note" maxlength="1000" placeholder="ঐচ্ছিক নির্দেশনা">
+            </div>
+          </div>
+          <p><button class="bazar-btn" type="submit">Save Duty</button>
+          <button class="bazar-btn secondary" type="reset" onclick="document.getElementById('duty_id').value=''">নতুন ফর্ম</button></p>
+        </form>
+      </section>
+
+      <section class="bazar-section no-print">
+        <h2>নতুন সদস্য যোগ করুন</h2>
+        <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}" class="bazar-toolbar">
+          <input type="hidden" name="action" value="add_member">
+          <input type="hidden" name="month" value="{{ month }}">
+          <div class="bazar-field">
+            <label for="new_member_name">সদস্যের নাম</label>
+            <input id="new_member_name" name="new_member_name" maxlength="160" required placeholder="নতুন সদস্যের নাম লিখুন">
+          </div>
+          <button class="bazar-btn" type="submit">+ সদস্য যোগ করুন</button>
+        </form>
+      </section>
+
+      <section class="bazar-section">
+        <h2>{{ header.list_title or 'বাজার লিস্ট' }} — {{ month }}</h2>
+        <div class="bazar-table-wrap">
+          <table>
+            <thead><tr><th>তারিখ</th><th>বার</th><th>দায়িত্বপ্রাপ্ত সদস্য</th><th>সময়</th><th>Status</th><th class="no-print">Action</th></tr></thead>
+            <tbody>
+            {% for duty in duties %}
+              <tr>
+                <td>{{ duty.duty_date }}</td>
+                <td>{{ duty.weekday or '' }}</td>
+                <td>{{ duty.member_one }} + {{ duty.member_two }}</td>
+                <td>{{ duty.bazar_time }}</td>
+                <td><span class="bazar-status {{ duty.status|lower }}">{{ duty.status }}</span></td>
+                <td class="no-print">
+                  <div class="bazar-actions">
+                    <button class="bazar-btn secondary" type="button"
+                      data-id="{{ duty._id }}" data-date="{{ duty.duty_date }}"
+                      data-one="{{ duty.member_one }}" data-two="{{ duty.member_two }}"
+                      data-time="{{ duty.bazar_time }}" data-status="{{ duty.status }}"
+                      data-note="{{ duty.note }}"
+                      onclick="editBazarDuty(this)">Edit</button>
+                    <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}" onsubmit="return confirm('এই দায়িত্বটি মুছে ফেলবেন?')">
+                      <input type="hidden" name="action" value="delete_duty">
+                      <input type="hidden" name="month" value="{{ month }}">
+                      <input type="hidden" name="duty_id" value="{{ duty._id }}">
+                      <button class="bazar-btn danger" type="submit">Delete</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="6" class="bazar-empty">এই মাসে কোনো বাজারের দায়িত্ব সংরক্ষিত নেই। উপরের ফর্ম থেকে দায়িত্ব যোগ করুন।</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% if header.instruction %}
+          <p class="bazar-note">{{ header.instruction }}</p>
+        {% endif %}
+      </section>
+    </div>
+  </main>
+</div>
+</div>
+<script>
+function editBazarDuty(button){
+  const form=document.getElementById('bazar-duty-form');
+  document.getElementById('duty_id').value=button.dataset.id||'';
+  document.getElementById('duty_date').value=button.dataset.date||'';
+  document.getElementById('member_one').value=button.dataset.one||'';
+  document.getElementById('member_two').value=button.dataset.two||'';
+  document.getElementById('bazar_time').value=button.dataset.time||'';
+  document.getElementById('status').value=button.dataset.status||'Pending';
+  document.getElementById('note').value=button.dataset.note||'';
+  form.scrollIntoView({behavior:'smooth',block:'center'});
+}
+</script>
+
+<script>
+(function () {
+  function initSSAProfileMenu() {
+    var toggle = document.getElementById('ssa-profile-toggle');
+    var actions = document.getElementById('ssa-profile-actions');
+    var menu = document.getElementById('ssa-profile-menu');
+    if (!toggle || !actions || !menu || toggle.dataset.menuReady === '1') return;
+    toggle.dataset.menuReady = '1';
+    actions.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    function closeMenu() { actions.hidden = true; toggle.setAttribute('aria-expanded', 'false'); }
+    toggle.addEventListener('click', function (event) {
+      event.preventDefault(); event.stopPropagation();
+      var opening = actions.hidden;
+      actions.hidden = !opening;
+      toggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (event) { if (!menu.contains(event.target)) closeMenu(); });
+    document.addEventListener('keydown', function (event) { if (event.key === 'Escape') closeMenu(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSSAProfileMenu);
+  else initSSAProfileMenu();
+})();
+</script>
+
+</body>
+</html>
