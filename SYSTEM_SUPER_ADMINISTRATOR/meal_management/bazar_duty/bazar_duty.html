@@ -171,7 +171,7 @@ body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
       </section>
 
       <section class="bazar-section no-print">
-        <h2>Create / Edit Duty</h2>
+        <h2>Create Duty</h2>
         <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}" id="bazar-duty-form">
           <input type="hidden" name="action" value="save_duty">
           <input type="hidden" name="month" value="{{ month }}">
@@ -208,7 +208,7 @@ body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
             </div>
           </div>
           <p><button class="bazar-btn" type="submit">Save Duty</button>
-          <button class="bazar-btn secondary" type="reset" onclick="document.getElementById('duty_id').value=''">নতুন ফর্ম</button></p>
+          <button class="bazar-btn secondary" type="reset" onclick="document.getElementById('duty_id').value=''">Clear</button></p>
         </form>
       </section>
 
