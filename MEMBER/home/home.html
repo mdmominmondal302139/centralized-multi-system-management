@@ -1,1 +1,141 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MEMBER — Home</title><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f4f7fb;color:#172033}.sidebar{position:fixed;left:0;top:0;bottom:0;width:270px;background:#101827;color:#fff;padding:22px 15px;overflow:auto}.brand{font-size:19px;font-weight:800;margin-bottom:5px}.scope{font-size:12px;color:#aebbd0;margin-bottom:20px}.nav{display:block;width:100%;border:0;background:transparent;color:#dbe4f0;text-align:left;padding:11px 12px;border-radius:8px;margin:3px 0;cursor:pointer;font-size:14px}.nav:hover,.nav.active{background:#263750;color:#fff}.main{margin-left:270px;padding:28px;min-height:100vh}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.head h1{margin:0 0 5px;font-size:27px}.muted{color:#64748b;font-size:13px}.badge{padding:8px 12px;background:#e8eef8;border-radius:20px;font-size:12px;font-weight:700}.work{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;box-shadow:0 3px 12px #0f172a0a}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px}.card b{display:block;font-size:23px;margin-top:8px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.field,select,button,input,textarea{font:inherit}.field,select,input,textarea{padding:10px 11px;border:1px solid #cbd5e1;border-radius:7px;background:#fff}.btn{border:0;background:#172033;color:#fff;padding:9px 13px;border-radius:7px;cursor:pointer}.btn.alt{background:#e8eef8;color:#172033}.btn.danger{background:#b42318}.btn.success{background:#166534}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;vertical-align:top}th{background:#f8fafc}.formgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.formgrid label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}.notice{padding:11px 13px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:12px}.actions{display:flex;gap:7px;flex-wrap:wrap}@media(max-width:900px){.sidebar{width:220px}.main{margin-left:220px}.grid,.formgrid{grid-template-columns:1fr 1fr}}@media(max-width:650px){.sidebar{position:static;width:100%;height:auto}.main{margin-left:0;padding:16px}.grid,.formgrid{grid-template-columns:1fr}}</style></head><body><aside class="sidebar"><div class="brand">MEMBER</div><div class="scope">NORMAL USER / OWN RECORDS</div><button class="nav active" data-path="home">🏠 Home</button><button class="nav " data-path="profile">👤 My Profile</button><button class="nav " data-path="income">💰 My Income</button><button class="nav " data-path="expense">💸 My Expense</button><button class="nav " data-path="meal">🍽 My Meal</button><button class="nav " data-path="savings">💾 My Savings</button><button class="nav " data-path="records">📋 My Records</button><button class="nav " data-path="work">📝 My Work</button><button class="nav " data-path="logout">🚪 Logout</button></aside><main class="main"><div class="head"><div><h1>Home</h1><div class="muted">MEMBER working page — all data is limited to the logged-in Member.</div></div><div class="badge">MEMBER</div></div><section class="grid"><div class="card">Current Month Income<b id="incomeTotal">0.00</b></div><div class="card">Current Month Expense<b id="expenseTotal">0.00</b></div><div class="card">Current Month Savings<b id="savingTotal">0.00</b></div><div class="card">Access<b>Own Records</b></div></section><br><section class="work"><h2>Home</h2><p class="muted">This is the Member home page, not a separate dashboard. Use the left sidebar to open each working page.</p><div class="notice">Your personal Income, Expense, Meal and Savings are kept within your own Member scope. Other Members' records are not available here.</div></section></main><script>const qs=new URLSearchParams(location.search);const keep=qs.toString();document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{location.href='/member/'+b.dataset.path+(keep?'?'+keep:'')});</script><script>(async()=>{const u=new URLSearchParams(location.search);try{const r=await fetch('/member/api/home?'+u);const x=await r.json();incomeTotal.textContent=Number(x.income||0).toFixed(2);expenseTotal.textContent=Number(x.expense||0).toFixed(2);savingTotal.textContent=Number(x.savings||0).toFixed(2)}catch(e){}})()</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Member Panel — Home</title>
+<style>
+:root{--green:#ffffff;--green2:#0c7656;--pale:#e4f5ec;--ink:#20312b;--muted:#718078;--line:#e1eae5;--bg:#f6faf7;--white:#fff;--sidebar-text:#263b32;--sidebar-muted:#718078;--sidebar-border:#e5ece7}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.sidebar{position:fixed;inset:0 auto 0 0;width:280px;background:#ffffff;color:var(--sidebar-text);border-right:1px solid var(--sidebar-border);padding:24px 16px 14px;display:flex;flex-direction:column;overflow-y:auto;z-index:5}
+.brand{font-size:22px;font-weight:700;letter-spacing:.2px;color:#075b43}.tagline{font-size:13px;color:#718078;margin-top:5px;line-height:1.5}.section-label{font-size:11px;color:#829188;letter-spacing:1.3px;margin:29px 12px 10px}
+.nav{display:flex;align-items:center;gap:12px;width:100%;padding:12px 13px;margin:3px 0;border:0;border-radius:9px;background:transparent;color:#34483e;text-align:left;font-size:15px;cursor:pointer;text-decoration:none}
+.nav:hover{background:#f2f8f4}.nav.active{background:#dff4e8;color:#075b43;font-weight:600}.nav .ico{width:22px;text-align:center;font-size:17px}
+.subnav{display:none;margin:0 0 5px 37px}.subnav.open{display:block}.subnav .nav{font-size:13px;padding:9px 10px;color:#52665b}.subnav .nav.active,.subnav .nav:hover{background:#edf7f1;color:#075b43}
+.sidebar-bottom{margin-top:auto;padding-top:20px}.member-trigger{width:100%;display:flex;align-items:center;gap:11px;border:1px solid #e1eae5;background:#f8fbf9;color:#263b32;border-radius:12px;padding:12px;text-align:left;cursor:pointer}
+.avatar{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:#dff4e8;color:#075b43;font-weight:700;font-size:14px;flex-shrink:0}.member-name{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.member-role{font-size:12px;color:#718078;margin-top:3px}.chevron{margin-left:auto}
+.profile-menu{display:none;background:#fff;border-radius:10px;padding:6px;margin:0 0 9px;box-shadow:0 8px 24px #001b1030}.profile-menu.open{display:block}.profile-menu a{display:block;text-decoration:none;color:#234238;padding:10px 12px;border-radius:7px;font-size:14px}.profile-menu a:hover{background:var(--pale)}
+.main{margin-left:280px;padding:30px;min-height:100vh;min-width:0}.topline{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:25px}.eyebrow{font-size:12px;color:var(--green2);font-weight:600;letter-spacing:.5px}.topline h1{font-size:29px;margin:5px 0 7px;font-weight:650}.muted{color:var(--muted);font-size:14px;line-height:1.55}.role-pill{background:var(--pale);color:#075b43;border-radius:30px;padding:9px 14px;font-size:13px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.card{background:var(--white);border:1px solid var(--line);border-radius:15px;padding:20px;box-shadow:0 4px 16px #173d2710;min-width:0}.card-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.card-label{font-size:14px;color:#63736a}.card-icon{width:38px;height:38px;border-radius:11px;background:var(--pale);color:var(--green);display:grid;place-items:center;font-size:18px}.amount{font-size:27px;font-weight:650;margin-top:16px;letter-spacing:-.4px}.card-foot{font-size:12px;color:var(--muted);margin-top:7px}
+.content-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);gap:17px;margin-top:20px}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:22px;min-width:0}.panel-title{font-size:18px;font-weight:650;margin:0 0 4px}.panel-subtitle{font-size:13px;color:var(--muted);margin:0 0 20px}.bars{display:grid;gap:17px}.bar-row{display:grid;grid-template-columns:82px minmax(0,1fr) 90px;align-items:center;gap:10px;font-size:13px}.bar-track{height:11px;background:#edf3ef;border-radius:30px;overflow:hidden}.bar-fill{height:100%;width:0;background:var(--green2);border-radius:30px;transition:width .25s}.bar-fill.expense{background:#e59b55}.bar-fill.savings{background:#7bbd91}.bar-value{text-align:right;color:#42574c;font-variant-numeric:tabular-nums}
+.month-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}.mini{background:#f7faf8;border:1px solid var(--line);border-radius:10px;padding:13px}.mini-label{font-size:12px;color:var(--muted)}.mini-value{font-size:17px;font-weight:650;margin-top:8px;overflow-wrap:anywhere}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:480px}th,td{text-align:left;padding:13px 10px;border-bottom:1px solid #edf1ee;font-size:13px}th{font-weight:600;color:#738178;background:#fbfdfb}td.money{text-align:right;font-variant-numeric:tabular-nums}.type{display:inline-block;border-radius:20px;padding:5px 8px;font-size:11px;background:var(--pale);color:var(--green)}.type.expense{background:#fff0e5;color:#9a4d14}.empty{text-align:center;color:var(--muted);padding:26px 8px}.footer-note{font-size:12px;color:#7b8981;margin-top:18px}
+.mobile-toggle{display:none;border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 12px;color:var(--green);font-size:18px}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content-grid{grid-template-columns:1fr}.main{padding:23px}}
+@media(max-width:700px){.sidebar{width:280px;transform:translateX(-100%);transition:transform .2s;box-shadow:8px 0 28px #173d2718}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:17px}.mobile-toggle{display:block}.topline{align-items:flex-start}.topline h1{font-size:24px}.grid{grid-template-columns:1fr 1fr;gap:10px}.card{padding:15px}.amount{font-size:21px}.content-grid{grid-template-columns:minmax(0,1fr)}.month-cards{grid-template-columns:1fr}.bar-row{grid-template-columns:72px minmax(0,1fr) 78px;gap:7px}}
+@media(max-width:390px){.grid{grid-template-columns:1fr}.role-pill{display:none}}
+</style>
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+  <div class="brand">MEMBER PANEL</div>
+  <div class="tagline">Personal Management System</div>
+  <div class="section-label">MAIN MENU</div>
+  <a class="nav active" href="/member/home"><span class="ico">⌂</span>Home</a>
+  <button class="nav group-toggle" data-group="income"><span class="ico">↗</span>Income <span class="chevron">⌄</span></button>
+  <div class="subnav" id="sub-income"><a class="nav" href="/member/income">New Income</a><a class="nav" href="/member/income">Income List</a></div>
+  <button class="nav group-toggle" data-group="expense"><span class="ico">↘</span>Expense <span class="chevron">⌄</span></button>
+  <div class="subnav" id="sub-expense"><a class="nav" href="/member/expense">New Expense</a><a class="nav" href="/member/expense">Expense List</a></div>
+  <button class="nav group-toggle" data-group="meal"><span class="ico">☷</span>Meal <span class="chevron">⌄</span></button>
+  <div class="subnav" id="sub-meal"><a class="nav" href="/member/meal">New Meal</a><a class="nav" href="/member/meal">Meal List</a></div>
+  <button class="nav group-toggle" data-group="savings"><span class="ico">▣</span>Savings <span class="chevron">⌄</span></button>
+  <div class="subnav" id="sub-savings"><a class="nav" href="/member/savings">New Savings</a><a class="nav" href="/member/savings">Savings List</a></div>
+  <a class="nav" href="/member/work"><span class="ico">✓</span>Work</a>
+  <div class="sidebar-bottom">
+    <div class="profile-menu" id="profileMenu"><a href="/member/profile">Profile</a><a href="/logout">Logout</a></div>
+    <button class="member-trigger" id="memberTrigger" aria-expanded="false">
+      <span class="avatar" id="avatar">M</span>
+      <span style="min-width:0"><span class="member-name" id="memberName">Member Name</span><span class="member-role" style="display:block">Member</span></span>
+      <span class="chevron">⌃</span>
+    </button>
+  </div>
+</aside>
+<main class="main">
+  <div class="topline">
+    <div style="display:flex;gap:12px;align-items:flex-start">
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">☰</button>
+      <div><div class="eyebrow">MEMBER / HOME</div><h1>Welcome, <span id="welcomeName">Member</span>!</h1><div class="muted">Here is your personal financial overview for this month.</div></div>
+    </div>
+    <div class="role-pill">● Member Account</div>
+  </div>
+
+  <section class="grid">
+    <div class="card"><div class="card-head"><span class="card-label">Income</span><span class="card-icon">↗</span></div><div class="amount" id="incomeTotal">৳ 0.00</div><div class="card-foot">This month</div></div>
+    <div class="card"><div class="card-head"><span class="card-label">Expense</span><span class="card-icon">↘</span></div><div class="amount" id="expenseTotal">৳ 0.00</div><div class="card-foot">This month</div></div>
+    <div class="card"><div class="card-head"><span class="card-label">Savings</span><span class="card-icon">▣</span></div><div class="amount" id="savingTotal">৳ 0.00</div><div class="card-foot">This month</div></div>
+    <div class="card"><div class="card-head"><span class="card-label">Meal Charge</span><span class="card-icon">☷</span></div><div class="amount" id="mealTotal">৳ 0.00</div><div class="card-foot">This month</div></div>
+  </section>
+
+  <section class="content-grid">
+    <div class="panel">
+      <h2 class="panel-title">Monthly Overview</h2><p class="panel-subtitle">Income vs Expense</p>
+      <div class="bars">
+        <div class="bar-row"><span>Income</span><div class="bar-track"><div class="bar-fill" id="incomeBar"></div></div><span class="bar-value" id="incomeBarValue">৳ 0.00</span></div>
+        <div class="bar-row"><span>Expense</span><div class="bar-track"><div class="bar-fill expense" id="expenseBar"></div></div><span class="bar-value" id="expenseBarValue">৳ 0.00</span></div>
+        <div class="bar-row"><span>Savings</span><div class="bar-track"><div class="bar-fill savings" id="savingsBar"></div></div><span class="bar-value" id="savingsBarValue">৳ 0.00</span></div>
+      </div>
+      <div class="month-cards">
+        <div class="mini"><div class="mini-label">Monthly Income</div><div class="mini-value" id="monthlyIncome">৳ 0.00</div></div>
+        <div class="mini"><div class="mini-label">Monthly Expense</div><div class="mini-value" id="monthlyExpense">৳ 0.00</div></div>
+        <div class="mini"><div class="mini-label">Monthly Savings</div><div class="mini-value" id="monthlySavings">৳ 0.00</div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2 class="panel-title">Recent Transactions</h2><p class="panel-subtitle">Latest Income &amp; Expense Records</p>
+      <div class="table-wrap"><table><thead><tr><th>Type / Details</th><th>Date</th><th style="text-align:right">Amount</th></tr></thead><tbody id="recentRows"><tr><td colspan="3" class="empty">Loading your records…</td></tr></tbody></table></div>
+    </div>
+  </section>
+  <div class="footer-note">Your dashboard shows only records linked to your Member account.</div>
+</main>
+<script>
+const money = n => '৳ ' + Number(n || 0).toLocaleString('en-BD',{minimumFractionDigits:2,maximumFractionDigits:2});
+const sidebar=document.getElementById('sidebar');
+document.getElementById('mobileToggle').addEventListener('click',()=>sidebar.classList.toggle('open'));
+document.querySelectorAll('.group-toggle').forEach(btn=>btn.addEventListener('click',()=>{
+  const group=document.getElementById('sub-'+btn.dataset.group);
+  group.classList.toggle('open');
+}));
+const trigger=document.getElementById('memberTrigger'), menu=document.getElementById('profileMenu');
+trigger.addEventListener('click',()=>{const open=menu.classList.toggle('open');trigger.setAttribute('aria-expanded',String(open));});
+document.addEventListener('click',e=>{if(!trigger.contains(e.target)&&!menu.contains(e.target)){menu.classList.remove('open');trigger.setAttribute('aria-expanded','false');}});
+function setBar(id,value,max){document.getElementById(id).style.width=(max>0?Math.max(0,Math.min(100,value/max*100)):0)+'%';}
+(async()=>{
+  try{
+    const response=await fetch('/member/api/home',{credentials:'same-origin'});
+    if(!response.ok) throw new Error('Dashboard data could not be loaded');
+    const data=await response.json();
+    const name=data.name||'Member';
+    document.getElementById('memberName').textContent=name;
+    document.getElementById('welcomeName').textContent=name;
+    document.getElementById('avatar').textContent=name.trim().split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()||'M';
+    document.getElementById('incomeTotal').textContent=money(data.income);
+    document.getElementById('expenseTotal').textContent=money(data.expense);
+    document.getElementById('savingTotal').textContent=money(data.savings);
+    document.getElementById('mealTotal').textContent=money(data.meal_charge);
+    document.getElementById('monthlyIncome').textContent=money(data.monthly?.income);
+    document.getElementById('monthlyExpense').textContent=money(data.monthly?.expense);
+    document.getElementById('monthlySavings').textContent=money(data.monthly?.savings);
+    const max=Math.max(Number(data.income)||0,Number(data.expense)||0,Number(data.savings)||0,1);
+    setBar('incomeBar',Number(data.income)||0,max);setBar('expenseBar',Number(data.expense)||0,max);setBar('savingsBar',Number(data.savings)||0,max);
+    document.getElementById('incomeBarValue').textContent=money(data.income);
+    document.getElementById('expenseBarValue').textContent=money(data.expense);
+    document.getElementById('savingsBarValue').textContent=money(data.savings);
+    const tbody=document.getElementById('recentRows');tbody.textContent='';
+    const rows=Array.isArray(data.recent)?data.recent:[];
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="3" class="empty">No recent transactions found.</td></tr>';}
+    else rows.forEach(row=>{
+      const tr=document.createElement('tr');
+      const detail=document.createElement('td');
+      const badge=document.createElement('span');badge.className='type'+(row.type==='Expense'?' expense':'');badge.textContent=row.type||'Record';
+      detail.appendChild(badge);const desc=document.createElement('div');desc.style.marginTop='7px';desc.textContent=row.description||'—';detail.appendChild(desc);
+      const date=document.createElement('td');date.textContent=row.date||'—';
+      const amount=document.createElement('td');amount.className='money';amount.textContent=money(row.amount);
+      tr.append(detail,date,amount);tbody.appendChild(tr);
+    });
+  }catch(error){
+    document.getElementById('recentRows').innerHTML='<tr><td colspan="3" class="empty">Could not load live records. Please check your login session and Member database setup.</td></tr>';
+  }
+})();
+</script>
+</body>
+</html>
