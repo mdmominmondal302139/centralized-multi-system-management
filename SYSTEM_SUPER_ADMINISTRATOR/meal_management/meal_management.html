@@ -172,6 +172,15 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
 .ssa-profile-action:hover{background:#dcecff}
 .ssa-profile-actions .ssa-logout{margin-top:0}
 
+
+/* Bazar List and Bazar Duty buttons */
+.bazar-list-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;box-sizing:border-box;padding:10px 17px;border:1px solid #b8e3ce;border-radius:10px;background:linear-gradient(135deg,#e9fff3,#ffffff);color:#147344;text-decoration:none;font-size:14px;font-weight:600;transition:.18s}
+.bazar-list-btn:hover{background:#d9f8e7;border-color:#80d5a8;transform:translateY(-1px)}
+/* Bazar Duty List header button: added without changing existing page sections */
+.bazar-duty-list-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;box-sizing:border-box;padding:10px 17px;border:1px solid #b9d8fb;border-radius:10px;background:linear-gradient(135deg,#eaf4ff,#ffffff);color:#145da8;text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap;box-shadow:0 3px 10px rgba(24,91,160,.10);transition:background .15s ease,transform .15s ease,border-color .15s ease}
+.bazar-duty-list-btn:hover{background:#dceeff;border-color:#86baf0;transform:translateY(-1px)}
+.meal-page-header .ssa-page-identity{margin-left:auto}
+@media(max-width:700px){.meal-page-header .ssa-page-identity{margin-left:0}.bazar-duty-list-btn,.bazar-list-btn{min-height:40px;padding:9px 13px}}
 </style>
 </head>
 <body>
@@ -215,7 +224,7 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
 </aside>
 
 <div class="ssa-content"><main class="page">
-<header style="display:flex;align-items:center;gap:15px"><h1>Meal Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>
+<header class="meal-page-header" style="display:flex;align-items:center;gap:15px;flex-wrap:wrap"><h1>Meal Management</h1><a class="bazar-list-btn" href="/system_super_administrator/daily-bazar-list/">Bazar List</a><a class="bazar-duty-list-btn" href="/system_super_administrator/meal-management/bazar-duty/">Bazar Duty</a><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>
 {% if message %}<div class="ok" id="meal-server-success" data-message="{{ message|e }}" style="display:none">{{ message }}</div>{% endif %}{% if error %}<div class="err" id="meal-server-error" data-message="{{ error|e }}" style="display:none">{{ error }}</div>{% endif %}
 
 {% if view == 'month' %}
