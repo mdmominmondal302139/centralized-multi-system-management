@@ -25,6 +25,22 @@ def load_blueprints():
             except Exception as exc:
                 print(f"[WARN] Could not load {route}: {exc}")
 
+            # Register nested modules without moving their code into another page.
+            # Daily Bazar List remains inside meal_management/bazar_list/.
+            nested_bazar_route = page / "bazar_list" / "bazar_list.py"
+            if nested_bazar_route.is_file():
+                try:
+                    nested_spec = importlib.util.spec_from_file_location(
+                        f"page_{role.name}_{page.name}_bazar_list",
+                        nested_bazar_route
+                    )
+                    nested_module = importlib.util.module_from_spec(nested_spec)
+                    nested_spec.loader.exec_module(nested_module)
+                    if hasattr(nested_module, "bp") and nested_module.bp.name not in app.blueprints:
+                        app.register_blueprint(nested_module.bp)
+                except Exception as exc:
+                    print(f"[WARN] Could not load {nested_bazar_route}: {exc}")
+
 load_blueprints()
 
 @app.route("/")
