@@ -143,7 +143,7 @@ def get_record(context, record_id):
     _guard(context)
     row = get_database()[COLLECTION].find_one({"_id": _oid(record_id)})
     if not row:
-        raise ValueError("Daily Bazar record was not found.")
+        raise ValueError("Bazar entry was not found.")
     row["id"] = str(row.pop("_id"))
     return row
 
@@ -166,7 +166,7 @@ def update_record(context, record_id, data):
     result = get_database()[COLLECTION].update_one(
         {"_id": _oid(record_id)}, {"$set": item})
     if result.matched_count == 0:
-        raise ValueError("Daily Bazar record was not found.")
+        raise ValueError("Bazar entry was not found.")
     return True
 
 
@@ -174,5 +174,5 @@ def delete_record(context, record_id):
     _guard(context)
     result = get_database()[COLLECTION].delete_one({"_id": _oid(record_id)})
     if result.deleted_count == 0:
-        raise ValueError("Daily Bazar record was not found.")
+        raise ValueError("Bazar entry was not found.")
     return True
