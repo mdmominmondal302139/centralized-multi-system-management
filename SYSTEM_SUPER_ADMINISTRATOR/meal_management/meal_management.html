@@ -412,15 +412,13 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
     <label>Member
       <select name="member_name" id="meal-member-select" required onchange="syncMemberDetails()"><option value="">Select Member</option>{% for x in options.members %}<option value="{{ x.name }}" data-branch="{{ x.branch }}" data-mobile="{{ x.mobile }}">{{ x.name }}</option>{% endfor %}</select>
     </label>
-    <label>Branch Name <small style="font-weight:400;color:#6d829b">Account branch by default · Changeable</small>
+    <label>Branch Name
       <select name="branch_name" id="meal-branch-select" required>
         <option value="">Select Branch</option>
-        {% set account_branch = session.get('branch_name', '') %}
-        {% if account_branch and account_branch not in options.branches %}<option value="{{ account_branch }}" selected>{{ account_branch }}</option>{% endif %}
-        {% for x in options.branches %}<option value="{{ x }}" {% if x|lower == account_branch|lower %}selected{% endif %}>{{ x }}</option>{% endfor %}
+        {% for x in options.branches %}<option value="{{ x }}">{{ x }}</option>{% endfor %}
       </select>
     </label>
-    <label>Mobile <small style="font-weight:400;color:#6d829b">Editable</small>
+    <label>Mobile
       <input name="mobile" id="meal-mobile-input" type="tel" inputmode="tel" autocomplete="tel" placeholder="Enter mobile number">
     </label>
     <label>Date
@@ -630,11 +628,28 @@ selectMealMode('all');
 function syncMemberDetails(){
   const member=document.getElementById('meal-member-select');
   const mobile=document.getElementById('meal-mobile-input');
-  if(!member||!mobile)return;
+  const branch=document.getElementById('meal-branch-select');
+  if(!member)return;
   const opt=member.options[member.selectedIndex];
-  const memberMobile=(opt&&opt.dataset.mobile||'').trim();
-  // Prefill from the selected member, but keep the field editable.
-  mobile.value=memberMobile;
+  if(mobile){
+    const memberMobile=(opt&&opt.dataset.mobile||'').trim();
+    mobile.value=memberMobile;
+  }
+  if(branch){
+    const memberBranch=(opt&&opt.dataset.branch||'').trim();
+    if(memberBranch){
+      let branchOption=Array.from(branch.options).find(option=>option.value.trim().toLowerCase()===memberBranch.toLowerCase());
+      if(!branchOption){
+        branchOption=document.createElement('option');
+        branchOption.value=memberBranch;
+        branchOption.textContent=memberBranch;
+        branch.appendChild(branchOption);
+      }
+      branch.value=branchOption.value;
+    }else{
+      branch.value='';
+    }
+  }
 }
 </script>
 
