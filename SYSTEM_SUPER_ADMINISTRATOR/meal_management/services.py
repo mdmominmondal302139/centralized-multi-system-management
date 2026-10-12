@@ -215,14 +215,74 @@ def _member_mobile_map():
 
 def member_status_rows(context, limit=500):
     _guard(context)
-    mobile_map=_member_mobile_map()
-    grouped={}
-    for x in get_database()[COLLECTION].find({}, {"date":1,"member_name":1,"member":1,"name":1,"username":1,"member_id":1,"branch_name":1,"branch":1}).sort("_id",1):
-        d=_record_date(_record_value(x,"date"))
-        name=str(_record_value(x,"member_name","member","name","username")).strip()
+    mobile_map = _member_mobile_map()
+    grouped = {}
+    # Keep the newest record for each date/member/branch/meal type, matching month_rows().
+    unique_records = {}
+    collection = get_database()[COLLECTION]
+    for x in collection.find({}).sort("_id", 1):
+        d = _record_date(_record_value(x, "date"))
+        name = str(_record_value(x, "member_name", "member", "name", "username")).strip()
         if not d or not name:
             continue
-        key=(name.casefold(), d.strftime("%Y-%m"))
-        grouped[key]={"member":name,"mobile":mobile_map.get(name.casefold(),"—"),"month":d.strftime("%Y-%m"),"label":d.strftime("%B %Y")}
-    rows=sorted(grouped.values(), key=lambda x:(x["month"],x["member"].casefold()), reverse=True)
+        branch = str(_record_value(x, "branch_name", "branch")).strip()
+        meal_type = str(_record_value(x, "type", "meal_type")).strip()
+        identity = (d, name.casefold(), branch.casefold(), meal_type.casefold())
+        unique_records[identity] = {
+            "date": d, "member": name, "branch": branch,
+            "meal_type": meal_type,
+            "meal_charge": _record_value(x, "meal_charge"),
+            "rice_charge": _record_value(x, "rice_charge"),
+        }
+
+    def amount(value):
+        try:
+            return float(str(value or "0").replace(",", "").replace("৳", "").strip() or 0)
+        except (TypeError, ValueError):
+            return 0.0
+
+    for r in unique_records.values():
+        d = r["date"]
+        key = (r["member"].casefold(), d.strftime("%Y-%m"))
+        if key not in grouped:
+            grouped[key] = {
+                "member": r["member"],
+                "mobile": mobile_map.get(r["member"].casefold(), "—"),
+                "month": d.strftime("%Y-%m"),
+                "label": d.strftime("%B-%Y"),
+                "total_meal_charge": 0.0,
+                "total_rice_charge": 0.0,
+            }
+        grouped[key]["total_meal_charge"] += amount(r["meal_charge"])
+        grouped[key]["total_rice_charge"] += amount(r["rice_charge"])
+
+    rows = sorted(grouped.values(), key=lambda x: (x["month"], x["member"].casefold()), reverse=True)
+    for row in rows:
+        row["total_meal_charge"] = round(row["total_meal_charge"], 2)
+        row["total_rice_charge"] = round(row["total_rice_charge"], 2)
     return rows[:limit]
+
+
+def delete_member_month(context, member, month_key):
+    """Delete all meal records for one member in one month."""
+    _guard(context)
+    try:
+        year, month = [int(v) for v in month_key.split("-")]
+        start = date(year, month, 1)
+        end = date(year, month, calendar_month_days(year, month))
+    except Exception:
+        raise ValueError("Invalid month.")
+    member_key = str(member or "").strip().casefold()
+    if not member_key:
+        raise ValueError("Member is required.")
+    collection = get_database()[COLLECTION]
+    ids = []
+    for x in collection.find({}):
+        d = _record_date(_record_value(x, "date"))
+        name = str(_record_value(x, "member_name", "member", "name", "username")).strip()
+        if d and start <= d <= end and name.casefold() == member_key:
+            ids.append(x["_id"])
+    if ids:
+        result = collection.delete_many({"_id": {"$in": ids}})
+        return result.deleted_count
+    return 0
