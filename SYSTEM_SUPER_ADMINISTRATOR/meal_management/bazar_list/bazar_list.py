@@ -95,9 +95,9 @@ def page():
             "member": request.args.get("member", "").strip(),
             "search": request.args.get("search", "").strip(),
         }
-        message = ("Daily Bazar record saved successfully." if request.args.get("saved")
-                   else "Daily Bazar record updated successfully." if request.args.get("updated")
-                   else "Daily Bazar record deleted successfully." if request.args.get("deleted")
+        message = ("Bazar entry saved successfully." if request.args.get("saved")
+                   else "Bazar entry updated successfully." if request.args.get("updated")
+                   else "Bazar entry deleted successfully." if request.args.get("deleted")
                    else None)
         records = service.list_records(ctx, filters)
         editing = None
