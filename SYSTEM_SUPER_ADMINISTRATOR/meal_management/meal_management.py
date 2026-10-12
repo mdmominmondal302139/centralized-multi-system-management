@@ -48,7 +48,8 @@ def _form_options():
         seen.add(name.casefold())
         # Member's branch is sourced from the account record created during registration.
         member_branch = str(x.get("branch_name") or x.get("branch") or x.get("branchName") or "").strip()
-        members.append({"name": name, "branch": member_branch})
+        mobile = str(x.get("mobile") or x.get("mobile_number") or x.get("phone") or x.get("contact_number") or "").strip()
+        members.append({"name": name, "branch": member_branch, "mobile": mobile})
     members.sort(key=lambda item: item["name"].casefold())
     return {"branches": sorted(branch_names, key=str.casefold), "members": members}
 
@@ -89,7 +90,14 @@ def page():
             action = request.form.get("action", "save")
             data = dict(request.form)
             return_month = _month_key(request.form.get("return_month", ""))
-            if action == "delete":
+            if action == "delete_month":
+                deleted_count = service.delete_member_month(
+                    _context(),
+                    request.form.get("delete_member", ""),
+                    _month_key(request.form.get("delete_month", "")) or "",
+                )
+                message = f"Deleted {deleted_count} meal record(s)."
+            elif action == "delete":
                 service.delete_record(_context(), request.form.get("record_id", ""))
                 message = "Deleted successfully."
             elif action == "update":
@@ -105,6 +113,7 @@ def page():
                 common = {
                     "member_name": request.form.get("member_name", "").strip(),
                     "branch_name": request.form.get("branch_name", "").strip(),
+                    "mobile": request.form.get("mobile", "").strip(),
                     "month": request.form.get("month", "").strip(),
                     "date": request.form.get("date", "").strip(),
                     "note": request.form.get("note", "").strip(),
@@ -201,4 +210,61 @@ def download_month(month):
     suffix = ("_" + re.sub(r"[^A-Za-z0-9_-]+", "_", member)) if member else ""
     filename = "Meal_Record_%s%s.doc" % (month_key, suffix)
     return Response(body, mimetype="application/msword; charset=utf-8",
+                    headers={"Content-Disposition": f'attachment; filename="{filename}"'})
+
+
+@bp.route("/download-xlsx/<month>", methods=["GET"])
+def download_month_xlsx(month):
+    if session.get("authenticated") is not True or session.get("role") != ROLE:
+        return redirect(url_for("login"))
+    from io import BytesIO
+    from zipfile import ZipFile, ZIP_DEFLATED
+    from xml.sax.saxutils import escape
+
+    month_key = _month_key(month)
+    if not month_key:
+        return Response("Invalid month.", status=400, mimetype="text/plain")
+    member = str(request.args.get("member", "")).strip()
+    rows = service.month_rows(_context(), month_key, member=member)
+    sheet_rows = [["SL", "Date", "Day", "Member", "Branch", "Meal Type", "Meal", "Meal Charge", "Rice Charge", "Status"]]
+    sl = 0
+    for day in rows:
+        if day["status"] == "OFF":
+            sl += 1
+            sheet_rows.append([sl, day["date"], day["day"], "", "", "", "", "", "", "OFF"])
+        else:
+            for r in day["records"]:
+                sl += 1
+                sheet_rows.append([sl, day["date"], day["day"], r["member"], r["branch"], r["meal_type"], r["meal"], r["meal_charge"], r["rice_charge"], "ON"])
+
+    def col_name(n):
+        result = ""
+        while n:
+            n, rem = divmod(n - 1, 26)
+            result = chr(65 + rem) + result
+        return result
+
+    xml_rows = []
+    for ri, row in enumerate(sheet_rows, 1):
+        cells = []
+        for ci, value in enumerate(row, 1):
+            ref = f"{col_name(ci)}{ri}"
+            val = escape(str(value if value is not None else ""))
+            cells.append(f'<c r="{ref}" t="inlineStr"><is><t xml:space="preserve">{val}</t></is></c>')
+        xml_rows.append(f'<row r="{ri}">{"".join(cells)}</row>')
+    sheet_xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' + "".join(xml_rows) + '</sheetData></worksheet>'
+    output = BytesIO()
+    with ZipFile(output, "w", ZIP_DEFLATED) as workbook:
+        workbook.writestr("[Content_Types].xml", '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>''')
+        workbook.writestr("_rels/.rels", '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>''')
+        workbook.writestr("xl/workbook.xml", '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Meal Records" sheetId="1" r:id="rId1"/></sheets></workbook>''')
+        workbook.writestr("xl/_rels/workbook.xml.rels", '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>''')
+        workbook.writestr("xl/worksheets/sheet1.xml", sheet_xml)
+    suffix = ("_" + re.sub(r"[^A-Za-z0-9_-]+", "_", member)) if member else ""
+    filename = f"Meal_Record_{month_key}{suffix}.xlsx"
+    return Response(output.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     headers={"Content-Disposition": f'attachment; filename="{filename}"'})
