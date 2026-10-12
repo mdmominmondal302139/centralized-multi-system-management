@@ -82,6 +82,26 @@ body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
 .bazar-page .bazar-note,.bazar-page .bazar-flash{background:#f7f9fc!important;color:#596779!important}
 *{font-weight:400!important}
 
+
+/* Shared strong-outline module dropdown; text-only options */
+.meal-module-selector-wrap{display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap;margin:8px 0}
+.meal-module-selector-label{font-size:13px;font-weight:700;color:#203b5b}
+.meal-module-selector{min-width:260px;min-height:46px;box-sizing:border-box;padding:10px 14px;border:3px solid #174f8b!important;border-radius:10px;background:#fff;color:#123b68;font-size:15px;font-weight:700;box-shadow:0 0 0 2px rgba(23,79,139,.12),0 4px 12px rgba(23,79,139,.12);cursor:pointer}
+.meal-module-selector:focus{outline:3px solid #79b7ff;outline-offset:2px;border-color:#0b3f7a!important}
+@media(max-width:700px){.meal-module-selector{min-width:min(260px,80vw);width:100%}}
+</style>
+<style>
+/* Keep the Meal Management header in the same exact content alignment as Bazar List */
+.ssa-content > .meal-module-page-header{margin:27px 28px 22px!important;box-sizing:border-box}
+@media(max-width:700px){.ssa-content > .meal-module-page-header{margin:18px 14px 22px!important}}
+/* Shared Meal Management module header: normal document flow, not fixed while scrolling */
+.meal-module-page-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:0 0 22px;padding:18px 20px;background:#fff;border:1px solid #dce7f3;border-radius:12px;box-shadow:0 3px 12px rgba(20,50,85,.06)}
+.meal-module-page-header h1{margin:0;color:#173b63;font-size:26px;font-weight:600;line-height:1.25}
+.meal-module-selector-wrap{display:flex!important;position:static!important;top:auto!important;right:auto!important;z-index:auto!important;align-items:center;gap:9px;flex-wrap:wrap;margin:0!important;padding:0!important;background:transparent!important;border-radius:0!important;box-shadow:none!important}
+.meal-module-selector-label{font-size:13px;font-weight:700;color:#203b5b;white-space:nowrap}
+.meal-module-selector{min-width:260px;min-height:46px;box-sizing:border-box;padding:10px 14px;border:3px solid #174f8b!important;border-radius:10px;background:#fff;color:#123b68;font-size:15px;font-weight:700;box-shadow:0 0 0 2px rgba(23,79,139,.12),0 4px 12px rgba(23,79,139,.12);cursor:pointer}
+.meal-module-selector:focus{outline:3px solid #79b7ff;outline-offset:2px;border-color:#0b3f7a!important}
+@media(max-width:700px){.meal-module-page-header{align-items:flex-start;padding:14px;margin-bottom:16px}.meal-module-page-header h1{font-size:23px}.meal-module-selector-wrap{width:100%!important;align-items:flex-start!important;flex-direction:column!important}.meal-module-selector{min-width:0;width:100%;max-width:100%}}
 </style>
 </head>
 <body>
@@ -123,9 +143,11 @@ body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
   </div>
 </aside>
 <div class="ssa-content">
+<div class="meal-module-page-header"><h1>Meal Management</h1><div class="meal-module-selector-wrap"><label class="meal-module-selector-label" for="meal-module-selector">Select Module</label><select id="meal-module-selector" class="meal-module-selector" aria-label="Choose Meal Management page" onchange="navigateMealModule(this.value)"><option value="meal-entry">Meal Entry</option><option value="bazar-list">Bazar List</option><option value="bazar-duty">Bazar Duty</option><option value="meal-status-list">Meal Status List</option></select></div></div>
 <div class="bazar-page">
   <main class="bazar-card">
     <header class="bazar-header">
+      
       <p class="bazar-kicker">MONTHLY BAZAR DUTY LIST</p>
       <h1 class="bazar-account">{{ header.header_name or account_name }}</h1>
       <h2 class="bazar-title">{{ header.list_title or 'বাজার লিস্ট' }} — {{ month }}</h2>
@@ -171,7 +193,7 @@ body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
       </section>
 
       <section class="bazar-section no-print">
-        <h2>Create Duty</h2>
+        <h2>Create / Edit Duty</h2>
         <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}" id="bazar-duty-form">
           <input type="hidden" name="action" value="save_duty">
           <input type="hidden" name="month" value="{{ month }}">
@@ -208,12 +230,12 @@ body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
             </div>
           </div>
           <p><button class="bazar-btn" type="submit">Save Duty</button>
-          <button class="bazar-btn secondary" type="reset" onclick="document.getElementById('duty_id').value=''">Clear</button></p>
+          <button class="bazar-btn secondary" type="reset" onclick="document.getElementById('duty_id').value=''">নতুন ফর্ম</button></p>
         </form>
       </section>
 
       <section class="bazar-section no-print">
-        <h2>Add new Member</h2>
+        <h2>নতুন সদস্য যোগ করুন</h2>
         <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}" class="bazar-toolbar">
           <input type="hidden" name="action" value="add_member">
           <input type="hidden" name="month" value="{{ month }}">
@@ -308,5 +330,9 @@ function editBazarDuty(button){
 })();
 </script>
 
+<script>
+function navigateMealModule(module){var urls={"meal-entry":"/system_super_administrator/meal-management/?module=meal-entry","bazar-list":"/system_super_administrator/daily-bazar-list/","bazar-duty":"/system_super_administrator/meal-management/bazar-duty/","meal-status-list":"/system_super_administrator/meal-management/?module=meal-status-list"};if(urls[module])window.location.href=urls[module];}
+(function(){var select=document.getElementById('meal-module-selector');if(!select)return;var path=window.location.pathname;var params=new URLSearchParams(window.location.search);var module='meal-entry';if(path.indexOf('/daily-bazar-list')!==-1)module='bazar-list';else if(path.indexOf('/bazar-duty')!==-1)module='bazar-duty';else if(params.get('module')==='meal-status-list'||params.has('month'))module='meal-status-list';select.value=module;var entry=document.getElementById('meal-entry');var status=document.getElementById('meal-status-list');if(entry)entry.hidden=(module!=='meal-entry');if(status)status.hidden=(module!=='meal-status-list');})();
+</script>
 </body>
 </html>
