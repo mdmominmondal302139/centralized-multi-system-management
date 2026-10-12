@@ -14,7 +14,7 @@
 .ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity span{color:#73869c;font-size:11px}
 .ssa-content .card{max-width:100%;box-sizing:border-box}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form button{border:0;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}
 .record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(15,23,42,.06)}.record-table{width:100%;min-width:1100px;border-collapse:collapse;font-size:14px;background:#fff}.record-table th{padding:13px 14px;text-align:left;background:#f3f7fb;color:#243447;font-weight:700;border-bottom:2px solid #d9e2ec;white-space:nowrap}.record-table td{padding:11px 14px;border-bottom:1px solid #e7edf3;color:#334155;vertical-align:middle;white-space:nowrap}.record-table tbody tr:hover{background:#f8fbff}.record-table .empty{text-align:center;padding:28px;color:#64748b}
-.status-on{display:inline-flex;align-items:center;gap:5px;color:#087f46;font-weight:800}.status-off{display:inline-flex;align-items:center;gap:5px;color:#c62828;font-weight:800}.btn{display:inline-block;text-decoration:none;border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;font-size:12px}.btn-update{background:#16834d;color:#fff}.btn-delete{background:#ffe3e3!important;color:#171717!important;border:1px solid #ffc2c2!important}.btn-delete:hover{background:#ffd1d1!important;color:#000!important}.btn-open{background:#1769aa;color:#fff}.btn-download{background:#5b3aa4;color:#fff}.btn-cancel{background:#64748b;color:#fff}.action-row{display:flex;gap:7px;align-items:center}.month-table td{padding:14px}.month-table{min-width:620px}.month-title{font-weight:800;color:#173a61}.month-actions{display:flex;gap:8px}
+.status-on{display:inline-flex;align-items:center;gap:5px;color:#087f46;font-weight:800}.status-off{display:inline-flex;align-items:center;gap:5px;color:#c62828;font-weight:800}.btn{display:inline-block;text-decoration:none;border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;font-size:12px}.btn-update{background:#16834d;color:#fff}.btn-delete{background:#ffe3e3!important;color:#171717!important;border:1px solid #ffc2c2!important}.btn-delete:hover{background:#ffd1d1!important;color:#000!important}.btn-open{background:#1769aa;color:#fff}.btn-download{background:#5b3aa4;color:#fff}.btn-cancel{background:#64748b;color:#fff}.action-row{display:flex;gap:7px;align-items:center}.month-table td{padding:14px}.month-table{min-width:620px}.month-title{font-weight:800;color:#173a61}.month-actions{display:flex;gap:8px;flex-wrap:wrap}.status-filter-bar{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:12px;margin:16px 0}.status-filter-bar label{display:flex;flex-direction:column;gap:6px;color:#203c5d;font-size:13px;font-weight:800}.status-filter-bar input,.status-filter-bar select{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid #cbd9e8;border-radius:9px;background:#fff;color:#15385f;font-size:14px}.status-filter-bar input:focus,.status-filter-bar select:focus{outline:none;border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.status-filter-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;color:#64748b;font-size:13px}.status-filter-reset{border:1px solid #cbd9e8;background:#f8fafc;color:#234563;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer}@media(max-width:760px){.status-filter-bar{grid-template-columns:1fr}}
 .section-head{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.back-link{font-weight:700;text-decoration:none;color:#1769aa}.filter-bar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:15px}.filter-bar label{display:flex;flex-direction:column;gap:5px;font-weight:700;color:#203c5d}.filter-bar input,.filter-bar select{padding:9px 10px;border:1px solid #cbd9e8;border-radius:8px}.day-summary{font-weight:800;color:#173a61}
 .edit-form{display:none!important;margin-top:8px;padding:12px;background:#f7fafc;border:1px solid #dce6ef;border-radius:9px}.edit-form.open{display:grid!important;grid-template-columns:repeat(4,minmax(120px,1fr));gap:8px}.edit-form input,.edit-form select{padding:7px;border:1px solid #cbd9e8;border-radius:7px}.edit-form button{padding:7px 10px;border-radius:7px;border:0;font-weight:700;cursor:pointer}
 /* Clean modal editor: keep edit controls in a centered dialog, not inside the table */
@@ -179,9 +179,66 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
 /* Bazar Duty List header button: added without changing existing page sections */
 .bazar-duty-list-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;box-sizing:border-box;padding:10px 17px;border:1px solid #b9d8fb;border-radius:10px;background:linear-gradient(135deg,#eaf4ff,#ffffff);color:#145da8;text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap;box-shadow:0 3px 10px rgba(24,91,160,.10);transition:background .15s ease,transform .15s ease,border-color .15s ease}
 .bazar-duty-list-btn:hover{background:#dceeff;border-color:#86baf0;transform:translateY(-1px)}
+/* Strongly outlined Meal Management module selector */
+.meal-module-selector-wrap{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.meal-module-selector-label{font-size:13px;font-weight:700;color:#203b5b}
+.meal-module-selector{min-width:260px;min-height:46px;box-sizing:border-box;padding:10px 42px 10px 14px;border:3px solid #174f8b!important;border-radius:10px;background-color:#fff;color:#123b68;font-size:15px;font-weight:700;box-shadow:0 0 0 2px rgba(23,79,139,.12),0 4px 12px rgba(23,79,139,.12);outline:2px solid transparent;outline-offset:2px;cursor:pointer}
+.meal-module-selector:focus{outline:3px solid #79b7ff;outline-offset:2px;border-color:#0b3f7a!important}
+@media(max-width:700px){.meal-module-selector{min-width:min(260px,80vw);width:100%}}
+
 .meal-page-header .ssa-page-identity{margin-left:auto}
 @media(max-width:700px){.meal-page-header .ssa-page-identity{margin-left:0}.bazar-duty-list-btn,.bazar-list-btn{min-height:40px;padding:9px 13px}}
 </style>
+<style>/* Module dropdown stays in the page header and scrolls away with the header */
+.meal-module-selector-wrap{position:static!important;top:auto!important;right:auto!important;z-index:auto!important;margin:0!important;padding:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;display:flex!important;align-items:center!important;gap:9px!important;flex-wrap:wrap!important}
+.meal-module-selector-label{white-space:nowrap!important}
+@media(max-width:700px){.meal-module-selector-wrap{max-width:100%!important;padding:0!important;gap:6px!important}.meal-module-selector-label{display:block!important}.meal-module-selector{min-width:0!important;width:100%!important}}</style>
+
+<style>
+/* User-requested UI standard: pill dropdowns, pale-red Delete, pale-green Edit/Update */
+.ssa-content select,
+.ssa-content .card form select,
+.ssa-content .filter-bar select,
+.ssa-content .status-filter-bar select,
+.ssa-content .edit-form select,
+.ssa-content .meal-edit-body .edit-form select,
+.ssa-content .meal-module-selector {
+  border-radius: 999px !important;
+}
+.ssa-content .btn-update,
+.ssa-content button.btn-update,
+.ssa-content .edit-actions .btn-update {
+  background: #DCFCE7 !important;
+  background-color: #DCFCE7 !important;
+  color: #166534 !important;
+  border: 1px solid #BBF7D0 !important;
+  box-shadow: none !important;
+  font-weight: 400 !important;
+}
+.ssa-content .btn-update:hover,
+.ssa-content button.btn-update:hover,
+.ssa-content .edit-actions .btn-update:hover {
+  background: #BBF7D0 !important;
+  color: #14532D !important;
+}
+.ssa-content .btn-delete,
+.ssa-content button.btn-delete,
+.meal-delete-confirm {
+  background: #FEE2E2 !important;
+  background-color: #FEE2E2 !important;
+  color: #7F1D1D !important;
+  border: 1px solid #FECACA !important;
+  box-shadow: none !important;
+  font-weight: 400 !important;
+}
+.ssa-content .btn-delete:hover,
+.ssa-content button.btn-delete:hover,
+.meal-delete-confirm:hover {
+  background: #FECACA !important;
+  color: #7F1D1D !important;
+}
+</style>
+
 </head>
 <body>
 <div class="ssa-shell">
@@ -224,7 +281,7 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
 </aside>
 
 <div class="ssa-content"><main class="page">
-<header class="meal-page-header" style="display:flex;align-items:center;gap:15px;flex-wrap:wrap"><h1>Meal Management</h1><a class="bazar-list-btn" href="/system_super_administrator/daily-bazar-list/">Bazar List</a><a class="bazar-duty-list-btn" href="/system_super_administrator/meal-management/bazar-duty/">Bazar Duty</a><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>
+<header class="meal-module-page-header meal-page-header"><h1>Meal Management</h1><div class="meal-module-selector-wrap"><label class="meal-module-selector-label" for="meal-module-selector">Select Module</label><select id="meal-module-selector" class="meal-module-selector" aria-label="Choose Meal Management page" onchange="navigateMealModule(this.value)"><option value="meal-entry">Meal Entry</option><option value="bazar-list">Bazar List</option><option value="bazar-duty">Bazar Duty</option><option value="meal-status-list">Meal Status List</option></select></div><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>
 {% if message %}<div class="ok" id="meal-server-success" data-message="{{ message|e }}" style="display:none">{{ message }}</div>{% endif %}{% if error %}<div class="err" id="meal-server-error" data-message="{{ error|e }}" style="display:none">{{ error }}</div>{% endif %}
 
 {% if view == 'month' %}
@@ -273,19 +330,28 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
 </section>
 
 {% else %}
-<section class="card meal-entry-card">
+<section class="card meal-entry-card" id="meal-entry">
   <div class="meal-entry-heading"><div><h2>Meal Entry</h2><p>একবারে এক বা একাধিক Meal Type নির্বাচন করে আলাদা চার্জসহ Save করুন।</p></div><span class="meal-entry-pill">MULTI-MEAL ENTRY</span></div>
   <form method="post" id="meal-entry-form" class="meal-entry-form" onsubmit="return prepareMealSubmit()">
     <label>Member
-      <select name="member_name" id="meal-member-select" required onchange="syncMemberBranch()"><option value="">Select Member</option>{% for x in options.members %}<option value="{{ x.name }}" data-branch="{{ x.branch }}">{{ x.name }}</option>{% endfor %}</select>
+      <select name="member_name" id="meal-member-select" required onchange="syncMemberDetails()"><option value="">Select Member</option>{% for x in options.members %}<option value="{{ x.name }}" data-branch="{{ x.branch }}" data-mobile="{{ x.mobile }}">{{ x.name }}</option>{% endfor %}</select>
     </label>
-    <label>Branch Name
-      <select name="branch_name" id="meal-branch-select" required><option value="">Select Branch</option>{% for x in options.branches %}<option value="{{ x }}">{{ x }}</option>{% endfor %}</select>
+    <label>Branch Name <small style="font-weight:400;color:#6d829b">Account branch by default · Changeable</small>
+      <select name="branch_name" id="meal-branch-select" required>
+        <option value="">Select Branch</option>
+        {% set account_branch = session.get('branch_name', '') %}
+        {% if account_branch and account_branch not in options.branches %}<option value="{{ account_branch }}" selected>{{ account_branch }}</option>{% endif %}
+        {% for x in options.branches %}<option value="{{ x }}" {% if x|lower == account_branch|lower %}selected{% endif %}>{{ x }}</option>{% endfor %}
+      </select>
     </label>
-    <label>Month
-      <input name="month" id="meal-month-select" type="month" value="{{ current_month }}" aria-label="Month and year" required>
+    <label>Mobile <small style="font-weight:400;color:#6d829b">Editable</small>
+      <input name="mobile" id="meal-mobile-input" type="tel" inputmode="tel" autocomplete="tel" placeholder="Enter mobile number">
     </label>
-    <label>Date<input name="date" id="meal-date-input" type="text" inputmode="numeric" placeholder="DD.MM.YYYY" title="Enter date as DD.MM.YYYY" pattern="[0-9]{2}\.[0-9]{2}\.[0-9]{4}" value="{{ today_display }}" required><small style="font-weight:400;color:#6d829b">Format: DD.MM.YYYY</small></label>
+    <label>Date
+      <input name="date" id="meal-date-input" type="date" value="{{ today }}" required aria-label="Select meal date">
+      <small style="font-weight:400;color:#6d829b">Choose from calendar or edit the date.</small>
+    </label>
+    <input type="hidden" name="month" id="meal-month-select" value="{{ current_month }}">
     <div class="meal-mode-row">
       <div><strong>Choose Meal Types</strong><small>All Meals অথবা নিজের পছন্দমতো নির্বাচন করুন</small></div>
       <div class="meal-mode-actions"><button type="button" class="meal-mode-btn active" id="all-meals-btn" onclick="selectMealMode('all')">All Meals</button><button type="button" class="meal-mode-btn" id="custom-meals-btn" onclick="selectMealMode('custom')">Custom Selection</button></div>
@@ -303,30 +369,58 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
   </form>
 </section>
 
-<section class="card">
+<section class="card" id="meal-status-list">
   <div class="section-head">
     <div><h2>📋 Meal Status List</h2><div>Each Member and each Month + Year is shown separately.</div></div>
   </div>
+  <div class="status-filter-bar" role="search" aria-label="Filter meal status records">
+    <label>Month filter
+      <select id="status-month-filter" aria-label="Filter by month name">
+      </select>
+    </label>
+    <label>Year filter
+      <select id="status-year-filter" aria-label="Filter by year from 2026 to 2090">
+      </select>
+    </label>
+    <label>Member search
+      <input type="search" id="status-member-filter" placeholder="Search member name..." autocomplete="off" aria-label="Search member name">
+    </label>
+    <label>Mobile search
+      <input type="search" id="status-mobile-filter" placeholder="Search mobile number..." inputmode="tel" autocomplete="off" aria-label="Search mobile number">
+    </label>
+  </div>
+  <div class="status-filter-meta"><span id="status-filter-count" aria-live="polite">Showing all records</span><button class="status-filter-reset" type="button" id="status-filter-reset">Reset filters</button></div>
   <div class="record-table-wrap">
     <table class="record-table month-table">
-      <thead><tr><th>SL</th><th>Member</th><th>Mobile</th><th>Month + Year</th><th>Action</th></tr></thead>
-      <tbody>
+      <thead><tr><th>SL</th><th>Member</th><th>Mobile</th><th>Total Meal Charge</th><th>Total Rice Charge</th><th>Month-Year</th><th>Action</th></tr></thead>
+      <tbody id="meal-status-rows">
       {% for m in member_rows %}
-        <tr>
+        <tr class="meal-status-row" data-month="{{ m.month|e }}" data-member="{{ m.member|e }}" data-mobile="{{ m.mobile|e }}">
           <td>{{ loop.index }}</td>
           <td class="month-title">{{ m.member }}</td>
           <td>{{ m.mobile }}</td>
+          <td><strong>৳{{ "%.2f"|format(m.total_meal_charge) }}</strong></td>
+          <td><strong>৳{{ "%.2f"|format(m.total_rice_charge) }}</strong></td>
           <td><strong>{{ m.label }}</strong></td>
           <td>
             <div class="month-actions">
-              <a class="btn btn-open" href="{{ url_for('system_super_administrator_meal_management_bp.page', month=m.month, member=m.member) }}">Open ↓</a>
-              <a class="btn btn-download" href="{{ url_for('system_super_administrator_meal_management_bp.download_month', month=m.month) }}?member={{ m.member|urlencode }}">Download</a>
+              <a class="btn btn-open" href="{{ url_for('system_super_administrator_meal_management_bp.page', month=m.month, member=m.member) }}">Open</a>
+              <a class="btn btn-download" href="{{ url_for('system_super_administrator_meal_management_bp.download_month_xlsx', month=m.month) }}?member={{ m.member|urlencode }}">Download (XLSX)</a>
+              <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.page') }}" style="display:inline" onsubmit="return confirm('Delete all meal records for {{ m.member|e }} in {{ m.label }}? This cannot be undone.');">
+                <input type="hidden" name="action" value="delete_month">
+                <input type="hidden" name="delete_member" value="{{ m.member }}">
+                <input type="hidden" name="delete_month" value="{{ m.month }}">
+                <input type="hidden" name="return_month" value="{{ m.month }}">
+                <input type="hidden" name="return_member" value="{{ m.member }}">
+                <button class="btn btn-delete" type="submit">Delete</button>
+              </form>
             </div>
           </td>
         </tr>
       {% else %}
-        <tr><td colspan="5" class="empty">No member meal records found.</td></tr>
+        <tr class="meal-status-empty"><td colspan="7" class="empty">No member meal records found.</td></tr>
       {% endfor %}
+        <tr id="meal-status-no-results" hidden><td colspan="7" class="empty">No records match these filters.</td></tr>
       </tbody>
     </table>
   </div>
@@ -340,6 +434,24 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
   </section>
 </div>
 <script>
+function navigateMealModule(value){
+  const base='/system_super_administrator/meal-management/';
+  if(value==='meal-entry'){
+    if(window.location.pathname.replace(/\/$/,'')!==base.replace(/\/$/,'' ) || window.location.search){window.location.href=base+'#meal-entry';return;}
+    const entry=document.getElementById('meal-entry');
+    if(entry){entry.scrollIntoView({behavior:'smooth',block:'start'});}
+    else window.location.href=base+'#meal-entry';
+  }else if(value==='bazar-list'){
+    window.location.href='/system_super_administrator/daily-bazar-list/';
+  }else if(value==='bazar-duty'){
+    window.location.href='/system_super_administrator/meal-management/bazar-duty/';
+  }else if(value==='meal-status-list'){
+    if(window.location.pathname.replace(/\/$/,'')!==base.replace(/\/$/,'') || window.location.search){window.location.href=base+'#meal-status-list';return;}
+    const list=document.getElementById('meal-status-list');
+    if(list){list.scrollIntoView({behavior:'smooth',block:'start'});}
+    else window.location.href=base+'#meal-status-list';
+  }
+}
 var activeMealEdit=null;
 function toggleEdit(id){
   var form=document.getElementById('edit-'+id), overlay=document.getElementById('meal-edit-overlay'), body=document.getElementById('meal-edit-body');
@@ -411,16 +523,10 @@ function prepareMealSubmit(){
   entries.push({type:card.dataset.meal,meal_charge:get('meal_charge'),rice_charge:get('rice_charge'),quantity:get('quantity'),status:get('status')});
  });
  document.getElementById('meal-entries-json').value=JSON.stringify(entries);
- // Display DD.MM.YYYY, but submit ISO YYYY-MM-DD for the Flask backend.
  const dateInput=document.getElementById('meal-date-input');
- if(dateInput){
-  const match=dateInput.value.trim().match(/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/);
-  if(!match){alert('Please enter the date as DD.MM.YYYY, for example 10.10.2026.');return false;}
-  const day=Number(match[1]), month=Number(match[2]), year=Number(match[3]);
-  const check=new Date(year,month-1,day);
-  if(check.getFullYear()!==year||check.getMonth()!==month-1||check.getDate()!==day){alert('Please enter a valid date.');return false;}
-  dateInput.value=match[3]+'-'+match[2]+'-'+match[1];
- }
+ if(!dateInput || !dateInput.value){alert('Please select a valid date.');return false;}
+ // Month is derived automatically from the selected date; no Month box is shown.
+ document.getElementById('meal-month-select').value=dateInput.value.slice(0,7);
  return true;
 }
 selectMealMode('all');
@@ -445,28 +551,15 @@ selectMealMode('all');
   else formatDateInputs();
 })();
 
-function syncMemberBranch(){
+function syncMemberDetails(){
   const member=document.getElementById('meal-member-select');
-  const branch=document.getElementById('meal-branch-select');
-  if(!member||!branch)return;
+  const mobile=document.getElementById('meal-mobile-input');
+  if(!member||!mobile)return;
   const opt=member.options[member.selectedIndex];
-  const memberBranch=(opt&&opt.dataset.branch||'').trim();
-  if(memberBranch){
-    let found=Array.from(branch.options).find(o=>o.value.trim().toLowerCase()===memberBranch.toLowerCase());
-    if(!found){found=document.createElement('option');found.value=memberBranch;found.textContent=memberBranch;branch.appendChild(found);}
-    branch.value=found.value;
-  }
+  const memberMobile=(opt&&opt.dataset.mobile||'').trim();
+  // Prefill from the selected member, but keep the field editable.
+  mobile.value=memberMobile;
 }
-document.addEventListener('DOMContentLoaded',function(){
-  syncMemberBranch();
-  const dateInput=document.getElementById('meal-date-input');
-  if(dateInput){dateInput.addEventListener('blur',function(){
-    const v=dateInput.value.trim();
-    let m=v.match(/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/);
-    if(!m){m=v.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/);if(m)dateInput.value=m[3]+'.'+m[2]+'.'+m[1];}
-  });}
-});
-
 </script>
 
 
@@ -509,7 +602,7 @@ document.getElementById('meal-delete-modal').addEventListener('click',function(e
 </script>
 
 
-<!-- Separate 5-second success/error toast for Update and Delete results -->
+<!-- Compact normal notification for Update and Delete results -->
 <div id="meal-result-toast" class="meal-result-overlay" aria-live="polite" aria-atomic="true" role="status" hidden>
   <div class="meal-result-box" id="meal-result-box">
     <div class="meal-result-icon" id="meal-result-icon">✓</div>
@@ -519,21 +612,23 @@ document.getElementById('meal-delete-modal').addEventListener('click',function(e
   </div>
 </div>
 <style>
-.meal-result-overlay{position:fixed;inset:0;z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,32,54,.20);backdrop-filter:blur(2px)}
+.meal-result-overlay{position:fixed;top:20px;right:20px;left:auto;bottom:auto;z-index:100001;display:block;padding:0;background:transparent;backdrop-filter:none;pointer-events:none;max-width:calc(100vw - 32px)}
 .meal-result-overlay[hidden]{display:none!important}
-.meal-result-box{width:min(500px,calc(100vw - 36px));box-sizing:border-box;background:#fff;border:1px solid #dce6f1;border-radius:22px;padding:34px 32px 25px;text-align:center;box-shadow:0 24px 80px rgba(16,42,75,.25);animation:mealResultIn .22s ease-out}
-.meal-result-icon{width:66px;height:66px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;background:#e5f8ed;border:1px solid #b8ebcc;color:#11834f;font-size:36px;font-weight:600}
-.meal-result-title{font-size:25px;line-height:1.25;font-weight:600;color:#17365c;margin-bottom:9px}
-.meal-result-message{font-size:15px;line-height:1.65;color:#5d7189;overflow-wrap:anywhere}
-.meal-result-progress{height:5px;background:#edf1f6;border-radius:99px;overflow:hidden;margin-top:25px}
-.meal-result-progress span{display:block;height:100%;width:100%;background:#168653;border-radius:99px;transform-origin:left;animation:mealResultCountdown 1s linear forwards}
+.meal-result-box{width:min(360px,calc(100vw - 32px));box-sizing:border-box;display:grid;grid-template-columns:30px 1fr;column-gap:10px;align-items:center;background:#fff;border:1px solid #dce6f1;border-left:4px solid #168653;border-radius:10px;padding:12px 14px;text-align:left;box-shadow:0 8px 24px rgba(16,42,75,.14);animation:mealResultIn .18s ease-out}
+.meal-result-icon{grid-row:1 / span 2;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;margin:0;background:#e5f8ed;border:1px solid #b8ebcc;color:#11834f;font-size:16px;font-weight:700}
+.meal-result-title{font-size:14px;line-height:1.3;font-weight:700;color:#17365c;margin:0 0 2px}
+.meal-result-message{font-size:12px;line-height:1.45;color:#5d7189;overflow-wrap:anywhere}
+.meal-result-progress{grid-column:1 / -1;height:3px;background:#edf1f6;border-radius:99px;overflow:hidden;margin-top:10px}
+.meal-result-progress span{display:block;height:100%;width:100%;background:#168653;border-radius:99px;transform-origin:left;animation:mealResultCountdown 5s linear forwards}
+.meal-result-box.is-delete{border-left-color:#e24b55}
 .meal-result-box.is-delete .meal-result-icon{background:#fff0f0;border-color:#ffd0d0;color:#c92f3d}
 .meal-result-box.is-delete .meal-result-progress span{background:#e24b55}
+.meal-result-box.is-error{border-left-color:#e5a126}
 .meal-result-box.is-error .meal-result-icon{background:#fff6df;border-color:#ffe4a3;color:#a66b00}
 .meal-result-box.is-error .meal-result-progress span{background:#e5a126}
-@keyframes mealResultIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes mealResultIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes mealResultCountdown{from{transform:scaleX(1)}to{transform:scaleX(0)}}
-@media(max-width:520px){.meal-result-box{padding:27px 20px 21px}.meal-result-title{font-size:22px}}
+@media(max-width:520px){.meal-result-overlay{top:12px;right:12px;max-width:calc(100vw - 24px)}.meal-result-box{width:calc(100vw - 24px);padding:11px 12px}}
 </style>
 <script>
 (function(){
@@ -587,4 +682,73 @@ document.getElementById('meal-delete-modal').addEventListener('click',function(e
 })();
 </script>
 
+
+<script>
+(function(){
+  const monthInput=document.getElementById('status-month-filter');
+  const yearInput=document.getElementById('status-year-filter');
+  const memberInput=document.getElementById('status-member-filter');
+  const mobileInput=document.getElementById('status-mobile-filter');
+  const resetButton=document.getElementById('status-filter-reset');
+  const count=document.getElementById('status-filter-count');
+  const noResults=document.getElementById('meal-status-no-results');
+  const rows=Array.from(document.querySelectorAll('#meal-status-rows .meal-status-row'));
+  if(!monthInput||!yearInput||!memberInput||!mobileInput||!resetButton||!count)return;
+
+  const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  monthNames.forEach(function(name,index){
+    const option=document.createElement('option');
+    option.value=String(index+1).padStart(2,'0');
+    option.textContent=name;
+    monthInput.appendChild(option);
+  });
+  for(let year=2026;year<=2090;year++){
+    const option=document.createElement('option');
+    option.value=String(year);
+    option.textContent=String(year);
+    yearInput.appendChild(option);
+  }
+
+  const availableMonths=Array.from(new Set(rows.map(function(row){return (row.dataset.month||'').trim();}).filter(function(value){return /^\d{4}-\d{2}$/.test(value);}))).sort();
+  const eligibleYears=availableMonths.map(function(value){return Number(value.slice(0,4));}).filter(function(year){return year>=2026&&year<=2090;});
+  const recentYear=eligibleYears.length?Math.max.apply(null,eligibleYears):2026;
+  const recentMonthForYear=availableMonths.filter(function(value){return value.startsWith(String(recentYear)+'-');}).sort().pop();
+  const latestMonth=availableMonths.length?availableMonths[availableMonths.length-1]:'';
+  const defaultMonth=(recentMonthForYear?recentMonthForYear.slice(5,7):(latestMonth?latestMonth.slice(5,7):String(new Date().getMonth()+1).padStart(2,'0')));
+  yearInput.value=String(recentYear);
+  monthInput.value=defaultMonth;
+
+  function applyStatusFilters(){
+    const month=monthInput.value.trim();
+    const year=yearInput.value.trim();
+    const member=memberInput.value.trim().toLocaleLowerCase();
+    const mobile=mobileInput.value.replace(/[\s()+-]/g,'').toLowerCase();
+    let visible=0;
+    rows.forEach(function(row){
+      const rowMonth=(row.dataset.month||'').trim();
+      const parts=rowMonth.split('-');
+      const rowYear=parts.length===2?parts[0]:'';
+      const rowMonthNumber=parts.length===2?parts[1]:'';
+      const rowMember=(row.dataset.member||'').toLocaleLowerCase();
+      const rowMobile=(row.dataset.mobile||'').replace(/[\s()+-]/g,'').toLowerCase();
+      const match=rowYear===year&&rowMonthNumber===month&&(!member||rowMember.includes(member))&&(!mobile||rowMobile.includes(mobile));
+      row.hidden=!match;
+      if(match){visible++;row.cells[0].textContent=visible;}
+    });
+    if(noResults)noResults.hidden=visible!==0;
+    const monthName=monthNames[Number(month)-1]||'';
+    count.textContent=visible+' record'+(visible===1?'':'s')+' shown for '+monthName+' '+year;
+  }
+  monthInput.addEventListener('change',applyStatusFilters);
+  yearInput.addEventListener('change',applyStatusFilters);
+  memberInput.addEventListener('input',applyStatusFilters);
+  mobileInput.addEventListener('input',applyStatusFilters);
+  resetButton.addEventListener('click',function(){yearInput.value=String(recentYear);monthInput.value=defaultMonth;memberInput.value='';mobileInput.value='';applyStatusFilters();});
+  applyStatusFilters();
+})();
+</script>
+<script>
+function navigateMealModule(module){var urls={"meal-entry":"/system_super_administrator/meal-management/?module=meal-entry","bazar-list":"/system_super_administrator/daily-bazar-list/","bazar-duty":"/system_super_administrator/meal-management/bazar-duty/","meal-status-list":"/system_super_administrator/meal-management/?module=meal-status-list"};if(urls[module])window.location.href=urls[module];}
+(function(){var select=document.getElementById('meal-module-selector');if(!select)return;var path=window.location.pathname;var params=new URLSearchParams(window.location.search);var module='meal-entry';if(path.indexOf('/daily-bazar-list')!==-1)module='bazar-list';else if(path.indexOf('/bazar-duty')!==-1)module='bazar-duty';else if(params.get('module')==='meal-status-list'||params.has('month'))module='meal-status-list';select.value=module;var entry=document.getElementById('meal-entry');var status=document.getElementById('meal-status-list');if(entry)entry.hidden=(module!=='meal-entry');if(status)status.hidden=(module!=='meal-status-list');})();
+</script>
 </body></html>
