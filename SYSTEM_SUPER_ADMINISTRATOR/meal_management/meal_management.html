@@ -239,6 +239,82 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line
 }
 </style>
 
+
+<style id="unified-pill-box-and-action-button-design">
+/* Make every form control use the same fully rounded pill shape. */
+.ssa-content input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.ssa-content select,
+.ssa-content textarea,
+.ssa-content .form-control,
+.ssa-content .filter-control,
+.ssa-content .field-control,
+.ssa-content .custom-select,
+.ssa-content input[type="date"],
+.ssa-content input[type="datetime-local"],
+.ssa-content input[type="month"],
+.ssa-content input[type="time"],
+.ssa-content input[type="search"],
+.ssa-content input[type="email"],
+.ssa-content input[type="tel"],
+.ssa-content input[type="number"],
+.ssa-content input[type="text"],
+.ssa-content input[type="password"] {
+  border-radius: 999px !important;
+  box-sizing: border-box;
+}
+.ssa-content textarea {
+  border-radius: 22px !important;
+}
+/* Light-red Delete buttons. */
+.ssa-content .btn-delete,
+.ssa-content button.btn-delete,
+.ssa-content a.btn-delete,
+.ssa-content .delete-btn,
+.ssa-content .btn-danger,
+.ssa-content button[aria-label*="Delete" i],
+.ssa-content a[aria-label*="Delete" i],
+.ssa-content button[title*="Delete" i],
+.ssa-content a[title*="Delete" i] {
+  background: #FEE2E2 !important;
+  color: #7F1D1D !important;
+  border: 1px solid #FECACA !important;
+  box-shadow: none !important;
+  font-weight: 400 !important;
+}
+.ssa-content .btn-delete:hover,
+.ssa-content .delete-btn:hover,
+.ssa-content .btn-danger:hover {
+  background: #FECACA !important;
+  color: #7F1D1D !important;
+}
+/* Light-green Edit/Update buttons. */
+.ssa-content .btn-update,
+.ssa-content .btn-edit,
+.ssa-content .edit-btn,
+.ssa-content .update-btn,
+.ssa-content button[aria-label*="Edit" i],
+.ssa-content a[aria-label*="Edit" i],
+.ssa-content button[aria-label*="Update" i],
+.ssa-content a[aria-label*="Update" i],
+.ssa-content button[title*="Edit" i],
+.ssa-content a[title*="Edit" i],
+.ssa-content button[title*="Update" i],
+.ssa-content a[title*="Update" i] {
+  background: #DCFCE7 !important;
+  color: #166534 !important;
+  border: 1px solid #BBF7D0 !important;
+  box-shadow: none !important;
+  font-weight: 400 !important;
+}
+.ssa-content .btn-update:hover,
+.ssa-content .btn-edit:hover,
+.ssa-content .edit-btn:hover,
+.ssa-content .update-btn:hover {
+  background: #BBF7D0 !important;
+  color: #166534 !important;
+}
+</style>
+
 </head>
 <body>
 <div class="ssa-shell">
