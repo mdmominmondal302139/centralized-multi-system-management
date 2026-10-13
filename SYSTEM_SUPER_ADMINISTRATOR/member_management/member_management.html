@@ -1,107 +1,364 @@
 <!doctype html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monthly Bazar List</title>
+<title>Member Management</title>
+<link rel="stylesheet" href="/static/app.css">
 <style>
-/* Styles are scoped to this page; no global stylesheet is required. */
-.bazar-page{box-sizing:border-box;max-width:1180px;margin:24px auto;padding:20px;font-family:Arial,"Noto Sans Bengali",sans-serif;color:#16324f;background:#f3f7fc}
-.bazar-page *{box-sizing:border-box}
-.bazar-page .bazar-card{background:#fff;border:1px solid #d8e4f0;border-radius:16px;overflow:hidden;box-shadow:0 8px 26px #153d6410}
-.bazar-page .bazar-header{padding:26px 24px;text-align:center;color:#fff;background:linear-gradient(125deg,#10345d,#176ca1)}
-.bazar-page .bazar-account{font-size:clamp(22px,3vw,32px);font-weight:800;margin:0 0 8px;overflow-wrap:anywhere}
-.bazar-page .bazar-kicker{font-size:12px;letter-spacing:2px;color:#cfe8ff;margin:0 0 10px}
-.bazar-page .bazar-title{font-size:clamp(21px,2.6vw,28px);margin:0;color:#ffe16a}
-.bazar-page .bazar-body{padding:22px}
-.bazar-page .bazar-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-bottom:20px}
-.bazar-page .bazar-field{display:flex;flex-direction:column;gap:6px;min-width:150px;flex:1}
-.bazar-page label{font-weight:700;font-size:13px}
-.bazar-page input,.bazar-page select,.bazar-page textarea{width:100%;border:1px solid #c9d8e8;border-radius:9px;padding:10px 11px;background:#fff;color:#16324f;font:inherit;min-height:41px}
-.bazar-page textarea{min-height:76px;resize:vertical}
-.bazar-page .bazar-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:9px;padding:11px 14px;background:#1769a3;color:white;text-decoration:none;font-weight:700;cursor:pointer;min-height:40px}
-.bazar-page .bazar-btn.secondary{background:#e8f1fa;color:#17466e;border:1px solid #cbddec}
-.bazar-page .bazar-btn.danger{background:#fff0f0;color:#a52b2b;border:1px solid #f0caca}
-.bazar-page .bazar-section{border:1px solid #dce7f1;border-radius:12px;padding:16px;margin:18px 0}
-.bazar-page .bazar-section h2{font-size:17px;margin:0 0 14px}
-.bazar-page .bazar-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.bazar-page .bazar-table-wrap{width:100%;overflow-x:auto}
-.bazar-page table{width:100%;border-collapse:collapse;min-width:650px}
-.bazar-page th,.bazar-page td{padding:12px 10px;text-align:left;border-bottom:1px solid #e1eaf2;vertical-align:middle}
-.bazar-page th{background:#eaf3fb;color:#153d63;font-size:13px}
-.bazar-page .bazar-status{display:inline-block;padding:5px 9px;border-radius:20px;background:#fff4d6;color:#815800;font-size:12px;font-weight:700}
-.bazar-page .bazar-status.completed{background:#e1f7e9;color:#18703a}
-.bazar-page .bazar-status.missed{background:#ffe6e6;color:#a32727}
-.bazar-page .bazar-flash{padding:10px 12px;border-radius:8px;margin-bottom:10px;background:#eaf3fb}
-.bazar-page .bazar-actions{display:flex;gap:6px;flex-wrap:wrap}
-.bazar-page .bazar-note{padding:13px;border-radius:10px;background:#f0f6fc;color:#35536f;line-height:1.6}
-.bazar-page .bazar-empty{text-align:center;padding:26px;color:#647b91}
-@media(max-width:680px){.bazar-page{padding:10px;margin:8px auto}.bazar-page .bazar-body{padding:13px}.bazar-page .bazar-form-grid{grid-template-columns:1fr}.bazar-page .bazar-header{padding:22px 14px}}
-@media print{.bazar-page{max-width:none;margin:0;padding:0;background:#fff}.bazar-page .bazar-card{box-shadow:none;border:0}.bazar-page .no-print{display:none!important}.bazar-page .bazar-header{print-color-adjust:exact;-webkit-print-color-adjust:exact}.bazar-page th{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+:root{color-scheme:light;--bg:#f5f8fc;--surface:#fff;--line:#e1e8f0;--text:#25364b;--muted:#718096;--blue:#2783df;--blue-soft:#eaf4ff;--green:#178b58;--green-soft:#e8f8ef;--red:#d94444;--red-soft:#fff0f0;--amber:#9a6700;--amber-soft:#fff7df}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:400;line-height:1.5}
+.ssa-shell{min-height:100vh}.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:1000}.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #edf1f6}.ssa-brand-title{font-size:15px;font-weight:600;color:#24486d;line-height:1.35}.ssa-brand-scope{font-size:11px;color:var(--muted);margin-top:5px}.ssa-nav{padding:12px 10px;overflow-y:auto;flex:1}.ssa-nav-group{font-size:11px;color:#8997a8;padding:10px 9px 6px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#40546b;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:400;white-space:nowrap}.ssa-nav a:hover{background:#f0f7ff;color:#176bb7}.ssa-nav a.active{background:var(--blue-soft);color:#176bb7}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
+/* Bright Light Administrator Profile Dropdown */
+.ssa-profile {
+  position: relative;
+  flex-shrink: 0;
+  border-top: 1px solid #e4ecf7;
+  padding: 12px;
+  background: #ffffff;
+}
 
-/* Keep the original System Super Administrator sidebar visible on Bazar Duty */
-html,body{margin:0!important;min-height:100%;}
-body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
-.ssa-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:280px!important;height:100vh!important;overflow:hidden!important;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.06);display:flex;flex-direction:column;z-index:1000}
-.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #e7edf4;flex:0 0 auto}.ssa-brand-title{font-size:16px;font-weight:800;color:#12355e;line-height:1.25}.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:5px;letter-spacing:.6px}
-.ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1 1 auto}.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap}.ssa-nav a:hover{background:#eef6ff;color:#0d65bd}.ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
-.ssa-profile{flex:0 0 auto;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
-.ssa-content{margin-left:280px!important;width:calc(100% - 280px)!important;min-height:100vh;box-sizing:border-box;overflow-x:hidden;padding:1px 0}
-.bazar-page{width:100%;max-width:none;margin:20px auto;padding:20px;}
-@media(max-width:760px){.ssa-sidebar{width:230px!important}.ssa-content{margin-left:230px!important;width:calc(100% - 230px)!important}.bazar-page{padding:10px;margin:8px auto}}
+.ssa-profile-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e3edfa;
+  border-radius: 11px;
+  background: #f4f8ff;
+  color: #25364b;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+}
+
+.ssa-profile-toggle:hover,
+.ssa-profile.is-open .ssa-profile-toggle {
+  background: #eaf3ff;
+  border-color: #c7defb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, .07);
+}
+
+.ssa-avatar {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: #dceaff;
+  color: #2166c2;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+
+.ssa-profile-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ssa-profile-info strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: #25364b;
+  line-height: 1.4;
+}
+
+.ssa-profile-info small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 400;
+  color: #718096;
+  line-height: 1.4;
+}
+
+.ssa-profile-chevron {
+  width: 16px;
+  min-width: 16px;
+  color: #718096;
+  font-size: 13px;
+  text-align: center;
+  transition: transform .2s;
+}
+
+.ssa-profile.is-open .ssa-profile-chevron {
+  transform: rotate(180deg);
+}
+
+.ssa-profile-dropdown {
+  display: none;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(100% + 8px);
+  margin-top: 0;
+  padding: 5px;
+  border: 1px solid #e5edf7;
+  border-radius: 11px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(37, 65, 100, .09);
+}
+
+.ssa-profile.is-open .ssa-profile-dropdown {
+  display: block;
+  animation: ssaDropdownIn .16s ease-out;
+}
+
+.ssa-profile-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 11px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background .15s;
+}
+
+.ssa-profile-dropdown .ssa-profile-action {
+  color: #2869bd;
+}
+
+.ssa-profile-dropdown .ssa-profile-action:hover {
+  background: #edf5ff;
+}
+
+.ssa-profile-dropdown .ssa-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 3px 0 0;
+  padding: 10px 11px;
+  background: #fff3f3;
+  color: #d43d48;
+  text-align: left;
+  border-radius: 8px;
+}
+
+.ssa-profile-dropdown .ssa-logout:hover {
+  background: #ffe5e5;
+}
+
+.ssa-profile-dropdown .ssa-menu-icon {
+  width: 18px;
+  min-width: 18px;
+  text-align: center;
+  font-size: 15px;
+}
+
+@keyframes ssaDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ssa-profile-toggle:focus-visible,
+.ssa-profile-dropdown a:focus-visible {
+  outline: 2px solid #75aef4;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ssa-profile-toggle,
+  .ssa-profile-chevron {
+    transition: none;
+  }
+
+  .ssa-profile.is-open .ssa-profile-dropdown {
+    animation: none;
+  }
+}
+.ssa-content{margin-left:260px;width:calc(100% - 260px);min-height:100vh;overflow-x:hidden}.page{padding:28px 30px 48px;max-width:1600px;margin:0 auto}.page header{display:flex;align-items:center;gap:18px;margin-bottom:22px;flex-wrap:wrap}.page header h1{margin:0;font-size:27px;font-weight:500;color:#23466b}.subtitle{color:var(--muted);margin-top:4px}.ssa-page-identity{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;padding:8px 13px;border:1px solid var(--line);border-radius:10px;background:#fff}.ssa-page-identity strong{font-size:13px;color:#24486d;font-weight:500}.ssa-page-identity span{font-size:11px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:21px;margin-bottom:20px;box-shadow:0 3px 12px rgba(35,70,107,.035)}.card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}.card h2{margin:0;font-size:18px;font-weight:500;color:#294c70}.hint{font-size:12px;color:var(--muted)}
+.filters{display:grid;grid-template-columns:repeat(5,minmax(140px,1fr));gap:12px;align-items:end}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:13px;color:#4b6077;font-weight:400}.field input,.field select{width:100%;min-width:0;border:1px solid #d4deea;border-radius:8px;padding:10px 11px;background:#fff;color:var(--text);font:inherit}.field input:focus,.field select:focus{outline:0;border-color:#79b6f0;box-shadow:0 0 0 3px #eaf4ff}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid transparent;border-radius:8px;padding:9px 13px;font:inherit;font-weight:400;text-decoration:none;cursor:pointer;white-space:nowrap}.btn-blue{background:#eaf4ff;color:#176bb7;border-color:#d6eaff}.btn-green{background:var(--green-soft);color:#137548;border-color:#d1f0dd}.btn-red{background:var(--red-soft);color:#bd3333;border-color:#ffdede}.btn-neutral{background:#f3f6fa;color:#52657a;border-color:#e2e8f0}.btn:focus-visible{outline:2px solid #75b8f2;outline-offset:2px}.filter-actions{display:flex;gap:8px;flex-wrap:wrap}
+.alert{padding:11px 14px;border-radius:9px;margin-bottom:16px}.ok{background:var(--green-soft);color:#176b40;border:1px solid #d1f0dd}.err{background:var(--red-soft);color:#a12828;border:1px solid #ffdede}.empty-state{padding:34px 16px;text-align:center;color:var(--muted);background:#fbfdff;border:1px dashed #d8e3ef;border-radius:10px}.empty-state strong{display:block;color:#45627e;font-weight:500;margin-bottom:4px}
+.table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:10px}.member-table{width:100%;min-width:1060px;border-collapse:collapse;background:#fff}.member-table th{background:#f4f8fc;color:#52657a;font-size:12px;text-align:left;padding:12px;border-bottom:1px solid var(--line);white-space:nowrap;font-weight:500}.member-table td{padding:12px;border-bottom:1px solid #edf1f6;color:#40546b;font-size:13px;vertical-align:middle;font-weight:400}.member-table tbody tr:hover td{background:#fbfdff}.role-pill,.status-pill{display:inline-block;padding:4px 8px;border-radius:99px;background:#edf4fb;color:#45627e;font-size:11px;font-weight:400;white-space:nowrap}.status-active{background:var(--green-soft);color:#137548}.status-inactive{background:#f0f2f5;color:#697789}.status-suspended{background:var(--amber-soft);color:var(--amber)}.actions{display:flex;gap:6px;flex-wrap:wrap}.actions form{display:inline-flex;margin:0}.edit-grid{display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:13px}.edit-actions{display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap;margin-top:18px;min-height:0}.edit-actions>.btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;width:auto!important;min-width:110px!important;height:42px!important;min-height:42px!important;max-height:42px!important;flex:0 0 auto!important;align-self:auto!important;position:static!important;transform:none!important;line-height:1.2!important;padding:10px 16px!important;margin:0!important}.required-note{color:var(--muted);font-size:12px;margin-top:8px}
+@media(max-width:1200px){.filters{grid-template-columns:repeat(3,minmax(140px,1fr))}.edit-grid{grid-template-columns:repeat(2,minmax(150px,1fr))}}
+@media(max-width:800px){.ssa-sidebar{width:220px}.ssa-content{margin-left:220px;width:calc(100% - 220px)}.page{padding:20px 16px}.filters{grid-template-columns:repeat(2,minmax(120px,1fr))}.edit-grid{grid-template-columns:1fr}.page header h1{font-size:23px}}
+@media(max-width:560px){.ssa-sidebar{position:relative;width:100%;height:auto;max-height:50vh}.ssa-content{margin-left:0;width:100%}.ssa-profile{display:none}.filters{grid-template-columns:1fr}.ssa-page-identity{margin-left:0}.page header{align-items:flex-start}}
+
+/* Member Edit sample design */
+.member-edit-card{padding:0;overflow:hidden;border-color:#dfe8f2}
+.member-edit-hero{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 24px;background:linear-gradient(115deg,#f0f7ff,#ffffff 72%);border-bottom:1px solid #e6edf5;flex-wrap:wrap}
+.member-edit-title{display:flex;align-items:center;gap:13px}
+.member-edit-avatar{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#dcecff;color:#2469a8;font-size:21px}
+.member-edit-hero h2{margin:0;font-size:21px;font-weight:500;color:#244b73}
+.member-edit-hero p{margin:4px 0 0;color:#74859a;font-size:13px}
+.member-edit-admin{border:1px solid #dce8f5;background:#fff;border-radius:999px;padding:7px 12px;color:#45627e;font-size:12px;white-space:nowrap}
+.member-edit-body{padding:24px}
+.member-section{border:1px solid #e4ebf3;border-radius:12px;padding:18px;margin-bottom:18px;background:#fff}
+.member-view-card .profile-value{display:flex;align-items:center;min-height:43px;padding:11px 13px;border:1px solid #dce6ef;border-radius:9px;background:#f8fbfe;color:#344b63;font-size:13px;font-weight:400;overflow-wrap:anywhere;box-sizing:border-box}.member-view-card .profile-value-multiline{min-height:76px;align-items:flex-start;white-space:pre-wrap}.member-view-card .member-edit-note{max-width:70%}@media(max-width:700px){.member-view-card .member-edit-note{max-width:100%}}
+.member-section-title{display:flex;align-items:center;gap:9px;color:#2c5279;font-size:15px;font-weight:500;margin:0 0 17px}
+.member-section-title span{width:28px;height:28px;border-radius:8px;background:#edf5ff;color:#397bb8;display:grid;place-items:center;font-size:14px}
+.member-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px}
+.member-edit-card .field label{font-size:12px;color:#62758b;margin-bottom:1px}
+.member-edit-card .field input,.member-edit-card .field select,.member-edit-card .field textarea{border:1px solid #d8e2ed;border-radius:9px;padding:11px 12px;background:#fbfdff;min-height:43px}
+.member-edit-card .field textarea{min-height:82px;resize:vertical;font:inherit}
+.member-edit-card .field input:focus,.member-edit-card .field select:focus,.member-edit-card .field textarea:focus{background:#fff;border-color:#80b8ef;box-shadow:0 0 0 3px #eaf4ff;outline:0}
+.member-edit-card .member-id-input.is-locked{background:#f1f5f9;cursor:not-allowed}.member-id-help{display:block;margin-top:5px;color:#718096;font-size:11px}.member-id-input{background:#f1f6fb!important;color:#71839a!important}
+.member-status-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.member-status-choice{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid #dce6ef;border-radius:9px;background:#fff;color:#536980;font:inherit}
+.member-status-choice.active{background:#eaf8f0;border-color:#c7ead6;color:#187348}
+.member-status-choice.locked{background:#fff5e8;border-color:#f1dfc3;color:#96600d}
+.member-edit-footer{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid #e7edf4;background:#fbfdff;padding:18px 24px}
+.member-edit-note{font-size:12px;color:#7b8ca0;max-width:520px}
+.member-edit-buttons{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.member-edit-buttons .btn{height:42px;min-width:120px}
+.member-edit-buttons .btn-update{background:#2379c9;color:#fff;border-color:#2379c9}
+.member-edit-buttons .btn-update:hover{background:#1769b5}
+@media(max-width:700px){.member-edit-body{padding:15px}.member-edit-hero{padding:18px}.member-form-grid{grid-template-columns:1fr}.member-section{padding:14px}.member-edit-footer{padding:16px}.member-edit-buttons{width:100%}.member-edit-buttons .btn{flex:1}}
 
 
-/* Bright-light theme: neutral, readable, regular-weight sidebar and working form */
-.ssa-sidebar{background:#ffffff!important;border-right:1px solid #e5eaf0!important;box-shadow:none!important;color:#526174!important}
-.ssa-brand{background:#ffffff!important;border-bottom:1px solid #edf0f4!important}
-.ssa-brand-title{color:#526174!important;font-weight:400!important}
-.ssa-brand-scope,.ssa-nav-group{color:#8793a2!important;font-weight:400!important}
-.ssa-nav a{background:transparent!important;color:#596779!important;font-weight:400!important}
-.ssa-nav a:hover,.ssa-nav a.active{background:#f2f6fa!important;color:#42556b!important;font-weight:400!important}
-.ssa-profile{background:#ffffff!important;border-top:1px solid #edf0f4!important;position:relative!important}
-.ssa-profile-toggle{display:flex;align-items:center;gap:10px;width:100%;padding:9px;background:#ffffff!important;border:1px solid #e4eaf1!important;border-radius:8px;text-align:left;color:#526174!important;cursor:pointer;font:inherit;font-weight:400!important}
-.ssa-avatar{background:#f1f5f9!important;color:#526174!important;font-weight:400!important}
-.ssa-profile strong{font-weight:400!important;color:#526174!important}
-.ssa-profile small{color:#7c8795!important;font-weight:400!important}
-.ssa-profile-chevron{margin-left:auto;color:#7c8795!important;font-weight:400!important}
-.ssa-profile-actions{position:absolute!important;left:12px!important;right:12px!important;bottom:calc(100% + 8px)!important;padding:8px!important;background:#ffffff!important;border:1px solid #e4eaf1!important;border-radius:10px!important;box-shadow:0 8px 24px rgba(30,50,75,.12)!important;z-index:1200!important;display:flex;flex-direction:column;gap:7px!important}.ssa-profile-actions[hidden]{display:none!important}
-.ssa-profile-action{display:block;padding:10px 12px;color:#526174!important;text-decoration:none;background:#f7f9fc!important;border:1px solid #e8edf3;border-radius:6px;font-weight:400!important}.ssa-profile-action:hover{background:#eef3f8!important}
-.ssa-logout{background:#f3f5f7!important;color:#526174!important;border:1px solid #e1e6ec!important;font-weight:400!important}
-.bazar-page{background:#f8fafc!important;color:#526174!important}
-.bazar-page .bazar-card{background:#ffffff!important;border:1px solid #e5eaf0!important;box-shadow:none!important}
-.bazar-page .bazar-header{background:#f4f7fa!important;color:#526174!important;border-bottom:1px solid #e5eaf0!important}
-.bazar-page .bazar-account,.bazar-page .bazar-title{color:#526174!important;font-weight:400!important}
-.bazar-page .bazar-kicker{color:#7d8998!important;font-weight:400!important}
-.bazar-page label,.bazar-page .bazar-section h2{color:#526174!important;font-weight:400!important}
-.bazar-page input,.bazar-page select,.bazar-page textarea{background:#ffffff!important;color:#526174!important;border-color:#dfe6ee!important;font-weight:400!important}
-.bazar-page .bazar-btn{background:#f1f5f9!important;color:#526174!important;border:1px solid #dfe6ee!important;font-weight:400!important}
-.bazar-page .bazar-btn.secondary{background:#ffffff!important;color:#526174!important;border:1px solid #dfe6ee!important;font-weight:400!important}
-.bazar-page .bazar-section{background:#ffffff!important;border-color:#e5eaf0!important}
-.bazar-page th{background:#f5f7fa!important;color:#526174!important;font-weight:400!important}
-.bazar-page .bazar-status,.bazar-page .bazar-status.completed,.bazar-page .bazar-status.missed{background:#f5f7fa!important;color:#657386!important;font-weight:400!important}
-.bazar-page .bazar-note,.bazar-page .bazar-flash{background:#f7f9fc!important;color:#596779!important}
-*{font-weight:400!important}
+/* Layout safety fix: keep Member View/Edit sections full-width inside the page card */
+.member-edit-card{width:100%;max-width:100%;box-sizing:border-box}
+.member-edit-card .member-edit-body{display:block;width:100%;max-width:100%;box-sizing:border-box}
+.member-edit-card .member-section{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+.member-edit-card .member-form-grid{display:grid;width:100%;grid-template-columns:repeat(2,minmax(0,1fr));box-sizing:border-box}
+.member-edit-card .field{width:100%;min-width:0;box-sizing:border-box}
+.member-edit-card .profile-value{width:100%;min-width:0;box-sizing:border-box}
+.member-edit-card .member-edit-footer{width:100%;box-sizing:border-box}
+@media(max-width:900px){.member-edit-card .member-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.member-edit-card .member-form-grid{grid-template-columns:minmax(0,1fr)}}
 
 
-/* Shared strong-outline module dropdown; text-only options */
-.meal-module-selector-wrap{display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap;margin:8px 0}
-.meal-module-selector-label{font-size:13px;font-weight:700;color:#203b5b}
-.meal-module-selector{min-width:260px;min-height:46px;box-sizing:border-box;padding:10px 14px;border:3px solid #174f8b!important;border-radius:10px;background:#fff;color:#123b68;font-size:15px;font-weight:700;box-shadow:0 0 0 2px rgba(23,79,139,.12),0 4px 12px rgba(23,79,139,.12);cursor:pointer}
-.meal-module-selector:focus{outline:3px solid #79b7ff;outline-offset:2px;border-color:#0b3f7a!important}
-@media(max-width:700px){.meal-module-selector{min-width:min(260px,80vw);width:100%}}
-</style>
-<style>
-/* Keep the Meal Management header in the same exact content alignment as Bazar List */
-.ssa-content > .meal-module-page-header{margin:27px 28px 22px!important;box-sizing:border-box}
-@media(max-width:700px){.ssa-content > .meal-module-page-header{margin:18px 14px 22px!important}}
-/* Shared Meal Management module header: normal document flow, not fixed while scrolling */
-.meal-module-page-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:0 0 22px;padding:18px 20px;background:#fff;border:1px solid #dce7f3;border-radius:12px;box-shadow:0 3px 12px rgba(20,50,85,.06)}
-.meal-module-page-header h1{margin:0;color:#173b63;font-size:26px;font-weight:600;line-height:1.25}
-.meal-module-selector-wrap{display:flex!important;position:static!important;top:auto!important;right:auto!important;z-index:auto!important;align-items:center;gap:9px;flex-wrap:wrap;margin:0!important;padding:0!important;background:transparent!important;border-radius:0!important;box-shadow:none!important}
-.meal-module-selector-label{font-size:13px;font-weight:700;color:#203b5b;white-space:nowrap}
-.meal-module-selector{min-width:260px;min-height:46px;box-sizing:border-box;padding:10px 14px;border:3px solid #174f8b!important;border-radius:10px;background:#fff;color:#123b68;font-size:15px;font-weight:700;box-shadow:0 0 0 2px rgba(23,79,139,.12),0 4px 12px rgba(23,79,139,.12);cursor:pointer}
-.meal-module-selector:focus{outline:3px solid #79b7ff;outline-offset:2px;border-color:#0b3f7a!important}
-@media(max-width:700px){.meal-module-page-header{align-items:flex-start;padding:14px;margin-bottom:16px}.meal-module-page-header h1{font-size:23px}.meal-module-selector-wrap{width:100%!important;align-items:flex-start!important;flex-direction:column!important}.meal-module-selector{min-width:0;width:100%;max-width:100%}}
+/* Final full-width layout override */
+html body .ssa-content .page .member-edit-card{
+  display:block !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  grid-template-columns:minmax(0,1fr) !important;
+}
+html body .ssa-content .page .member-edit-card > .member-edit-hero,
+html body .ssa-content .page .member-edit-card > .member-edit-body,
+html body .ssa-content .page .member-edit-card > .member-edit-footer{
+  display:flex;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+}
+html body .ssa-content .page .member-edit-card > .member-edit-body{
+  display:block !important;
+  padding:24px !important;
+}
+html body .ssa-content .page .member-edit-card .member-section{
+  display:block !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  margin:0 0 18px !important;
+  box-sizing:border-box !important;
+}
+html body .ssa-content .page .member-edit-card .member-form-grid{
+  display:grid !important;
+  width:100% !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:16px 18px !important;
+}
+html body .ssa-content .page .member-edit-card .field,
+html body .ssa-content .page .member-edit-card .field input,
+html body .ssa-content .page .member-edit-card .field select,
+html body .ssa-content .page .member-edit-card .field textarea{
+  min-width:0 !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+}
+html body .ssa-content .page .member-edit-card .member-edit-note{max-width:520px !important}
+@media(max-width:700px){
+ html body .ssa-content .page .member-edit-card .member-form-grid{grid-template-columns:minmax(0,1fr) !important}
+ html body .ssa-content .page .member-edit-card > .member-edit-body{padding:15px !important}
+}
+
+
+.member-account-actions{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:20px;padding:16px;border:1px solid #e4ebf3;border-radius:10px;background:#fbfdff}
+.member-account-actions-copy{display:flex;flex-direction:column;gap:3px;min-width:220px}.member-account-actions-copy strong{font-size:13px;color:#344b63;font-weight:600}.member-account-actions-copy span{font-size:12px;color:#718096;max-width:540px}
+.member-account-actions-buttons{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.btn-deactivate{background:#fff5e8;color:#9a5b00;border-color:#f2d8ad}
+.member-confirm-backdrop{position:fixed;inset:0;background:rgba(15,30,48,.48);display:none;align-items:center;justify-content:center;padding:20px;z-index:99999}
+.member-confirm-backdrop.is-open{display:flex}.member-confirm-dialog{width:min(100%,440px);background:#fff;border:1px solid #e1e8f0;border-radius:16px;padding:24px;box-shadow:0 24px 70px rgba(15,30,48,.24)}
+.member-confirm-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#fff0f0;color:#bd3333;font-size:22px;margin-bottom:13px}.member-confirm-dialog h3{margin:0 0 7px;color:#25364b;font-size:19px;font-weight:600}.member-confirm-dialog p{margin:0;color:#64748b;line-height:1.6}.member-confirm-buttons{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;flex-wrap:wrap}
+@media(max-width:700px){.member-account-actions{align-items:stretch}.member-account-actions-buttons{width:100%}.member-account-actions-buttons .btn{flex:1}.member-confirm-buttons .btn{flex:1}}
+
+
+
+/* Definitive fix: global app.css styles forms as grids; the edit form must be a single full-width block. */
+html body .ssa-content .page > .member-edit-card > form,
+html body .ssa-content .page .member-edit-card > form {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-column: 1 / -1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+html body .ssa-content .page .member-edit-card > form > .member-edit-body,
+html body .ssa-content .page .member-edit-card > form > .member-edit-footer {
+  display: flex !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  grid-column: 1 / -1 !important;
+  box-sizing: border-box !important;
+}
+html body .ssa-content .page .member-edit-card > form > .member-edit-body {
+  display: block !important;
+}
+html body .ssa-content .page .member-edit-card > form > .member-edit-footer {
+  justify-content: space-between !important;
+}
+
+
+/* New Member form: bright, page-scoped styling */
+.new-member-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.btn-new-member{background:linear-gradient(135deg,#1675df,#3699ff);color:#fff;border:1px solid #1675df;box-shadow:0 5px 14px rgba(22,117,223,.18);font-weight:700;padding:11px 17px}
+.btn-new-member:hover{filter:brightness(.97);box-shadow:0 7px 18px rgba(22,117,223,.23)}
+.create-member-card{padding:0;overflow:hidden;border-color:#cfe3fb;box-shadow:0 8px 28px rgba(36,105,180,.08)}
+.create-member-hero{padding:23px 25px;background:linear-gradient(115deg,#eaf4ff 0%,#f8fbff 55%,#fff 100%);border-bottom:1px solid #dceafa;display:flex;align-items:center;gap:14px}
+.create-member-icon{width:49px;height:49px;border-radius:15px;background:#d7eaff;color:#1769c2;display:grid;place-items:center;font-size:24px}
+.create-member-hero h2{font-size:22px;color:#155ca8;font-weight:700;margin:0}
+.create-member-hero p{margin:4px 0 0;color:#647d98;font-size:13px}
+.create-member-card{display:block;width:100%;max-width:none;min-width:0;box-sizing:border-box}
+.create-member-card > form{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;grid-template-columns:minmax(0,1fr)!important;grid-column:1/-1!important;margin:0!important;padding:0!important;box-sizing:border-box!important}
+.create-member-card .create-member-body{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;padding:24px!important;box-sizing:border-box!important}
+.create-member-section{display:block;width:100%;max-width:none;min-width:0;box-sizing:border-box;padding:19px;border:1px solid #e0eafa;border-radius:13px;margin:0 0 18px;background:linear-gradient(180deg,#fff,#fcfdff)}
+.create-member-section h3{margin:0 0 17px;display:flex;align-items:center;gap:10px;color:#1769b7;font-size:15px;font-weight:700}
+.create-member-section h3 span{width:30px;height:30px;display:grid;place-items:center;background:#eaf4ff;border-radius:9px;color:#1769b7}
+.create-member-grid{display:grid!important;width:100%!important;max-width:100%;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px 18px;box-sizing:border-box}
+.create-member-grid .field{display:flex;flex-direction:column;width:100%;min-width:0;max-width:100%;box-sizing:border-box}
+.create-member-grid .field label{color:#344f6d;font-weight:600}
+.create-member-grid .field input,.create-member-grid .field select,.create-member-grid .field textarea{display:block;min-height:44px;border:1px solid #cbdcf0;border-radius:9px;background:#fff;color:#25364b;font:inherit;padding:11px 12px;width:100%!important;max-width:100%;min-width:0;box-sizing:border-box}
+.create-member-grid .field textarea{min-height:82px;resize:vertical}
+.create-member-grid .field input:focus,.create-member-grid .field select:focus,.create-member-grid .field textarea:focus{outline:none;border-color:#4598ed;box-shadow:0 0 0 3px #e8f3ff}
+.create-member-span-2{grid-column:1/-1}
+.create-member-card > form > .create-member-footer{display:flex!important;width:100%!important;max-width:none!important;min-width:0;grid-column:1/-1!important;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 24px;background:#f8fbff;border-top:1px solid #e1ecf8;box-sizing:border-box}
+.create-member-footer small{color:#6b7f96}
+.create-member-submit{background:#1674d2;color:#fff;border-color:#1674d2;font-weight:700;padding:11px 19px}
+.create-member-submit:hover{background:#105fae}
+.create-member-cancel{background:#fff;color:#52657a;border-color:#d6e1ee}
+@media(max-width:650px){.create-member-card .create-member-body{padding:13px!important}.create-member-section{padding:13px}.create-member-grid{grid-template-columns:minmax(0,1fr)!important}.create-member-span-2{grid-column:auto}.create-member-card > form > .create-member-footer{padding:15px}.create-member-hero{padding:17px}}
+
 </style>
 <style id="ssa-unified-sidebar-style">
 /* Shared System Super Administrator sidebar: based on Home HTML dimensions and colours. */
@@ -139,6 +396,7 @@ body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
 </style>
 </head>
 <body>
+<div class="ssa-shell">
 <aside class="ssa-sidebar">
 <div class="ssa-brand"><div class="ssa-brand-title">MAIN MENU</div><div class="ssa-brand-subtitle">Multi system</div><div class="ssa-brand-scope">System Super Administrator</div><div class="ssa-brand-scope">Global Authority</div></div>
 <nav class="ssa-nav"><div class="ssa-nav-group">Main Menu</div>
@@ -151,7 +409,7 @@ body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
 <a href="/system_super_administrator/expense-management" title="New Expense">New Expense</a>
 <a href="/system_super_administrator/expense-management" title="Expense List">Expense List</a>
 </div></details>
-<details class="ssa-nav-item" open><summary class="active"><span class="ssa-ico">☷</span>Meal Manager</summary><div class="ssa-subnav">
+<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">☷</span>Meal Manager</summary><div class="ssa-subnav">
 <a href="/system_super_administrator/meal-management" title="New Meal">New Meal</a>
 <a href="/system_super_administrator/meal-management" title="Meal List">Meal List</a>
 </div></details>
@@ -173,7 +431,7 @@ body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
 <a href="/system_super_administrator/branch-management" title="New Branch">New Branch</a>
 <a href="/system_super_administrator/branch-management" title="Branch List">Branch List</a>
 </div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">♟</span>Member</summary><div class="ssa-subnav">
+<details class="ssa-nav-item" open><summary class="active"><span class="ssa-ico">♟</span>Member</summary><div class="ssa-subnav">
 <a href="/system_super_administrator/member-management" title="New Member">New Member</a>
 <a href="/system_super_administrator/member-management" title="Member List">Member List</a>
 </div></details>
@@ -198,197 +456,324 @@ body{font-family:Arial,"Noto Sans Bengali",sans-serif;}
 </nav>
 <div class="ssa-profile" id="ssaUnifiedProfile"><button class="ssa-profile-trigger" type="button" id="ssaUnifiedProfileTrigger" aria-expanded="false" aria-controls="ssaUnifiedProfileDropdown"><span class="ssa-avatar">MM</span><span class="ssa-profile-copy"><span class="ssa-profile-name">Md. Momin Mondal (Central)</span><span class="ssa-profile-role">System Super Administrator</span></span><span class="ssa-profile-chevron" aria-hidden="true">⌃</span></button><div class="ssa-profile-dropdown" id="ssaUnifiedProfileDropdown"><a href="/system_super_administrator/profile">Profile</a><a href="/system_super_administrator/settings">Settings</a><a class="logout-option" href="/logout">Logout</a></div></div></aside>
 <div class="ssa-content">
-<div class="meal-module-page-header"><h1>Meal Management</h1><div class="meal-module-selector-wrap"><label class="meal-module-selector-label" for="meal-module-selector">Select Module</label><select id="meal-module-selector" class="meal-module-selector" aria-label="Choose Meal Management page" onchange="navigateMealModule(this.value)"><option value="meal-entry">Meal Entry</option><option value="bazar-list">Bazar List</option><option value="bazar-duty">Bazar Duty</option><option value="meal-status-list">Meal Status List</option></select></div></div>
-<div class="bazar-page">
-  <main class="bazar-card">
-    <header class="bazar-header">
-      
-      <p class="bazar-kicker">MONTHLY BAZAR DUTY LIST</p>
-      <h1 class="bazar-account">{{ header.header_name or account_name }}</h1>
-      <h2 class="bazar-title">{{ header.list_title or 'বাজার লিস্ট' }} — {{ month }}</h2>
-    </header>
-    <div class="bazar-body">
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% for category, message in messages %}
-          <div class="bazar-flash">{{ message }}</div>
-        {% endfor %}
-      {% endwith %}
+<main class="page">
+  <header>
+    <div><h1>Member Management</h1><div class="subtitle">View and manage accounts by branch and role.</div></div>
+    <div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div>
+  </header>
+  {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+  {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
 
-      <div class="bazar-toolbar no-print">
-        <form class="bazar-field" method="get" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}">
-          <label for="month">মাস নির্বাচন</label>
-          <input id="month" name="month" type="month" value="{{ month }}" required>
-          <button class="bazar-btn" type="submit">তালিকা দেখুন</button>
-        </form>
-        <button class="bazar-btn secondary" type="button" onclick="window.print()">Print / PDF</button>
-        <a class="bazar-btn secondary" href="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.print_monthly_bazar_list', month=month) }}">Print View</a>
+  <section class="card new-member-toolbar">
+    <div><h2 style="margin:0 0 4px;color:#24517d">Member Registration</h2><div class="hint">Create a member account and assign an active branch.</div></div>
+    <a class="btn btn-new-member" href="{{ url_for('system_super_administrator_member_management_bp.page', create=1, branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">＋ New Member</a>
+  </section>
+
+  {% if create_open %}
+  <section class="card create-member-card" id="new-member-form">
+    <div class="create-member-hero"><div class="create-member-icon">♟</div><div><h2>Create New Member</h2><p>Member Management / Register Member</p></div></div>
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('system_super_administrator_member_management_bp.page', create=1, branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">
+      <input type="hidden" name="action" value="create_member">
+      <div class="create-member-body">
+        <section class="create-member-section">
+          <h3><span>01</span> Personal Information</h3>
+          <div class="create-member-grid">
+            <div class="field"><label for="new_full_name">Full Name *</label><input id="new_full_name" name="full_name" placeholder="Enter full name" required value="{{ request.form.get('full_name','') if request.method == 'POST' else '' }}"></div>
+            <div class="field"><label for="new_member_id">Member ID</label><input id="new_member_id" name="member_id" placeholder="Leave blank for auto-generated ID" value="{{ request.form.get('member_id','') if request.method == 'POST' else '' }}"><small class="hint">Blank = automatic serial (001, 002...). Admin may enter a unique ID.</small></div>
+            <div class="field"><label for="new_username">Username *</label><input id="new_username" name="username" placeholder="Choose username" required autocomplete="username" value="{{ request.form.get('username','') if request.method == 'POST' else '' }}"></div>
+            <div class="field"><label for="new_gender">Gender</label><select id="new_gender" name="gender"><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+            <div class="field"><label for="new_dob">Date of Birth</label><input id="new_dob" name="date_of_birth" type="date"></div>
+            <div class="field"><label for="new_blood_group">Blood Group</label><select id="new_blood_group" name="blood_group"><option value="">Select blood group</option>{% for blood in ['A+','A-','B+','B-','AB+','AB-','O+','O-'] %}<option value="{{ blood }}">{{ blood }}</option>{% endfor %}</select></div>
+          </div>
+        </section>
+        <section class="create-member-section">
+          <h3><span>02</span> Contact Information</h3>
+          <div class="create-member-grid">
+            <div class="field"><label for="new_phone">Phone Number *</label><input id="new_phone" name="phone" type="tel" placeholder="01XXXXXXXXX" pattern="01[0-9]{9}" required value="{{ request.form.get('phone','') if request.method == 'POST' else '' }}"></div>
+            <div class="field"><label for="new_email">Email Address</label><input id="new_email" name="email" type="email" placeholder="member@example.com" value="{{ request.form.get('email','') if request.method == 'POST' else '' }}"></div>
+            <div class="field create-member-span-2"><label for="new_present_address">Present Address</label><textarea id="new_present_address" name="present_address" placeholder="Village, Post Office, Upazila, District"></textarea></div>
+            <div class="field create-member-span-2"><label for="new_permanent_address">Permanent Address</label><textarea id="new_permanent_address" name="permanent_address" placeholder="Enter permanent address"></textarea></div>
+          </div>
+        </section>
+        <section class="create-member-section">
+          <h3><span>03</span> Organization Information</h3>
+          <div class="create-member-grid">
+            <div class="field"><label for="new_branch">Branch Name *</label><select id="new_branch" name="branch_name" required><option value="">Select active branch</option>{% for b in active_branches %}<option value="{{ b }}">{{ b }}</option>{% endfor %}</select>{% if not active_branches %}<small class="hint">No active branch was found in the database. Activate/create a branch first.</small>{% endif %}</div>
+            <div class="field"><label for="new_department">Department</label><select id="new_department" name="department"><option value="">Select department / role</option>{% for r in department_roles %}<option value="{{ r }}">{{ r.replace('_',' ').title() }}</option>{% endfor %}</select></div>
+            <div class="field"><label for="new_joining_date">Joining Date *</label><input id="new_joining_date" name="joining_date" type="date" required value="{{ request.form.get('joining_date','') if request.method == 'POST' else '' }}"></div>
+            <div class="field"><label for="new_status">Member Status</label><select id="new_status" name="status"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+          </div>
+        </section>
+        <section class="create-member-section">
+          <h3><span>04</span> Account &amp; Security</h3>
+          <div class="create-member-grid">
+            <div class="field"><label for="new_password">Password *</label><input id="new_password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required></div>
+            <div class="field"><label for="new_confirm_password">Confirm Password *</label><input id="new_confirm_password" name="confirm_password" type="password" minlength="8" autocomplete="new-password" placeholder="Re-enter password" required></div>
+            <div class="field create-member-span-2"><label for="new_profile_photo">Profile Photo</label><input id="new_profile_photo" name="profile_photo" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png"><small class="hint">JPG, PNG · Optional</small></div>
+          </div>
+        </section>
       </div>
+      <div class="create-member-footer"><small>* Required fields. Account role is fixed to MEMBER; the selected role is saved as Department.</small><div class="filter-actions"><a class="btn create-member-cancel" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">Cancel</a><button class="btn create-member-submit" type="submit">＋ Create Member</button></div></div>
+    </form>
+  </section>
+  {% endif %}
 
-      <section class="bazar-section no-print">
-        <h2>Header Settings / হেডার সম্পাদনা</h2>
-        <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}">
-          <input type="hidden" name="action" value="save_header">
-          <input type="hidden" name="month" value="{{ month }}">
-          <div class="bazar-form-grid">
-            <div class="bazar-field">
-              <label for="header_name">Header Name</label>
-              <input id="header_name" name="header_name" maxlength="160" value="{{ header.header_name or account_name }}" placeholder="Account Full Name">
-            </div>
-            <div class="bazar-field">
-              <label for="list_title">List Title</label>
-              <input id="list_title" name="list_title" maxlength="120" value="{{ header.list_title or 'বাজার লিস্ট' }}" required>
-            </div>
-            <div class="bazar-field" style="grid-column:1/-1">
-              <label for="instruction">নির্দেশনা</label>
-              <textarea id="instruction" name="instruction" maxlength="1000">{{ header.instruction or '' }}</textarea>
-            </div>
-          </div>
-          <p><button class="bazar-btn" type="submit">হেডার Save করুন</button></p>
-        </form>
-      </section>
+  <section class="card">
+    <div class="card-heading"><h2>Account List Filters</h2><span class="hint">Choose a branch to display accounts.</span></div>
+    <form method="get" class="filters">
+      <div class="field"><label for="branch">Branch <span aria-hidden="true">*</span></label><select id="branch" name="branch" required><option value="">Select branch</option>{% for b in branches %}<option value="{{ b }}" {% if filters.branch == b %}selected{% endif %}>{{ b }}</option>{% endfor %}</select></div>
+      <div class="field"><label for="search">Search</label><input id="search" name="search" value="{{ filters.search }}" placeholder="Name, username, email, phone"></div>
+      <div class="field"><label for="role">Role</label><select id="role" name="role"><option value="">All roles</option>{% for r in roles %}<option value="{{ r }}" {% if filters.role|upper == r %}selected{% endif %}>{{ r.replace('_',' ').title() }}</option>{% endfor %}</select></div>
+      <div class="field"><label for="status">Status</label><select id="status" name="status"><option value="">All statuses</option>{% for s in statuses %}<option value="{{ s }}" {% if filters.status|lower == s|lower %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></div>
+      <div class="filter-actions"><button class="btn btn-blue" type="submit">Apply filters</button><a class="btn btn-neutral" href="/system_super_administrator/member-management">Reset</a></div>
+    </form>
+    <div class="required-note">For privacy and accurate branch-level results, accounts are shown only after a branch is selected.</div>
+  </section>
 
-      <section class="bazar-section no-print">
-        <h2>Create / Edit Duty</h2>
-        <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}" id="bazar-duty-form">
-          <input type="hidden" name="action" value="save_duty">
-          <input type="hidden" name="month" value="{{ month }}">
-          <input type="hidden" name="duty_id" id="duty_id" value="">
-          <div class="bazar-form-grid">
-            <div class="bazar-field">
-              <label for="duty_date">তারিখ</label>
-              <input id="duty_date" name="duty_date" type="date" value="{{ month }}-01" required>
-            </div>
-            <div class="bazar-field">
-              <label for="bazar_time">বাজারের সময়</label>
-              <input id="bazar_time" name="bazar_time" value="দুপুর ২:০০টা – বিকেল ৫:৩০টা" maxlength="100">
-            </div>
-            <div class="bazar-field">
-              <label for="member_one">প্রথম সদস্য</label>
-              <input id="member_one" name="member_one" type="text" list="bazar-duty-member-suggestions" maxlength="160" required autocomplete="off" placeholder="প্রথম সদস্যের নাম লিখুন">
-            </div>
-            <div class="bazar-field">
-              <label for="member_two">দ্বিতীয় সদস্য</label>
-              <input id="member_two" name="member_two" type="text" list="bazar-duty-member-suggestions" maxlength="160" required autocomplete="off" placeholder="দ্বিতীয় সদস্যের নাম লিখুন">
-              <datalist id="bazar-duty-member-suggestions">
-                {% for member in members %}<option value="{{ member.name }}">{% endfor %}
-              </datalist>
-            </div>
-            <div class="bazar-field">
-              <label for="status">Status</label>
-              <select id="status" name="status">
-                <option>Pending</option><option>Completed</option><option>Missed</option>
-              </select>
-            </div>
-            <div class="bazar-field">
-              <label for="note">নোট</label>
-              <input id="note" name="note" maxlength="1000" placeholder="ঐচ্ছিক নির্দেশনা">
-            </div>
-          </div>
-          <p><button class="bazar-btn" type="submit">Save Duty</button>
-          <button class="bazar-btn secondary" type="reset" onclick="document.getElementById('duty_id').value=''">নতুন ফর্ম</button></p>
-        </form>
-      </section>
-
-      <section class="bazar-section no-print">
-        <h2>নতুন সদস্য যোগ করুন</h2>
-        <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}" class="bazar-toolbar">
-          <input type="hidden" name="action" value="add_member">
-          <input type="hidden" name="month" value="{{ month }}">
-          <div class="bazar-field">
-            <label for="new_member_name">সদস্যের নাম</label>
-            <input id="new_member_name" name="new_member_name" maxlength="160" required placeholder="নতুন সদস্যের নাম লিখুন">
-          </div>
-          <button class="bazar-btn" type="submit">+ সদস্য যোগ করুন</button>
-        </form>
-      </section>
-
-      <section class="bazar-section">
-        <h2>{{ header.list_title or 'বাজার লিস্ট' }} — {{ month }}</h2>
-        <div class="bazar-table-wrap">
-          <table>
-            <thead><tr><th>তারিখ</th><th>বার</th><th>দায়িত্বপ্রাপ্ত সদস্য</th><th>সময়</th><th>Status</th><th class="no-print">Action</th></tr></thead>
-            <tbody>
-            {% for duty in duties %}
-              <tr>
-                <td>{{ duty.duty_date }}</td>
-                <td>{{ duty.weekday or '' }}</td>
-                <td>{{ duty.member_one }} + {{ duty.member_two }}</td>
-                <td>{{ duty.bazar_time }}</td>
-                <td><span class="bazar-status {{ duty.status|lower }}">{{ duty.status }}</span></td>
-                <td class="no-print">
-                  <div class="bazar-actions">
-                    <button class="bazar-btn secondary" type="button"
-                      data-id="{{ duty._id }}" data-date="{{ duty.duty_date }}"
-                      data-one="{{ duty.member_one }}" data-two="{{ duty.member_two }}"
-                      data-time="{{ duty.bazar_time }}" data-status="{{ duty.status }}"
-                      data-note="{{ duty.note }}"
-                      onclick="editBazarDuty(this)">Edit</button>
-                    <form method="post" action="{{ url_for('system_super_administrator_meal_management_bp.bazar_duty.monthly_bazar_list') }}" onsubmit="return confirm('এই দায়িত্বটি মুছে ফেলবেন?')">
-                      <input type="hidden" name="action" value="delete_duty">
-                      <input type="hidden" name="month" value="{{ month }}">
-                      <input type="hidden" name="duty_id" value="{{ duty._id }}">
-                      <button class="bazar-btn danger" type="submit">Delete</button>
-                    </form>
-                  </div>
-                </td>
-              </tr>
-            {% else %}
-              <tr><td colspan="6" class="bazar-empty">এই মাসে কোনো বাজারের দায়িত্ব সংরক্ষিত নেই। উপরের ফর্ম থেকে দায়িত্ব যোগ করুন।</td></tr>
-            {% endfor %}
-            </tbody>
-          </table>
+  {% if view_record %}
+  <section class="card member-edit-card member-view-card">
+    <div class="member-edit-hero">
+      <div class="member-edit-title"><div class="member-edit-avatar">♟</div><div><h2>Member Profile</h2><p>View Member Information · Read-only profile</p></div></div>
+      <span class="member-edit-admin">Admin</span>
+    </div>
+    <div class="member-edit-body">
+      <section class="member-section">
+        <h3 class="member-section-title"><span>♙</span>Personal Information</h3>
+        <div class="member-form-grid">
+          <div class="field"><label>Member Name</label><div class="profile-value">{{ view_record.get('full_name', view_record.get('name','—')) or '—' }}</div></div>
+          <div class="field"><label>Mobile Number</label><div class="profile-value">{{ view_record.get('phone', view_record.get('mobile','—')) or '—' }}</div></div>
+          <div class="field"><label>Email Address</label><div class="profile-value">{{ view_record.get('email','—') or '—' }}</div></div>
+          <div class="field"><label>Member ID</label><div class="profile-value">{{ view_record.get('member_id', view_record.get('username','—')) or '—' }}</div></div>
+          <div class="field"><label>Username</label><div class="profile-value">{{ view_record.get('username','—') or '—' }}</div></div>
+          <div class="field"><label>Blood Group</label><div class="profile-value">{{ view_record.get('blood_group','—') or '—' }}</div></div>
         </div>
-        {% if header.instruction %}
-          <p class="bazar-note">{{ header.instruction }}</p>
-        {% endif %}
+      </section>
+      <section class="member-section">
+        <h3 class="member-section-title"><span>⌖</span>Address Information</h3>
+        <div class="member-form-grid">
+          <div class="field"><label>Present Address</label><div class="profile-value profile-value-multiline">{{ view_record.get('present_address','—') or '—' }}</div></div>
+          <div class="field"><label>Permanent Address</label><div class="profile-value profile-value-multiline">{{ view_record.get('permanent_address','—') or '—' }}</div></div>
+          <div class="field"><label>Branch</label><div class="profile-value">{{ view_record.get('branch_name', view_record.get('branch', view_record.get('branchName','—'))) or '—' }}</div></div>
+          <div class="field"><label>Department</label><div class="profile-value">{{ view_record.get('department', view_record.get('department_name','—')) or '—' }}</div></div>
+        </div>
+      </section>
+      <section class="member-section">
+        <h3 class="member-section-title"><span>⚙</span>Account Information</h3>
+        <div class="member-form-grid">
+          <div class="field"><label>Role</label><div class="profile-value">{{ (view_record.get('role','Unknown')|string).replace('_',' ').title() }}</div></div>
+          <div class="field"><label>Account Status</label><div class="profile-value">{{ view_record.get('status','Active') or '—' }}</div></div>
+          <div class="field"><label>Approval Status</label><div class="profile-value">{{ view_record.get('approval_status','—') or '—' }}</div></div>
+          <div class="field"><label>Account Lock</label><div class="profile-value">{% if view_record.get('locked', view_record.get('is_locked', False)) %}🔒 Locked{% else %}🔓 Unlocked{% endif %}</div></div>
+        </div>
       </section>
     </div>
-  </main>
-</div>
-</div>
-<script>
-function editBazarDuty(button){
-  const form=document.getElementById('bazar-duty-form');
-  document.getElementById('duty_id').value=button.dataset.id||'';
-  document.getElementById('duty_date').value=button.dataset.date||'';
-  document.getElementById('member_one').value=button.dataset.one||'';
-  document.getElementById('member_two').value=button.dataset.two||'';
-  document.getElementById('bazar_time').value=button.dataset.time||'';
-  document.getElementById('status').value=button.dataset.status||'Pending';
-  document.getElementById('note').value=button.dataset.note||'';
-  form.scrollIntoView({behavior:'smooth',block:'center'});
-}
-</script>
+    <div class="member-edit-footer">
+      <div class="member-edit-note">Read-only view. No information can be changed from this screen.</div>
+      <div class="member-edit-buttons"><a class="btn btn-neutral" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">Back to Member List</a><a class="btn btn-blue" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status, edit=view_record.get('_id','')) }}">Edit Member</a></div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if edit_record %}
+  <section class="card member-edit-card">
+    <div class="member-edit-hero">
+      <div class="member-edit-title"><div class="member-edit-avatar">♟</div><div><h2>Member Edit</h2><p>Member Profile · View &amp; Edit Member Information</p></div></div>
+      <span class="member-edit-admin">Admin</span>
+    </div>
+    <form method="post" action="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status, edit=edit_record.get('_id','')) }}">
+      <input type="hidden" name="action" value="update">
+      <input type="hidden" name="record_id" value="{{ edit_record.get('_id','') }}">
+      <div class="member-edit-body">
+        <section class="member-section">
+          <h3 class="member-section-title"><span>♙</span>Personal Information</h3>
+          <div class="member-form-grid">
+            <div class="field"><label for="sample_member_name">Member Name</label><input id="sample_member_name" name="full_name" value="{{ edit_record.get('full_name', edit_record.get('name','')) }}" placeholder="Enter member name"></div>
+            <div class="field"><label for="sample_mobile">Mobile Number</label><input id="sample_mobile" name="phone" value="{{ edit_record.get('phone', edit_record.get('mobile','')) }}" placeholder="01XXXXXXXXX"></div>
+            <div class="field"><label for="sample_email">Email Address</label><input id="sample_email" name="email" type="email" value="{{ edit_record.get('email','') }}" placeholder="member@example.com"></div>
+            {% if edit_record.get('role','')|upper == 'MEMBER' %}
+            <div class="field member-id-mode-field">
+              <label for="member_id_mode">Member ID Mode</label>
+              <select id="member_id_mode" name="member_id_mode" onchange="toggleMemberIdMode()">
+                <option value="automatic" {% if edit_record.get('member_id_mode','automatic')|lower != 'manual' %}selected{% endif %}>Automatic — Locked</option>
+                <option value="manual" {% if edit_record.get('member_id_mode','')|lower == 'manual' %}selected{% endif %}>Admin Manual — Editable</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="sample_member_id">Member ID</label>
+              <input id="sample_member_id" name="member_id" class="member-id-input" value="{{ edit_record.get('member_id','') }}" {% if edit_record.get('member_id_mode','automatic')|lower != 'manual' %}readonly{% endif %} required>
+              <small id="member-id-help" class="member-id-help">{% if edit_record.get('member_id_mode','')|lower == 'manual' %}Admin can edit this unique ID.{% else %}Automatically assigned and locked.{% endif %}</small>
+            </div>
+            {% else %}
+            <div class="field"><label>Member ID</label><input class="member-id-input" value="{{ edit_record.get('member_id','Not applicable for this role') }}" readonly></div>
+            {% endif %}
+            <div class="field"><label for="sample_blood_group">Blood Group</label><select id="sample_blood_group" name="blood_group"><option value="">Select blood group</option>{% for bg in ['A+','A-','B+','B-','AB+','AB-','O+','O-'] %}<option value="{{ bg }}" {% if edit_record.get('blood_group','') == bg %}selected{% endif %}>{{ bg }}</option>{% endfor %}</select></div>
+          </div>
+        </section>
+        <section class="member-section">
+          <h3 class="member-section-title"><span>⌖</span>Address Information</h3>
+          <div class="member-form-grid">
+            <div class="field"><label for="sample_present_address">Present Address</label><textarea id="sample_present_address" name="present_address" placeholder="Enter present address">{{ edit_record.get('present_address','') }}</textarea></div>
+            <div class="field"><label for="sample_permanent_address">Permanent Address</label><textarea id="sample_permanent_address" name="permanent_address" placeholder="Enter permanent address">{{ edit_record.get('permanent_address','') }}</textarea></div>
+          </div>
+        </section>
+        <section class="member-section">
+          <h3 class="member-section-title"><span>⚙</span>Account Information</h3>
+          <div class="member-form-grid">
+            <div class="field"><label for="sample_role">Role</label><select id="sample_role" name="role">{% for r in roles %}<option value="{{ r }}" {% if edit_record.get('role','')|upper == r %}selected{% endif %}>{{ r.replace('_',' ').title() }}</option>{% endfor %}</select></div>
+            <div class="field"><label for="sample_account_status">Account Status</label><select id="sample_account_status" name="status"><option value="Active" {% if edit_record.get('status','Active')|lower == 'active' %}selected{% endif %}>Active</option><option value="Inactive" {% if edit_record.get('status','')|lower == 'inactive' %}selected{% endif %}>Inactive</option><option value="Suspended" {% if edit_record.get('status','')|lower == 'suspended' %}selected{% endif %}>Suspended</option></select></div>
+            <div class="field"><label for="sample_approval_status">Approval Status</label><select id="sample_approval_status" name="approval_status"><option value="Approved" {% if edit_record.get('approval_status','Approved')|lower == 'approved' %}selected{% endif %}>Approved</option><option value="Pending" {% if edit_record.get('approval_status','')|lower == 'pending' %}selected{% endif %}>Pending</option><option value="Rejected" {% if edit_record.get('approval_status','')|lower == 'rejected' %}selected{% endif %}>Rejected</option></select></div>
+            <div class="field"><label for="sample_account_locked">Account Lock</label><select id="sample_account_locked" name="account_locked"><option value="false" {% if not edit_record.get('account_locked',False) %}selected{% endif %}>🔓 Unlocked</option><option value="true" {% if edit_record.get('account_locked',False) %}selected{% endif %}>🔒 Locked</option></select></div>
+          </div>
+          <div class="member-account-actions">
+            <div class="member-account-actions-copy"><strong>Account Actions</strong><span>Deactivate to temporarily disable access, or delete this account permanently.</span></div>
+            <div class="member-account-actions-buttons">
+              {% if edit_record.get('status','Active')|lower == 'inactive' %}
+              <button class="btn btn-green" type="button" onclick="openMemberActionConfirm('activate')">Activate Account</button>
+              {% else %}
+              <button class="btn btn-deactivate" type="button" onclick="openMemberActionConfirm('deactivate')">Deactivate Account</button>
+              {% endif %}
+              <button class="btn btn-red" type="button" onclick="openMemberActionConfirm('delete')">Delete Account</button>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="member-edit-footer">
+        <div class="member-edit-note">Automatic IDs are server-controlled. Manual IDs must be unique and are saved to MongoDB.</div>
+        <div class="member-edit-buttons"><a class="btn btn-neutral" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">Back</a><button class="btn btn-update" type="submit">Update Member</button></div>
+      </div>
+    </form>
+  </section>
+  <script>
+  function toggleMemberIdMode(){
+    const mode=document.getElementById('member_id_mode');
+    const id=document.getElementById('sample_member_id');
+    const help=document.getElementById('member-id-help');
+    if(!mode||!id)return;
+    const automatic=mode.value==='automatic';
+    id.readOnly=automatic;
+    id.required=!automatic;
+    id.classList.toggle('is-locked',automatic);
+    help.textContent=automatic?'Automatically assigned and locked.':'Admin can edit this unique ID.';
+    if(automatic) id.value={{ edit_record.get('member_id','')|tojson }};
+  }
+  </script>
+  <div id="member-action-confirm" class="member-confirm-backdrop" role="dialog" aria-modal="true" aria-labelledby="member-action-title" aria-describedby="member-action-description">
+    <div class="member-confirm-dialog">
+      <div class="member-confirm-icon" id="member-action-icon">!</div>
+      <h3 id="member-action-title">Confirm account action</h3>
+      <p id="member-action-description">Are you sure you want to continue?</p>
+      <div class="member-confirm-buttons">
+        <button class="btn btn-neutral" type="button" onclick="closeMemberActionConfirm()">No, Cancel</button>
+        <button class="btn btn-red" id="member-action-yes" type="button" onclick="confirmMemberAction()">Yes, Continue</button>
+      </div>
+    </div>
+  </div>
+  <script>
+  let pendingMemberAction = null;
+  function openMemberActionConfirm(action){
+    pendingMemberAction = action;
+    const modal=document.getElementById('member-action-confirm');
+    const title=document.getElementById('member-action-title');
+    const description=document.getElementById('member-action-description');
+    const yes=document.getElementById('member-action-yes');
+    const icon=document.getElementById('member-action-icon');
+    if(action==='delete'){
+      title.textContent='Delete this account permanently?';
+      description.textContent='This will permanently delete the account from MongoDB. This action cannot be undone. Choose Yes to delete or No to cancel.';
+      yes.textContent='Yes, Delete'; icon.textContent='!';
+    }else if(action==='deactivate'){
+      title.textContent='Deactivate this account?';
+      description.textContent='This account will be marked Inactive and access should be disabled. You can cancel now by choosing No.';
+      yes.textContent='Yes, Deactivate'; icon.textContent='!';
+    }else{
+      title.textContent='Activate this account?';
+      description.textContent='This account will be marked Active again. Do you want to continue?';
+      yes.textContent='Yes, Activate'; icon.textContent='✓';
+    }
+    modal.classList.add('is-open');
+    yes.focus();
+  }
+  function closeMemberActionConfirm(){pendingMemberAction=null;document.getElementById('member-action-confirm').classList.remove('is-open');}
+  function confirmMemberAction(){
+    if(!pendingMemberAction)return;
+    const form=document.querySelector('.member-edit-card form');
+    const actionInput=form&&form.querySelector('input[name="action"]');
+    if(!form||!actionInput)return;
+    actionInput.value=pendingMemberAction;
+    form.querySelectorAll('input,select,textarea,button').forEach(el=>{if(el.name!=='action'&&el.name!=='record_id')el.disabled=true;});
+    form.submit();
+  }
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMemberActionConfirm();});
+  document.getElementById('member-action-confirm')?.addEventListener('click',function(e){if(e.target===this)closeMemberActionConfirm();});
+  </script>
+  {% endif %}
+
+  <section class="card">
+    <div class="card-heading"><h2>Accounts</h2><span class="hint">{% if filters.branch %}Branch: {{ filters.branch }} · {{ records|length }} record(s){% else %}No branch selected{% endif %}</span></div>
+    {% if not filters.branch %}
+      <div class="empty-state"><strong>Select a branch to continue</strong>Choose a branch above, then apply filters to view accounts for that branch.</div>
+    {% else %}
+      <div class="table-wrap">
+        <table class="member-table">
+          <thead><tr><th>SL</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Branch</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+          {% for r in records %}
+            {% set role_name = (r.get('role','Unknown')|string).replace('_',' ').title() %}
+            {% set state = r.get('status','Active')|string %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ r.get('full_name', r.get('name','—')) }}</td>
+              <td>{{ r.get('username','—') }}</td>
+              <td>{{ r.get('email','—') or '—' }}</td>
+              <td>{{ r.get('phone','—') or '—' }}</td>
+              <td>{{ r.get('branch_name', r.get('branch', r.get('branchName','—'))) or '—' }}</td>
+              <td><span class="role-pill">{{ role_name }}</span></td>
+              <td><span class="status-pill {% if state|lower == 'active' %}status-active{% elif state|lower == 'inactive' %}status-inactive{% else %}status-suspended{% endif %}">{{ state }}</span></td>
+              <td><div class="actions">
+                <a class="btn btn-neutral" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status, view=r.get('_id','')) }}">View</a>
+                <a class="btn btn-blue" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status, edit=r.get('_id','')) }}">Edit</a>
+              </div></td>
+            </tr>
+          {% else %}
+            <tr><td colspan="9"><div class="empty-state"><strong>No accounts found</strong>Try another search or filter for this branch.</div></td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </section>
+</main>
+</div></div>
 
 <script>
 (function () {
-  function initSSAProfileMenu() {
-    var toggle = document.getElementById('ssa-profile-toggle');
-    var actions = document.getElementById('ssa-profile-actions');
-    var menu = document.getElementById('ssa-profile-menu');
-    if (!toggle || !actions || !menu || toggle.dataset.menuReady === '1') return;
-    toggle.dataset.menuReady = '1';
-    actions.hidden = true;
-    toggle.setAttribute('aria-expanded', 'false');
-    function closeMenu() { actions.hidden = true; toggle.setAttribute('aria-expanded', 'false'); }
-    toggle.addEventListener('click', function (event) {
-      event.preventDefault(); event.stopPropagation();
-      var opening = actions.hidden;
-      actions.hidden = !opening;
-      toggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
-    });
-    document.addEventListener('click', function (event) { if (!menu.contains(event.target)) closeMenu(); });
-    document.addEventListener('keydown', function (event) { if (event.key === 'Escape') closeMenu(); });
+  const profileMenu = document.getElementById('ssaProfileMenu');
+  const profileToggle = document.getElementById('ssaProfileToggle');
+  const profileDropdown = document.getElementById('ssaProfileDropdown');
+  if (!profileMenu || !profileToggle || !profileDropdown) return;
+
+  function closeProfileMenu() {
+    profileMenu.classList.remove('is-open');
+    profileToggle.setAttribute('aria-expanded', 'false');
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSSAProfileMenu);
-  else initSSAProfileMenu();
+
+  profileToggle.addEventListener('click', function (event) {
+    event.preventDefault();
+    const shouldOpen = !profileMenu.classList.contains('is-open');
+    profileMenu.classList.toggle('is-open', shouldOpen);
+    profileToggle.setAttribute('aria-expanded', String(shouldOpen));
+  });
+
+  document.addEventListener('click', function (event) {
+    if (!profileMenu.contains(event.target)) closeProfileMenu();
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') closeProfileMenu();
+  });
 })();
 </script>
 
-<script>
-function navigateMealModule(module){var urls={"meal-entry":"/system_super_administrator/meal-management/?module=meal-entry","bazar-list":"/system_super_administrator/daily-bazar-list/","bazar-duty":"/system_super_administrator/meal-management/bazar-duty/","meal-status-list":"/system_super_administrator/meal-management/?module=meal-status-list"};if(urls[module])window.location.href=urls[module];}
-(function(){var select=document.getElementById('meal-module-selector');if(!select)return;var path=window.location.pathname;var params=new URLSearchParams(window.location.search);var module='meal-entry';if(path.indexOf('/daily-bazar-list')!==-1)module='bazar-list';else if(path.indexOf('/bazar-duty')!==-1)module='bazar-duty';else if(params.get('module')==='meal-status-list'||params.has('month'))module='meal-status-list';select.value=module;var entry=document.getElementById('meal-entry');var status=document.getElementById('meal-status-list');if(entry)entry.hidden=(module!=='meal-entry');if(status)status.hidden=(module!=='meal-status-list');})();
-</script>
 <script id="ssa-unified-sidebar-script">(function(){var b=document.getElementById('ssaUnifiedProfileTrigger');var d=document.getElementById('ssaUnifiedProfileDropdown');if(!b||!d)return;b.addEventListener('click',function(e){e.preventDefault();var open=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!open));d.classList.toggle('is-open',!open);});document.addEventListener('click',function(e){if(!e.target.closest('#ssaUnifiedProfile')){b.setAttribute('aria-expanded','false');d.classList.remove('is-open');}});})();</script>
 </body>
 </html>
