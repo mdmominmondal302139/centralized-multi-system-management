@@ -1,379 +1,96 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Income Management</title><link rel="stylesheet" href="/static/app.css"><style>
-/* Permanent System Super Administrator sidebar. */
-.ssa-shell{min-height:100vh}
-.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.06);display:flex;flex-direction:column;z-index:1000}
-.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #e7edf4;flex:0 0 auto}
-.ssa-brand-title{font-size:16px;font-weight:800;color:#12355e;line-height:1.25}
-.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:5px;letter-spacing:.6px}
-.ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1 1 auto}
-.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}
-.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap}
-.ssa-nav a:hover{background:#eef6ff;color:#0d65bd}
-.ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}
-.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
-.ssa-profile{flex:0 0 auto;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}
-.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}
-.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}
-.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}
-.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
-.ssa-content{margin-left:280px;min-height:100vh}
-.ssa-content>.page{max-width:none;margin:0;padding:24px 24px 32px}
-@media(max-width:700px){.ssa-sidebar{width:280px}.ssa-content{margin-left:280px;min-width:820px}}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Income Management</title><link rel="stylesheet" href="/static/app.css">
+<style>
+/* Working-page layout: preserve the existing sidebar and make the two content forms separate views. */
+*{box-sizing:border-box}html,body{margin:0;background:#f4f8fd;color:#334155;font:14px Arial,Helvetica,sans-serif;font-weight:400} .ssa-shell{min-height:100vh}
+.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;height:100vh;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.05);display:flex;flex-direction:column;z-index:1000;overflow:hidden}.ssa-brand{padding:16px 18px 13px;border-bottom:1px solid #e7edf4;flex:0 0 auto}.ssa-brand-title{font-size:16px;font-weight:700;color:#12355e;line-height:1.25}.ssa-brand-subtitle{font-size:12px;color:#314b68;margin-top:4px}.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:4px;letter-spacing:.4px}.ssa-nav{padding:8px 10px 12px;overflow-y:auto;overflow-x:hidden;flex:1;min-height:0}.ssa-nav-group{font-size:10px;color:#8b9aab;text-transform:uppercase;padding:9px 10px 6px;letter-spacing:.7px}.ssa-nav a,.ssa-nav summary{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:8px 10px;border-radius:8px;margin:2px 0;font-size:13px;line-height:1.35;cursor:pointer;list-style:none}.ssa-nav summary::-webkit-details-marker{display:none}.ssa-nav summary:after{content:'⌄';margin-left:auto;color:#8298b0;font-size:11px}.ssa-nav a:hover,.ssa-nav summary:hover{background:#eef6ff;color:#0d65bd}.ssa-nav a.active,.ssa-nav summary.active{background:#e9f3ff;color:#0b67c0;font-weight:700}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}.ssa-subnav{padding:0 0 4px 27px}.ssa-subnav a{font-size:12px;padding:7px 9px;color:#58728c}.ssa-profile{position:relative;flex:0 0 auto;margin-top:auto;border-top:1px solid #e7edf4;padding:10px 12px;background:#fbfdff}.ssa-profile-trigger{display:flex;align-items:center;gap:9px;width:100%;border:1px solid transparent;border-radius:10px;padding:7px;background:transparent;color:#45627e;text-align:left;cursor:pointer}.ssa-avatar{width:34px;height:34px;min-width:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#4a8bc8}.ssa-profile-copy{display:block;min-width:0;flex:1}.ssa-profile-name{display:block;color:#45627e;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ssa-profile-role{display:block;color:#8298b0;margin-top:3px;font-size:10px}.ssa-profile-dropdown{display:none;position:absolute;left:12px;right:12px;bottom:calc(100% - 3px);padding:5px;border:1px solid #e1eaf4;border-radius:10px;background:#fff;box-shadow:0 8px 24px rgba(16,44,80,.12);z-index:1001}.ssa-profile-dropdown.is-open{display:block}.ssa-profile-dropdown a{display:block;padding:10px;border-radius:7px;text-decoration:none;font-size:12px;color:#4b7fae;background:#f5f9ff;margin:2px 0}.ssa-profile-dropdown a.logout-option{background:#fff3f3;color:#df5c66}
+.ssa-content{margin-left:280px;min-height:100vh;width:calc(100% - 280px);background:#f4f8fd}.page{width:100%;max-width:none;margin:0;padding:24px 24px 32px}header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}h1{font-size:25px;font-weight:500;margin:0;color:#263d59}.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity span{color:#73869c;font-size:11px}.card{background:#fff;border:1px solid #e2eaf3;border-radius:14px;padding:22px;margin:0 0 20px;box-shadow:0 5px 18px rgba(37,73,117,.06)}.card h2{font-size:19px;font-weight:500;color:#294561;margin:0 0 18px}.card form{display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:16px 14px}.card form label{display:flex;flex-direction:column;gap:7px;color:#40566f}.card form input,.card form select,.card form textarea{width:100%;min-width:0;border:1px solid #d6e1ed;border-radius:9px;padding:11px 12px;background:#fff;color:#334155;font-size:14px;outline:none}.card form input:focus,.card form select:focus,.card form textarea:focus{border-color:#74aee7;box-shadow:0 0 0 3px rgba(43,125,204,.10)}.card form input[type=hidden]{display:none}.card form button,.primary-btn{align-self:end;border:1px solid #b9dfca;border-radius:9px;background:#e6f7ed;color:#237748;font-weight:500;padding:11px 18px;cursor:pointer}.card form button:hover,.primary-btn:hover{background:#d6f1e1}.secondary-btn{background:#f2f7fd!important;color:#45627e!important;border:1px solid #d7e4f1!important}.csv-download-btn{display:inline-flex;align-items:center;gap:8px;margin:0 0 14px;padding:10px 15px;border-radius:9px;background:#e8f7ee;border:1px solid #b8e3c8;color:#237748;text-decoration:none;font-size:14px;cursor:pointer}.record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:12px;background:#fff}.record-table{width:100%;min-width:900px;border-collapse:collapse;font-size:14px;background:#fff}.record-table th{padding:13px 15px;text-align:left;background:#edf5ff;color:#344b66;font-weight:500;border-bottom:1px solid #d9e2ec;white-space:nowrap}.record-table td{padding:12px 15px;border-bottom:1px solid #e7edf3;color:#334155;vertical-align:middle;white-space:nowrap}.record-table tbody tr:hover td{background:#f5faff}.record-table tbody tr:last-child td{border-bottom:0}.record-table .empty{text-align:center;padding:28px;color:#64748b}.inline-action{display:inline;margin:0}.record-table td:last-child button{background:#fff0f0;color:#c24141;border:1px solid #f3b8b8;border-radius:8px;padding:8px 12px;cursor:pointer}.record-table td:last-child button:hover{background:#ffe1e1}.ok{padding:12px 15px;margin-bottom:15px;border-radius:9px;background:#e8f7ee;color:#237748}.err{padding:12px 15px;margin-bottom:15px;border-radius:9px;background:#fff0f0;color:#b83232}
+/* Only one main section is visible at a time. */
+[hidden]{display:none!important}.view-note{font-size:13px;color:#74869b;margin:-8px 0 18px}
+@media(max-width:1000px){.card form{grid-template-columns:repeat(2,minmax(150px,1fr))}}@media(max-width:700px){.ssa-sidebar{width:220px}.ssa-content{margin-left:220px;width:calc(100% - 220px)}.page{padding:16px}.card{padding:16px}.card form{grid-template-columns:1fr}.ssa-page-identity{margin-left:0}}
 
-.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity strong{font-weight:800}.ssa-page-identity span{color:#73869c;font-size:11px}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form label:has(textarea){grid-column:span 2}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus,.ssa-content .card form textarea:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form textarea{min-height:90px;resize:vertical}.ssa-content .card form input[type=hidden]{display:none}.ssa-content .card form button{grid-column:span 1;border:0 !important;outline:0;box-shadow:none;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}.ssa-content .card form button:hover{filter:brightness(.96)}@media(max-width:1000px){.ssa-content .card form{grid-template-columns:repeat(2,minmax(180px,1fr))}}@media(max-width:700px){.ssa-content .card form{grid-template-columns:1fr}.ssa-content .card form label:has(textarea){grid-column:span 1}}
+/* Bright-light page, deep green/red action buttons, normal black button text, no button borders. */
+.ssa-sidebar{background:#ffffff;border-right:0;box-shadow:3px 0 18px rgba(44,91,145,.07)}
+.card{background:#ffffff;border:0;box-shadow:0 7px 24px rgba(52,105,164,.08)}
+.ssa-page-identity{border:0;background:#eef6ff}
+button,.card form button,.primary-btn,.secondary-btn,.csv-download-btn,.record-table td:last-child button,.ssa-profile-trigger{border:0!important;box-shadow:none!important;outline-offset:2px;color:#000000!important}
+.card form button[type=submit],#incomeSubmitButton,.primary-btn,.record-table td:last-child .update-btn{background:#16803c!important;color:#000000!important;border:0!important;border-radius:9px;font-weight:500}
+.card form button[type=submit]:hover,#incomeSubmitButton:hover,.primary-btn:hover,.record-table td:last-child .update-btn:hover{background:#0f682f!important;color:#000000!important}
+.record-table td:last-child .danger,.record-table td:last-child button.danger{background:#c62828!important;color:#000000!important;border:0!important;border-radius:8px;padding:8px 12px;font-weight:500}
+.record-table td:last-child .danger:hover,.record-table td:last-child button.danger:hover{background:#a91f1f!important;color:#000000!important}
+.secondary-btn{background:#eef5fc!important;color:#000000!important}
+.csv-download-btn{background:#16803c!important;color:#000000!important;border:0!important;border-radius:9px}
+.csv-download-btn:hover{background:#0f682f!important;color:#000000!important}
+#incomeSearchForm button{background:#e5f1ff!important;color:#000000!important;border:0!important;border-radius:9px}
+.ssa-profile-dropdown{border:0;box-shadow:0 8px 24px rgba(16,44,80,.12)}
+.record-table-wrap{border:0;box-shadow:0 4px 16px rgba(52,105,164,.05)}
+.record-table th{background:#edf6ff;border-bottom:0}
 
-/* v17: keep the sidebar permanently left and keep all working content in the right scroll area. */
-.ssa-sidebar{position:fixed !important;left:0 !important;top:0 !important;bottom:0 !important;width:280px !important;height:100vh !important;overflow:hidden !important;}
-.ssa-nav{overflow-y:auto !important;overflow-x:hidden !important;min-height:0 !important;}
-.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:0 !important;box-sizing:border-box !important;overflow-x:hidden !important;}
-.ssa-content>.page{width:100% !important;max-width:none !important;box-sizing:border-box !important;min-width:0 !important;}
-.ssa-content .card{max-width:100% !important;box-sizing:border-box !important;}
-.ssa-content table{max-width:100%;}
-.table-wrap{width:100%;max-width:100%;overflow-x:auto;box-sizing:border-box;}
-@media(max-width:700px){.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:700px !important;}}
-#incomeSubmitButton{border:0 !important;outline:0 !important;box-shadow:none !important}
-</style><style>
-.record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(15,23,42,.06)}
-.record-table{width:100%;min-width:900px;border-collapse:collapse;font-size:15px;background:#fff}
-.record-table th{padding:14px 16px;text-align:left;background:#f3f7fb;color:#243447;font-weight:700;border-bottom:2px solid #d9e2ec;white-space:nowrap}
-.record-table td{padding:13px 16px;border-bottom:1px solid #e7edf3;color:#334155;vertical-align:middle;white-space:nowrap}
-.record-table tbody tr:hover{background:#f8fbff}
-.record-table tbody tr:last-child td{border-bottom:0}
-.record-table .empty{text-align:center;padding:28px;color:#64748b}
-.inline-action{margin:0}
-.inline-action .danger{padding:8px 14px;border:0;border-radius:8px;cursor:pointer;font-weight:600}
+/* Requested refinement: keep sidebar links at a fixed position and use normal-weight text. */
+.ssa-nav a,.ssa-nav summary,.ssa-subnav a,
+.ssa-nav a.active,.ssa-nav summary.active{font-weight:400!important;line-height:1.35;}
+.ssa-nav a,.ssa-nav summary{min-height:34px;}
+/* New Income working page typography: normal weight throughout the entry form. */
+#newIncomeSection,#newIncomeSection h2,#newIncomeSection p,
+#newIncomeSection form label,#newIncomeSection form input,
+#newIncomeSection form select,#newIncomeSection form textarea,
+#newIncomeSection form button{font-weight:400!important;}
+#newIncomeSection h2{font-weight:400!important;}
+/* Keep action buttons borderless and their labels black and normal-weight. */
+button,.primary-btn,.secondary-btn,.csv-download-btn,.record-table td:last-child button{font-weight:400!important;}
 </style>
-<style>
-/* Bright-light sidebar profile with automatic dropup/dropdown placement. */
-.ssa-sidebar{background:#ffffff;color:#24364b}
-.ssa-brand{background:#ffffff}
-.ssa-nav a{font-weight:400;color:#334b65}
-.ssa-nav a.active{font-weight:500;background:#eaf4ff;color:#1769b2}
-.ssa-profile{position:relative;flex:0 0 auto;border-top:1px solid #e4edf6;padding:10px;background:#fff}
-.ssa-profile-trigger{width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:1px solid transparent;background:#fff;border-radius:11px;padding:9px 8px;cursor:pointer;color:#24364b;font:inherit}
-.ssa-profile-trigger:hover,.ssa-profile-trigger[aria-expanded="true"]{background:#f2f8ff;border-color:#dceafa}
-.ssa-avatar{width:38px;height:38px;min-width:38px;border-radius:50%;background:#e3f0ff;color:#2366a8;display:grid;place-items:center;font-size:13px;font-weight:500}
-.ssa-profile-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
-.ssa-profile-name{font-size:12px;line-height:1.3;font-weight:400;color:#263b53;white-space:normal}
-.ssa-profile-role{font-size:11px;line-height:1.3;font-weight:400;color:#71839a}
-.ssa-profile-chevron{font-size:15px;color:#71839a;transform:rotate(0deg);transition:transform .15s}
-.ssa-profile-trigger[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(180deg)}
-.ssa-profile-dropdown{position:absolute;left:10px;right:10px;bottom:calc(100% + 8px);z-index:1200;background:#fff;border:1px solid #dce7f3;border-radius:12px;padding:6px;box-shadow:0 12px 30px rgba(31,62,96,.15)}
-.ssa-profile-dropdown.drop-down{top:calc(100% + 8px);bottom:auto}
-.ssa-profile-dropdown[hidden]{display:none}
-.ssa-profile-dropdown a{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:8px;text-decoration:none;color:#334b65;font-size:13px;font-weight:400}
-.ssa-profile-dropdown a:hover{background:#f0f7ff;color:#1769b2}
-.ssa-profile-dropdown a.logout-option{color:#d94848}
-.ssa-profile-dropdown a.logout-option:hover{background:#fff1f1;color:#c62828}
-/* Keep all page surfaces light and readable. */
-body{background:#f6f9fd;color:#26364a}
-.ssa-content{background:#f6f9fd}
-.ssa-content .card{background:#fff;border-color:#e2eaf3}
-</style>
-
-<style>
-/* Action buttons: soft light-red styling for Update and Delete. */
-.record-table td:last-child .action-btn,
-.record-table td:last-child .update,
-.record-table td:last-child .update-btn,
-.record-table td:last-child .danger,
-.record-table td:last-child button {
-  background:#fff0f0 !important;
-  color:#c24141 !important;
-  border:1px solid #f3b8b8 !important;
-  border-radius:8px;
-  padding:8px 14px;
-  font-weight:500;
-  cursor:pointer;
-  box-shadow:none;
-  transition:background .18s ease,border-color .18s ease;
-}
-.record-table td:last-child .action-btn:hover,
-.record-table td:last-child .update:hover,
-.record-table td:last-child .update-btn:hover,
-.record-table td:last-child .danger:hover,
-.record-table td:last-child button:hover {
-  background:#ffe1e1 !important;
-  border-color:#e99a9a !important;
-}
-</style>
-<style>
-/* Light-red Action controls */
-.record-table td:last-child .update-btn,
-.record-table td:last-child .danger{
-  background:#fff0f0!important;color:#c24141!important;border:1px solid #f3b8b8!important;
-  border-radius:8px;padding:8px 14px;font-weight:500;cursor:pointer;box-shadow:none;
-}
-.record-table td:last-child .update-btn:hover,
-.record-table td:last-child .danger:hover{background:#ffe1e1!important;border-color:#e99a9a!important}
-</style>
-<style>
-/* Bright-light, clean and readable page styling; normal font weights. */
-html,body{background:#f4f8fd!important;color:#334155!important;font-weight:400!important}
-.ssa-content{background:#f4f8fd!important;color:#334155!important}
-.ssa-sidebar,.ssa-brand,.ssa-profile{background:#fff!important}
-.ssa-brand-title,h1,h2,h3,h4,strong,b,th,label,.ssa-nav-group{font-weight:400!important}
-.ssa-nav a{font-weight:400!important;color:#334b65!important}
-.ssa-nav a:hover,.ssa-nav a.active{background:#eaf4ff!important;color:#1769b2!important}
-.ssa-content .card{background:#fff!important;border:1px solid #e2eaf3!important;box-shadow:0 5px 18px rgba(37,73,117,.06)!important}
-input,select,textarea{background:#fff!important;color:#334155!important;border:1px solid #d6e1ed!important}
-.record-table th{background:#edf5ff!important;color:#344b66!important;font-weight:400!important}
-.record-table td{background:#fff;color:#334155}
-.record-table tbody tr:hover td{background:#f5faff!important}
-.record-table td:last-child .update-btn,.record-table td:last-child .danger{background:#fff0f0!important;color:#c24141!important;border:1px solid #f3b8b8!important;font-weight:400!important}
-.record-table td:last-child .update-btn:hover,.record-table td:last-child .danger:hover{background:#ffe1e1!important}
-.csv-download-btn{display:inline-flex;align-items:center;gap:8px;margin:0 0 14px;padding:10px 15px;border-radius:9px;background:#e8f7ee;border:1px solid #b8e3c8;color:#237748;text-decoration:none;font-size:14px;font-weight:400;cursor:pointer}
-.csv-download-btn:hover{background:#d9f1e3;border-color:#91d2aa}
-.delete-confirm-title{font-weight:400!important}
-.delete-confirm-cancel,.delete-confirm-submit{font-weight:400!important}
-</style>
-<style>#incomeSubmitButton{border:none !important;outline:none !important;box-shadow:none !important}</style><style id="ssa-unified-sidebar-style">
-/* Shared System Super Administrator sidebar: based on Home HTML dimensions and colours. */
-.ssa-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:280px!important;height:100vh!important;background:#fff!important;border-right:1px solid #dce5ef!important;box-shadow:2px 0 12px rgba(16,44,80,.05)!important;display:flex!important;flex-direction:column!important;z-index:10000!important;color:#102c50!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;font-weight:400!important;line-height:1.4!important;overflow:hidden!important}
-.ssa-sidebar *{box-sizing:border-box!important;font-family:Arial,Helvetica,sans-serif!important}
-.ssa-sidebar .ssa-brand{display:block!important;flex:0 0 auto!important;padding:16px 18px 13px!important;border-bottom:1px solid #e7edf4!important;background:#fff!important}
-.ssa-sidebar .ssa-brand-title{font-size:16px!important;font-weight:700!important;color:#12355e!important;line-height:1.25!important;letter-spacing:0!important}
-.ssa-sidebar .ssa-brand-subtitle{font-size:12px!important;font-weight:400!important;color:#314b68!important;margin-top:4px!important;line-height:1.3!important}
-.ssa-sidebar .ssa-brand-scope{font-size:10px!important;font-weight:400!important;color:#6f8299!important;margin-top:4px!important;letter-spacing:.4px!important;text-transform:none!important}
-.ssa-sidebar .ssa-nav{padding:8px 10px 12px!important;overflow-y:auto!important;overflow-x:hidden!important;flex:1 1 auto!important;min-height:0!important;display:block!important}
-.ssa-sidebar .ssa-nav-group{font-size:10px!important;font-weight:700!important;color:#8b9aab!important;text-transform:uppercase!important;padding:9px 10px 6px!important;letter-spacing:.7px!important}
-.ssa-sidebar .ssa-nav a,.ssa-sidebar .ssa-nav summary{display:flex!important;align-items:center!important;gap:10px!important;text-decoration:none!important;color:#314b68!important;padding:8px 10px!important;border-radius:8px!important;margin:2px 0!important;font-size:13px!important;font-weight:400!important;line-height:1.35!important;white-space:normal!important;cursor:pointer!important;list-style:none!important}
-.ssa-sidebar .ssa-nav summary::-webkit-details-marker{display:none!important}
-.ssa-sidebar .ssa-nav summary:after{content:'⌄';margin-left:auto;color:#8298b0;font-size:11px}
-.ssa-sidebar .ssa-nav a:hover,.ssa-sidebar .ssa-nav summary:hover{background:#eef6ff!important;color:#0d65bd!important}
-.ssa-sidebar .ssa-nav a.active,.ssa-sidebar .ssa-nav summary.active{background:#e9f3ff!important;color:#0b67c0!important;font-weight:700!important}
-.ssa-sidebar .ssa-ico{width:18px!important;min-width:18px!important;text-align:center!important;font-size:15px!important;font-weight:400!important;color:inherit!important}
-.ssa-sidebar .ssa-subnav{padding:0 0 4px 27px!important}
-.ssa-sidebar .ssa-subnav a{font-size:12px!important;padding:7px 9px!important;margin:1px 0!important;color:#58728c!important}
-.ssa-sidebar .ssa-profile{position:relative!important;flex:0 0 auto!important;margin-top:auto!important;border-top:1px solid #e7edf4!important;padding:10px 12px!important;background:#fbfdff!important}
-.ssa-sidebar .ssa-profile-trigger{display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;border:1px solid transparent!important;border-radius:10px!important;padding:7px!important;background:transparent!important;color:#45627e!important;text-align:left!important;font:inherit!important;font-weight:400!important;cursor:pointer!important}
-.ssa-sidebar .ssa-profile-trigger:hover,.ssa-sidebar .ssa-profile-trigger[aria-expanded="true"]{background:#eef6ff!important;border-color:#d7e8fb!important}
-.ssa-sidebar .ssa-avatar{width:34px!important;height:34px!important;min-width:34px!important;border-radius:50%!important;background:#e9f3ff!important;display:grid!important;place-items:center!important;color:#4a8bc8!important;font-size:13px!important;font-weight:400!important}
-.ssa-sidebar .ssa-profile-copy{display:block!important;min-width:0!important;flex:1!important}
-.ssa-sidebar .ssa-profile-name{display:block!important;color:#45627e!important;font-size:12px!important;font-weight:400!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:175px!important}
-.ssa-sidebar .ssa-profile-role{display:block!important;color:#8298b0!important;margin-top:3px!important;font-size:10px!important;font-weight:400!important}
-.ssa-sidebar .ssa-profile-chevron{margin-left:auto!important;color:#8298b0!important;font-size:11px!important;transition:transform .15s ease!important}
-.ssa-sidebar .ssa-profile-trigger[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(180deg)!important}
-.ssa-sidebar .ssa-profile-dropdown{display:none!important;position:absolute!important;left:12px!important;right:12px!important;bottom:calc(100% - 3px)!important;margin:0!important;padding:5px!important;border:1px solid #e1eaf4!important;border-radius:10px!important;background:#fff!important;box-shadow:0 8px 24px rgba(16,44,80,.12)!important;z-index:10001!important}
-.ssa-sidebar .ssa-profile-dropdown.is-open{display:block!important}
-.ssa-sidebar .ssa-profile-dropdown a{display:block!important;padding:10px!important;border-radius:7px!important;text-decoration:none!important;font-size:12px!important;font-weight:400!important;color:#4b7fae!important;background:#f5f9ff!important;margin:2px 0!important}
-.ssa-sidebar .ssa-profile-dropdown a.logout-option{background:#fff3f3!important;color:#df5c66!important}
-.ssa-sidebar .ssa-profile-dropdown a:hover{filter:brightness(.97)!important}
-@media(max-width:650px){.ssa-sidebar{position:relative!important;width:100%!important;height:auto!important;min-height:0!important}.ssa-sidebar .ssa-nav{max-height:60vh}.ssa-sidebar .ssa-profile{margin-top:0!important}}
-</style>
-</head><body><div class="ssa-shell"><aside class="ssa-sidebar">
+</head>
+<body>
+<div class="ssa-shell">
+<aside class="ssa-sidebar">
 <div class="ssa-brand"><div class="ssa-brand-title">MAIN MENU</div><div class="ssa-brand-subtitle">Multi system</div><div class="ssa-brand-scope">System Super Administrator</div><div class="ssa-brand-scope">Global Authority</div></div>
 <nav class="ssa-nav"><div class="ssa-nav-group">Main Menu</div>
-<a class="" href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
+<a href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
 <details class="ssa-nav-item" open><summary class="active"><span class="ssa-ico">↗</span>Income</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/income-management" title="New Income">New Income</a>
-<a href="/system_super_administrator/income-management" title="Income List">Income List</a>
+<a href="?view=new" data-income-view="new" title="New Income">New Income</a>
+<a href="?view=list" data-income-view="list" title="Income List">Income List</a>
 </div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">↘</span>Expense</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/expense-management" title="New Expense">New Expense</a>
-<a href="/system_super_administrator/expense-management" title="Expense List">Expense List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">☷</span>Meal Manager</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/meal-management" title="New Meal">New Meal</a>
-<a href="/system_super_administrator/meal-management" title="Meal List">Meal List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▣</span>Savings</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/savings-management" title="New Savings">New Savings</a>
-<a href="/system_super_administrator/savings-management" title="Savings List">Savings List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▤</span>Information Directory</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/information-directory" title="New Information">New Information</a>
-<a href="/system_super_administrator/information-directory" title="Information List">Information List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">♡</span>Blood Donor</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/blood-donor-management" title="New Donor">New Donor</a>
-<a href="/system_super_administrator/blood-donor-management" title="Donor List">Donor List</a>
-<a href="/system_super_administrator/blood-donor-management" title="Blood Request">Blood Request</a>
-<a href="/system_super_administrator/blood-donor-management" title="Reports">Reports</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▥</span>Branch System</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/branch-management" title="New Branch">New Branch</a>
-<a href="/system_super_administrator/branch-management" title="Branch List">Branch List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">♟</span>Member</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/member-management" title="New Member">New Member</a>
-<a href="/system_super_administrator/member-management" title="Member List">Member List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">৳</span>Financial Section</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/financial-management" title="Member Wise">Member Wise</a>
-<a href="/system_super_administrator/financial-management" title="Branch Wise">Branch Wise</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▥</span>Reports</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/reports" title="Generate">Generate</a>
-<a href="/system_super_administrator/reports" title="Download XLSX">Download XLSX</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">⚿</span>Access Power</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/access-management" title="Member">Member</a>
-<a href="/system_super_administrator/access-management" title="Branch">Branch</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▱</span>Documentation</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/documentation" title="Writeable / Noteable">Writeable / Noteable</a>
-</div></details>
-<a class="" href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
-<div class="ssa-nav-group">Account</div>
-<a class="" href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">↘</span>Expense</summary><div class="ssa-subnav"><a href="/system_super_administrator/expense-management">New Expense</a><a href="/system_super_administrator/expense-management">Expense List</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">☷</span>Meal Manager</summary><div class="ssa-subnav"><a href="/system_super_administrator/meal-management">New Meal</a><a href="/system_super_administrator/meal-management">Meal List</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">▣</span>Savings</summary><div class="ssa-subnav"><a href="/system_super_administrator/savings-management">New Savings</a><a href="/system_super_administrator/savings-management">Savings List</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">▤</span>Information Directory</summary><div class="ssa-subnav"><a href="/system_super_administrator/information-directory">New Information</a><a href="/system_super_administrator/information-directory">Information List</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">♡</span>Blood Donor</summary><div class="ssa-subnav"><a href="/system_super_administrator/blood-donor-management">New Donor</a><a href="/system_super_administrator/blood-donor-management">Donor List</a><a href="/system_super_administrator/blood-donor-management">Blood Request</a><a href="/system_super_administrator/blood-donor-management">Reports</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">▥</span>Branch System</summary><div class="ssa-subnav"><a href="/system_super_administrator/branch-management">New Branch</a><a href="/system_super_administrator/branch-management">Branch List</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">♟</span>Member</summary><div class="ssa-subnav"><a href="/system_super_administrator/member-management">New Member</a><a href="/system_super_administrator/member-management">Member List</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">৳</span>Financial Section</summary><div class="ssa-subnav"><a href="/system_super_administrator/financial-management">Member Wise</a><a href="/system_super_administrator/financial-management">Branch Wise</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">▥</span>Reports</summary><div class="ssa-subnav"><a href="/system_super_administrator/reports">Generate</a><a href="/system_super_administrator/reports">Download XLSX</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">⚿</span>Access Power</summary><div class="ssa-subnav"><a href="/system_super_administrator/access-management">Member</a><a href="/system_super_administrator/access-management">Branch</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">▱</span>Documentation</summary><div class="ssa-subnav"><a href="/system_super_administrator/documentation">Writeable / Noteable</a></div></details>
+<a href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a><div class="ssa-nav-group">Account</div><a href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
 </nav>
-<div class="ssa-profile" id="ssaUnifiedProfile"><button class="ssa-profile-trigger" type="button" id="ssaUnifiedProfileTrigger" aria-expanded="false" aria-controls="ssaUnifiedProfileDropdown"><span class="ssa-avatar">MM</span><span class="ssa-profile-copy"><span class="ssa-profile-name">Md. Momin Mondal (Central)</span><span class="ssa-profile-role">System Super Administrator</span></span><span class="ssa-profile-chevron" aria-hidden="true">⌃</span></button><div class="ssa-profile-dropdown" id="ssaUnifiedProfileDropdown"><a href="/system_super_administrator/profile">Profile</a><a href="/system_super_administrator/settings">Settings</a><a class="logout-option" href="/logout">Logout</a></div></div></aside><div class="ssa-content"><main class="page"><header><h1>Income Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}<section class="card"><h2>Entry</h2><form method="post" id="incomeEntryForm"><label>Amount<input name="amount" type="number" min="0.01" step="0.01" required></label><label>Income Type<select name="type" required><option value="">Select Income Type</option><option>Salary</option><option>Membership Fee</option><option>Donation</option><option>Contribution</option><option>Business Income</option><option>Service Income</option><option>Interest Income</option><option>Other</option></select></label><label>Received Method<select name="method" required><option value="">Select Received Method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Card</option><option>Other</option></select></label><label>Date<input name="date" type="date" required></label><label>Time<input name="time" type="time" required></label><label>Note<input name="note" required></label><input type="hidden" name="action" value="save" id="incomeFormAction"><input type="hidden" name="record_id" value="" id="incomeRecordId"><button type="submit" id="incomeSubmitButton">Save</button><button type="button" id="incomeCancelEdit" style="display:none;background:#f1f5f9;color:#475569;border:1px solid #dbe3ec;border-radius:8px;padding:8px 14px;cursor:pointer" onclick="cancelIncomeEdit()">Cancel</button></form></section><section class="card"><h2>Records</h2><a class="csv-download-btn" href="{{ url_for('system_super_administrator_income_management_bp.export_csv', **request.args.to_dict()) }}" title="Download income records as CSV"><span aria-hidden="true">⇩</span> Download CSV</a>
-<form method="get"><input name="search" placeholder="Search" value="{{ request.args.get('search','') }}"><button>Search</button></form><div class="record-table-wrap"><table class="record-table"><thead><tr><th>SL</th><th>Date</th><th>Time</th><th>Amount</th><th>Type</th><th>Method</th><th>Note</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td>{{ r.get("date","") }}</td><td>{{ r.get("time","") }}</td><td>{{ r.get("amount","") }}</td><td>{{ r.get("type","") }}</td><td>{{ r.get("method","") }}</td><td>{{ r.get("note","") }}</td><td><div class="inline-action"><button type="button" class="update-btn" data-id="{{ r.get('_id','') }}" data-amount="{{ r.get('amount','')|e }}" data-type="{{ r.get('type','')|e }}" data-method="{{ r.get('method','')|e }}" data-date="{{ r.get('date','')|e }}" data-time="{{ r.get('time','')|e }}" data-note="{{ r.get('note','')|e }}" onclick="editIncomeRecord(this)">Update</button><form method="post" class="inline-action" style="display:inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><button class="danger" type="submit">Delete</button></form></div></td></tr>{% else %}<tr><td colspan="8" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div></section></main></div></div>
+<div class="ssa-profile" id="ssaUnifiedProfile"><button class="ssa-profile-trigger" type="button" id="ssaUnifiedProfileTrigger" aria-expanded="false"><span class="ssa-avatar">MM</span><span class="ssa-profile-copy"><span class="ssa-profile-name">Md. Momin Mondal (Central)</span><span class="ssa-profile-role">System Super Administrator</span></span><span>⌃</span></button><div class="ssa-profile-dropdown" id="ssaUnifiedProfileDropdown"><a href="/system_super_administrator/profile">Profile</a><a href="/system_super_administrator/settings">Settings</a><a class="logout-option" href="/logout">Logout</a></div></div>
+</aside>
+<div class="ssa-content"><main class="page">
+<header><h1>Income Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>
+{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}
+<section class="card" id="newIncomeSection"><h2>New Income</h2><p class="view-note">Enter and save a new income record.</p>
+<form method="post" id="incomeEntryForm"><label>Amount<input name="amount" type="number" min="0.01" step="0.01" required></label><label>Income Type<select name="type" required><option value="">Select Income Type</option><option>Salary</option><option>Membership Fee</option><option>Donation</option><option>Contribution</option><option>Business Income</option><option>Service Income</option><option>Interest Income</option><option>Other</option></select></label><label>Received Method<select name="method" required><option value="">Select Received Method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Card</option><option>Other</option></select></label><label>Date<input name="date" type="date" required></label><label>Time<input name="time" type="time" required></label><label>Note<input name="note" required></label><input type="hidden" name="action" value="save" id="incomeFormAction"><input type="hidden" name="record_id" value="" id="incomeRecordId"><button type="submit" id="incomeSubmitButton">Save Income</button><button type="button" class="secondary-btn" id="incomeCancelEdit" hidden onclick="cancelIncomeEdit()">Cancel Edit</button></form>
+</section>
+<section class="card" id="incomeListSection" hidden><h2>Income List</h2><p class="view-note">Search, review, update, delete, or export income records.</p><a class="csv-download-btn" href="{{ url_for('system_super_administrator_income_management_bp.export_csv', **request.args.to_dict()) }}" title="Download income records as CSV"><span aria-hidden="true">⇩</span> Download CSV</a>
+<form method="get" id="incomeSearchForm"><input type="hidden" name="view" value="list"><label>Search Income<input name="search" placeholder="Search income records" value="{{ request.args.get('search','') }}"></label><button type="submit">Search</button></form>
+<div class="record-table-wrap"><table class="record-table"><thead><tr><th>SL</th><th>Date</th><th>Time</th><th>Amount</th><th>Type</th><th>Method</th><th>Note</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td>{{ r.get("date","") }}</td><td>{{ r.get("time","") }}</td><td>{{ r.get("amount","") }}</td><td>{{ r.get("type","") }}</td><td>{{ r.get("method","") }}</td><td>{{ r.get("note","") }}</td><td><div class="inline-action"><button type="button" class="update-btn" data-id="{{ r.get('_id','') }}" data-amount="{{ r.get('amount','')|e }}" data-type="{{ r.get('type','')|e }}" data-method="{{ r.get('method','')|e }}" data-date="{{ r.get('date','')|e }}" data-time="{{ r.get('time','')|e }}" data-note="{{ r.get('note','')|e }}" onclick="editIncomeRecord(this)">Update</button> <form method="post" class="inline-action" style="display:inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><input type="hidden" name="return_view" value="list"><button class="danger" type="submit">Delete</button></form></div></td></tr>{% else %}<tr><td colspan="8" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div>
+</section>
+</main></div></div>
 <script>
 (function(){
-  function pad(n){return String(n).padStart(2,"0");}
-  function setCurrent(){
-    const now=new Date();
-    const date=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
-    const time=pad(now.getHours())+":"+pad(now.getMinutes());
-    document.querySelectorAll('input[name="date"]').forEach(function(el){ if(!el.value) el.value=date; });
-    document.querySelectorAll('input[name="time"]').forEach(function(el){ if(!el.value) el.value=time; });
-  }
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",setCurrent); else setCurrent();
+ const params=new URLSearchParams(window.location.search); const view=params.get('view')==='list'?'list':'new';
+ const entry=document.getElementById('newIncomeSection'), list=document.getElementById('incomeListSection');
+ function showView(v){entry.hidden=v!=='new';list.hidden=v!=='list';document.querySelectorAll('[data-income-view]').forEach(a=>{a.classList.toggle('active',a.dataset.incomeView===v);});}
+ showView(view);
+ document.querySelectorAll('[data-income-view]').forEach(a=>a.addEventListener('click',function(e){e.preventDefault();const v=this.dataset.incomeView;const url=new URL(window.location.href);url.searchParams.set('view',v);history.pushState({view:v},'',url);showView(v);}));
+ window.addEventListener('popstate',()=>showView(new URLSearchParams(location.search).get('view')==='list'?'list':'new'));
+ function pad(n){return String(n).padStart(2,'0')}const now=new Date(),date=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate()),time=pad(now.getHours())+':'+pad(now.getMinutes());document.querySelectorAll('input[name="date"]').forEach(el=>{if(!el.value)el.value=date});document.querySelectorAll('input[name="time"]').forEach(el=>{if(!el.value)el.value=time});
 })();
+(function(){const b=document.getElementById('ssaUnifiedProfileTrigger'),d=document.getElementById('ssaUnifiedProfileDropdown');if(!b||!d)return;b.addEventListener('click',e=>{e.preventDefault();const open=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!open));d.classList.toggle('is-open',!open)});document.addEventListener('click',e=>{if(!e.target.closest('#ssaUnifiedProfile')){b.setAttribute('aria-expanded','false');d.classList.remove('is-open')}})})();
+function editIncomeRecord(button){const form=document.getElementById('incomeEntryForm');if(!form)return;const d=button.dataset;form.elements.amount.value=d.amount||'';form.elements.type.value=d.type||'';form.elements.method.value=d.method||'';form.elements.date.value=d.date||'';form.elements.time.value=d.time||'';form.elements.note.value=d.note||'';document.getElementById('incomeFormAction').value='update';document.getElementById('incomeRecordId').value=d.id||'';document.getElementById('incomeSubmitButton').textContent='Update Income';document.getElementById('incomeCancelEdit').hidden=false;const url=new URL(location.href);url.searchParams.set('view','new');history.pushState({view:'new'},'',url);document.getElementById('newIncomeSection').hidden=false;document.getElementById('incomeListSection').hidden=true;form.scrollIntoView({behavior:'smooth',block:'center'});}
+function cancelIncomeEdit(){const form=document.getElementById('incomeEntryForm');if(!form)return;form.reset();document.getElementById('incomeFormAction').value='save';document.getElementById('incomeRecordId').value='';document.getElementById('incomeSubmitButton').textContent='Save Income';document.getElementById('incomeCancelEdit').hidden=true;}
 </script>
-
-<script>
-(function(){
-  const trigger=document.getElementById('ssaProfileTrigger');
-  const menu=document.getElementById('ssaProfileDropdown');
-  const shell=document.getElementById('ssaProfileMenu');
-  if(!trigger||!menu||!shell)return;
-  function positionMenu(){
-    if(menu.hidden)return;
-    menu.classList.remove('drop-down');
-    const rect=shell.getBoundingClientRect();
-    const menuHeight=menu.offsetHeight||100;
-    const below=window.innerHeight-rect.bottom;
-    const above=rect.top;
-    if(below>=menuHeight+16 || below>=above){menu.classList.add('drop-down');}
-  }
-  function closeMenu(){menu.hidden=true;trigger.setAttribute('aria-expanded','false');menu.classList.remove('drop-down');}
-  trigger.addEventListener('click',function(event){
-    event.stopPropagation();
-    if(!menu.hidden){closeMenu();return;}
-    menu.hidden=false;trigger.setAttribute('aria-expanded','true');
-    requestAnimationFrame(positionMenu);
-  });
-  document.addEventListener('click',function(event){if(!shell.contains(event.target))closeMenu();});
-  document.addEventListener('keydown',function(event){if(event.key==='Escape'){closeMenu();trigger.focus();}});
-  window.addEventListener('resize',positionMenu);
-  window.addEventListener('scroll',positionMenu,true);
-})();
-
-function editIncomeRecord(button){
-  const form=document.getElementById("incomeEntryForm");
-  if(!form) return;
-  const d=button.dataset;
-  form.elements.amount.value=d.amount||"";
-  form.elements.type.value=d.type||"";
-  form.elements.method.value=d.method||"";
-  form.elements.date.value=d.date||"";
-  form.elements.time.value=d.time||"";
-  form.elements.note.value=d.note||"";
-  document.getElementById("incomeFormAction").value="update";
-  document.getElementById("incomeRecordId").value=d.id||"";
-  document.getElementById("incomeSubmitButton").textContent="Update";
-  document.getElementById("incomeCancelEdit").style.display="inline-block";
-  form.scrollIntoView({behavior:"smooth",block:"center"});
-}
-function cancelIncomeEdit(){
-  const form=document.getElementById("incomeEntryForm");
-  if(!form) return;
-  form.reset();
-  document.getElementById("incomeFormAction").value="save";
-  document.getElementById("incomeRecordId").value="";
-  document.getElementById("incomeSubmitButton").textContent="Save";
-  document.getElementById("incomeCancelEdit").style.display="none";
-}
-</script>
-
-<style>
-/* Elegant confirmation dialog for deleting an income record. */
-.delete-confirm-overlay{position:fixed;inset:0;z-index:3000;background:rgba(20,38,62,.42);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
-.delete-confirm-overlay[hidden]{display:none!important}
-.delete-confirm-dialog{width:min(100%,440px);background:#fff;border:1px solid #f2d4d4;border-radius:18px;box-shadow:0 24px 70px rgba(20,38,62,.22);padding:28px 26px 22px;text-align:center;animation:deleteDialogIn .18s ease-out}
-.delete-confirm-icon{width:62px;height:62px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;background:#fff0f0;color:#cf4545;border:1px solid #f5cccc}
-.delete-confirm-icon svg{width:29px;height:29px}
-.delete-confirm-title{margin:0;color:#24364b;font-size:21px;font-weight:600;line-height:1.35}
-.delete-confirm-message{margin:10px 0 24px;color:#6c7a8b;font-size:14px;line-height:1.7}
-.delete-confirm-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.delete-confirm-btn{border-radius:9px;padding:10px 19px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
-.delete-confirm-cancel{color:#43546a;background:#f5f7fa;border:1px solid #dce4ed}
-.delete-confirm-cancel:hover{background:#eaf0f6}
-.delete-confirm-submit{color:#b83232;background:#fff0f0;border:1px solid #efb5b5}
-.delete-confirm-submit:hover{background:#ffe1e1;border-color:#e79a9a}
-.delete-confirm-btn:active{transform:translateY(1px)}
-@keyframes deleteDialogIn{from{opacity:0;transform:translateY(7px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
-@media(prefers-reduced-motion:reduce){.delete-confirm-dialog{animation:none}.delete-confirm-btn{transition:none}}
-</style>
-
-<div class="delete-confirm-overlay" id="deleteConfirmOverlay" hidden>
-  <section class="delete-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="deleteConfirmTitle" aria-describedby="deleteConfirmMessage">
-    <div class="delete-confirm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v5M14 11v5"/></svg></div>
-    <h2 class="delete-confirm-title" id="deleteConfirmTitle">Delete this income record?</h2>
-    <p class="delete-confirm-message" id="deleteConfirmMessage">Are you sure you want to delete this record? This action cannot be undone.</p>
-    <div class="delete-confirm-actions">
-      <button type="button" class="delete-confirm-btn delete-confirm-cancel" id="deleteConfirmCancel">Cancel</button>
-      <button type="button" class="delete-confirm-btn delete-confirm-submit" id="deleteConfirmProceed">Yes, Delete</button>
-    </div>
-  </section>
-</div>
-<script>
-(function(){
-  const overlay=document.getElementById('deleteConfirmOverlay');
-  const cancel=document.getElementById('deleteConfirmCancel');
-  const proceed=document.getElementById('deleteConfirmProceed');
-  if(!overlay||!cancel||!proceed)return;
-  let pendingForm=null;
-  function closeDialog(){overlay.hidden=true;pendingForm=null;}
-  document.addEventListener('submit',function(event){
-    const form=event.target;
-    if(!(form instanceof HTMLFormElement))return;
-    const action=form.querySelector('input[name="action"]');
-    if(!action||action.value!=='delete'||form.dataset.deleteConfirmed==='true')return;
-    event.preventDefault();
-    pendingForm=form;
-    overlay.hidden=false;
-    cancel.focus();
-  },true);
-  cancel.addEventListener('click',function(){closeDialog();});
-  overlay.addEventListener('click',function(event){if(event.target===overlay)closeDialog();});
-  proceed.addEventListener('click',function(){
-    if(!pendingForm)return;
-    const form=pendingForm;
-    form.dataset.deleteConfirmed='true';
-    closeDialog();
-    if(typeof form.requestSubmit==='function')form.requestSubmit();else form.submit();
-  });
-  document.addEventListener('keydown',function(event){
-    if(overlay.hidden)return;
-    if(event.key==='Escape'){event.preventDefault();closeDialog();}
-  });
-})();
-</script>
-
-
-<style id="monochrome-normal-weight-overrides">
-/* Full-page monochrome style: neutral greys, no bold text. */
-html,body{background:#fff!important;color:#333!important;font-weight:400!important}
-*,*::before,*::after{font-weight:400!important;box-shadow:none!important;text-shadow:none!important}
-body,main,section,article,header,footer,nav,aside,.page,.card,.panel,.modal,.ssa-shell,.ssa-content,.ssa-brand,.ssa-profile,.ssa-nav,.ssa-page-identity,.delete-confirm-dialog{color:#333!important;background-color:#fff!important;border-color:#ddd!important}
-h1,h2,h3,h4,h5,h6,strong,b,th,label,legend,.title,.page-title,.ssa-brand-title,.ssa-nav-group,.ssa-profile strong,.ssa-page-identity strong{font-weight:400!important;color:#333!important}
-a,.ssa-nav a,.ssa-profile-link,.ssa-page-identity,.ssa-brand-title{color:#444!important}
-a:hover,.ssa-nav a:hover,.ssa-nav a.active{color:#222!important;background:#f1f1f1!important}
-button,input[type=button],input[type=submit],input[type=reset],.btn,.button,.action-btn,.delete-confirm-btn,.ssa-logout{color:#333!important;background:#f4f4f4!important;border:1px solid #d5d5d5!important;font-weight:400!important}
-button:hover,input[type=button]:hover,input[type=submit]:hover,input[type=reset]:hover,.btn:hover,.button:hover,.action-btn:hover,.delete-confirm-btn:hover,.ssa-logout:hover{color:#222!important;background:#eaeaea!important;border-color:#c8c8c8!important}
-input,select,textarea{color:#333!important;background:#fff!important;border-color:#d5d5d5!important;font-weight:400!important}
-input::placeholder,textarea::placeholder,.muted,small,.ssa-brand-scope,.ssa-profile small,.delete-confirm-message{color:#777!important}
-table,thead,tbody,tr,td,th{background-color:#fff!important;color:#333!important;border-color:#ddd!important}
-.ssa-avatar,.delete-confirm-icon{background:#f2f2f2!important;color:#444!important;border-color:#ddd!important}
-.delete-confirm-overlay{background:rgba(0,0,0,.30)!important}
-.delete-confirm-title{color:#333!important}
-.delete-confirm-cancel,.delete-confirm-submit{background:#f4f4f4!important;color:#333!important;border-color:#d5d5d5!important}
-.status,.badge,.pill{background:#f2f2f2!important;color:#444!important;border-color:#ddd!important}
-</style>
-
-<script id="ssa-unified-sidebar-script">(function(){var b=document.getElementById('ssaUnifiedProfileTrigger');var d=document.getElementById('ssaUnifiedProfileDropdown');if(!b||!d)return;b.addEventListener('click',function(e){e.preventDefault();var open=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!open));d.classList.toggle('is-open',!open);});document.addEventListener('click',function(e){if(!e.target.closest('#ssaUnifiedProfile')){b.setAttribute('aria-expanded','false');d.classList.remove('is-open');}});})();</script>
 </body></html>
