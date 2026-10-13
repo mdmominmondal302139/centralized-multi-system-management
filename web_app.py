@@ -17,6 +17,9 @@ app = Flask(
 )
 
 app.secret_key = os.getenv("SECRET_KEY", "change-this-secret")
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax")
+if os.getenv("FLASK_ENV", "").lower() == "production":
+    app.config["SESSION_COOKIE_SECURE"] = True
 
 
 def import_module_from_file(route_file: Path, module_name: str):
@@ -198,8 +201,19 @@ def load_blueprints():
                     )
 
 
+# Register the new authentication features using package imports so relative imports work.
+def register_authentication_features():
+    from AUTHENTICATION.forgot_password.forgot_password import forgot_password_bp
+    from AUTHENTICATION.google_login.google_login import google_login_bp
+    from AUTHENTICATION.mobile_login.mobile_login import mobile_login_bp
+    for blueprint in (forgot_password_bp, google_login_bp, mobile_login_bp):
+        if blueprint.name not in app.blueprints:
+            app.register_blueprint(blueprint)
+            print(f"[OK] Authentication feature registered: {blueprint.name}")
+
 # Load all routes before starting the server.
 load_blueprints()
+register_authentication_features()
 
 
 # ------------------------------------------------------
