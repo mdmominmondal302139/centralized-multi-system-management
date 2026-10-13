@@ -3,89 +3,143 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>System Login</title>
+<meta name="theme-color" content="#0b67e9">
+<title>Sign In | Multi-System Management Expense Software</title>
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Inter,Segoe UI,Arial,sans-serif}
-body{min-height:100vh;background:linear-gradient(135deg,#eef6ff 0%,#f7fbff 48%,#eaf8f3 100%);color:#172033;display:flex;align-items:center;justify-content:center;padding:28px}
-.page{width:100%;max-width:470px}
-.login-card{background:rgba(255,255,255,.96);border:1px solid #dce5ef;border-radius:24px;box-shadow:0 22px 60px rgba(31,52,77,.14);padding:38px 38px 34px;position:relative;overflow:hidden}
-.login-card:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,#1677d2,#19a974)}
-.brand{text-align:center;margin-bottom:30px}
-.brand-icon{width:64px;height:64px;margin:0 auto 17px;border-radius:18px;background:linear-gradient(145deg,#1677d2,#0e5eb0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:27px;font-weight:800;box-shadow:0 10px 24px rgba(22,119,210,.22)}
-h1{margin:0;font-size:28px;line-height:1.2;font-weight:750;letter-spacing:-.4px;color:#142033}
-.subtitle{margin:9px 0 0;color:#718096;font-size:14px;line-height:1.5}
-.form-group{margin-bottom:19px}
-.form-label{display:block;font-size:13px;font-weight:700;color:#344054;margin:0 0 8px}
+:root{--blue:#0868e9;--blue2:#2f8bff;--navy:#103879;--ink:#172b4d;--muted:#657b9b;--line:#d8e5f5;--pale:#edf6ff}
+*{box-sizing:border-box;font-weight:400!important}
+html{min-height:100%;background:#f4f9ff}
+body{margin:0;min-height:100vh;font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 12% 12%,#d9ebff 0,transparent 35%),radial-gradient(ellipse at 90% 82%,#d9efff 0,transparent 33%),linear-gradient(135deg,#f4f9ff,#fff 52%,#eff7ff);display:flex;align-items:center;justify-content:center;padding:34px 20px;position:relative;overflow-x:hidden}
+body:before,body:after{content:"";position:fixed;pointer-events:none;z-index:0;border-radius:50%;background:linear-gradient(135deg,rgba(94,170,255,.12),rgba(255,255,255,0));}
+body:before{width:430px;height:430px;left:-230px;top:-210px}
+body:after{width:500px;height:500px;right:-300px;bottom:-300px}
+.page{width:100%;max-width:470px;position:relative;z-index:1}
+.brand{text-align:center;margin:0 auto 24px}
+.brand-icon{width:62px;height:62px;margin:0 auto 13px;border-radius:20px;background:linear-gradient(145deg,#1684ff,#0754c7);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 12px 26px #0868e92e}
+.brand-icon svg{width:34px;height:34px}
+.brand h1{margin:0;color:#123b80;font-size:clamp(20px,4vw,25px);font-weight:800;letter-spacing:-.55px;line-height:1.25}
+.brand .tagline{margin:9px 0 0;color:#5f789d;font-size:13px;line-height:1.6}
+.brand .subtag{margin:3px 0 0;color:#7b90ad;font-size:11px;letter-spacing:.15px}
+.login-card{background:rgba(255,255,255,.96);border:1px solid #d9e8fb;border-radius:25px;box-shadow:0 24px 70px rgba(37,91,156,.13),0 3px 12px rgba(45,111,184,.04);padding:32px 35px 27px;position:relative;overflow:hidden}
+.login-card:before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#2c8cff,#0c5ee2,#63c9ff)}
+.lock-badge{width:54px;height:54px;border-radius:50%;background:#e9f4ff;color:var(--blue);display:flex;align-items:center;justify-content:center;margin:0 auto 11px}
+.lock-badge svg{width:25px;height:25px}
+.card-heading{text-align:center;margin-bottom:24px}
+.card-heading h2{margin:0;color:#102f68;font-size:27px;font-weight:800;letter-spacing:-.6px}
+.card-heading p{margin:7px 0 0;color:var(--muted);font-size:14px}
+#login-error{margin:0 0 16px;padding:11px 13px;border:1px solid #f2b8b8;border-radius:11px;background:#fff4f4;color:#b42318;font-size:13px;line-height:1.45}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:700;color:#31496d;margin:0 0 7px}
 .input-wrap{position:relative}
-.input-wrap input{width:100%;height:52px;border:1px solid #cfd9e5;border-radius:12px;background:#fff;padding:0 15px;font-size:15px;color:#172033;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
-.input-wrap input::placeholder{color:#a0aabb}
-.input-wrap input:focus{border-color:#2783dc;box-shadow:0 0 0 4px rgba(39,131,220,.11);background:#fcfeff}
-.password-wrap input{padding-right:54px}
-.password-eye{position:absolute;right:8px;top:8px;width:36px;height:36px;border:0;border-radius:9px;background:transparent;color:#6d7889;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:19px;line-height:1;transition:background .2s,color .2s}
-.password-eye:hover{background:#edf5fd;color:#176fc3}
-.password-eye:focus-visible{outline:2px solid #2783dc;outline-offset:1px}
+.input-wrap input{width:100%;height:51px;border:1px solid #d2dfef;border-radius:11px;background:#fff;padding:0 15px;font-size:14px;color:#172b4d;outline:none;transition:border-color .2s,box-shadow .2s}
+.input-wrap input::placeholder{color:#94a5bd}
+.input-wrap input:focus{border-color:#3889f4;box-shadow:0 0 0 4px rgba(56,137,244,.12)}
+.password-wrap input{padding-right:52px}
+.password-eye{position:absolute;right:7px;top:7px;width:37px;height:37px;border:0;border-radius:9px;background:transparent;color:#6e84a4;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.password-eye:hover{background:#edf5ff;color:#0868e9}
 .password-eye svg{width:20px;height:20px;pointer-events:none}
-#login-error{margin:0 0 16px;padding:11px 13px;border:1px solid #f0b7b7;border-radius:10px;background:#fff4f4;color:#b42318;font-size:13px;line-height:1.45}
-.login-button{width:100%;height:52px;border:0;border-radius:12px;background:linear-gradient(135deg,#1677d2,#0f66bb);color:#fff;font-size:15px;font-weight:750;letter-spacing:.1px;cursor:pointer;box-shadow:0 9px 22px rgba(22,119,210,.2);transition:transform .15s,box-shadow .2s,opacity .2s}
-.login-button:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(22,119,210,.25)}
-.login-button:disabled{cursor:not-allowed;opacity:.65;transform:none}
-.security-note{text-align:center;margin:20px 0 0;color:#8a94a4;font-size:12px}
-.verification-panel{text-align:center;padding:7px 0 4px}
-.verification-circle{width:132px;height:132px;margin:5px auto 23px;position:relative;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#f7fbff;border:1px solid #d9e7f4;box-shadow:0 10px 30px rgba(30,89,139,.09)}
-.verification-ring{position:absolute;inset:7px;border-radius:50%;border:4px solid #dceaf7;border-top-color:#1677d2;border-right-color:#19a974;animation:spin 1s linear infinite}
-.verification-count{font-size:31px;font-weight:800;color:#176fc3;position:relative}
-.verification-message{font-size:16px;font-weight:700;color:#1d2939;line-height:1.45}
-.verification-submessage{margin-top:8px;font-size:13px;color:#7a8798;line-height:1.5}
-.verification-hidden{display:none}
+.options{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 19px;font-size:12px}
+.remember{display:flex;align-items:center;gap:8px;color:#425a7d;cursor:pointer}
+.remember input{accent-color:var(--blue);width:16px;height:16px;margin:0}
+.text-link{color:#0768e9;text-decoration:none;font-weight:650}
+.text-link:hover{text-decoration:underline}
+.login-button{width:100%;height:51px;border:0;border-radius:11px;background:linear-gradient(100deg,#0878f5,#075de0);color:#fff;font-size:15px;font-weight:750;letter-spacing:.1px;cursor:pointer;box-shadow:0 9px 22px rgba(8,104,233,.2);transition:transform .15s,box-shadow .2s,opacity .2s}
+.login-button:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(8,104,233,.26)}
+.login-button:disabled,.alt-button:disabled{cursor:not-allowed;opacity:.65;transform:none}
+.divider{display:flex;align-items:center;gap:13px;margin:21px 0 17px;color:#8092ad;font-size:12px}
+.divider:before,.divider:after{content:"";height:1px;flex:1;background:#dce6f2}
+.alt-logins{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.alt-button{height:49px;display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid #cfdeef;border-radius:11px;background:#fff;color:#17427f;font-size:12px;font-weight:700;text-decoration:none;box-shadow:0 2px 4px rgba(26,71,123,.03);transition:border-color .2s,background .2s,transform .15s}
+.alt-button:hover{border-color:#83b8f5;background:#f7fbff;transform:translateY(-1px)}
+.alt-button svg{width:19px;height:19px;flex-shrink:0}
+.secure-note{display:flex;align-items:center;justify-content:center;gap:7px;margin:22px 0 0;color:#6c82a1;font-size:11px;text-align:center}
+.secure-note svg{width:16px;height:16px;color:#0871eb;flex-shrink:0}
+.verification-panel{text-align:center;padding:8px 0 10px}
+.verification-circle{width:92px;height:92px;margin:4px auto 19px;position:relative;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#f4f9ff;border:1px solid #d9e9fb}
+.verification-ring{position:absolute;inset:6px;border-radius:50%;border:4px solid #dceaf9;border-top-color:#0871eb;border-right-color:#48b7ff;animation:spin .9s linear infinite}
+.verification-count{font-size:25px;font-weight:800;color:#176fc3;position:relative}
+.verification-message{font-size:15px;font-weight:750;color:#163b75;line-height:1.45}
+.verification-submessage{margin-top:7px;font-size:12px;color:#7387a4;line-height:1.5}
+.verification-hidden{display:none!important}
 [hidden]{display:none!important}
+.footer{text-align:center;color:#8092ac;font-size:11px;line-height:1.7;margin:19px 0 0}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:520px){body{padding:16px}.login-card{padding:30px 22px 27px;border-radius:20px}h1{font-size:25px}.brand-icon{width:58px;height:58px;font-size:24px}}
+@media(max-width:520px){body{padding:22px 14px}.brand{margin-bottom:19px}.brand-icon{width:55px;height:55px}.brand h1{font-size:20px}.login-card{padding:28px 21px 24px;border-radius:21px}.card-heading h2{font-size:25px}.alt-logins{grid-template-columns:1fr}.alt-button{height:47px}.footer{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body class="login-page">
 <main class="page">
-<section class="card login-card" aria-label="System Login">
-<div class="brand">
-<div class="brand-icon" aria-hidden="true">S</div>
-<h1>System Login</h1>
-<p class="subtitle">Sign in securely to access your account</p>
-</div>
+<header class="brand">
+  <div class="brand-icon" aria-hidden="true">
+    <svg viewBox="0 0 40 40" fill="none"><path d="M9 28V21M17 28V14M25 28V9M33 28V5" stroke="white" stroke-width="4.5" stroke-linecap="round"/><path d="M6 32H35" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity=".8"/></svg>
+  </div>
+  <h1>Multi-System Management<br>Expense Software</h1>
+  <p class="tagline">Manage All Systems&nbsp; • &nbsp;Control All Branches&nbsp; • &nbsp;Track Expenses</p>
+  <p class="subtag">One Platform&nbsp; | &nbsp;Multiple Systems&nbsp; | &nbsp;Smarter Management</p>
+</header>
 
-<div id="login-error" role="alert"{% if not error %} style="display:none"{% endif %}>{{ error or '' }}</div>
+<section class="login-card" aria-label="Account Sign In">
+  <div id="login-content">
+    <div class="lock-badge" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10" width="15" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2"/><path d="M12 16.2V18"/></svg>
+    </div>
+    <div class="card-heading">
+      <h2>Welcome Back</h2>
+      <p>Sign in to your account to continue</p>
+    </div>
 
-<form id="login-form" method="post" autocomplete="on">
-<div class="form-group">
-<label class="form-label" for="username">Username</label>
-<div class="input-wrap">
-<input id="username" name="username" type="text" autocomplete="username" placeholder="Enter your username" required autofocus>
-</div>
-</div>
+    <div id="login-error" role="alert"{% if not error %} style="display:none"{% endif %}>{{ error or '' }}</div>
 
-<div class="form-group">
-<label class="form-label" for="password">Password</label>
-<div class="input-wrap password-wrap">
-<input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
-<button id="password-toggle" class="password-eye" type="button" aria-label="Show password" title="Show password">
-<svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.2 12s3.4-5 9.8-5 9.8 5 9.8 5-3.4 5-9.8 5-9.8-5-9.8-5Z"/><circle cx="12" cy="12" r="2.6"/></svg>
-</button>
-</div>
-</div>
+    <form id="login-form" method="post" action="/login" autocomplete="on">
+      <div class="form-group">
+        <label class="form-label" for="username">Username or Email</label>
+        <div class="input-wrap">
+          <input id="username" name="username" type="text" autocomplete="username" placeholder="Enter your username or email" required autofocus>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="input-wrap password-wrap">
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+          <button id="password-toggle" class="password-eye" type="button" aria-label="Show password" title="Show password">
+            <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.2 12s3.4-5 9.8-5 9.8 5 9.8 5-3.4 5-9.8 5-9.8-5-9.8-5Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+          </button>
+        </div>
+      </div>
 
-<button id="login-button" class="login-button" type="submit">Login</button>
-</form>
+      <div class="options">
+        <label class="remember"><input id="remember" type="checkbox" name="remember"> <span>Remember Me</span></label>
+        <a class="text-link" href="/login/forgot-password">Forgot Password?</a>
+      </div>
+      <button id="login-button" class="login-button" type="submit">Sign In Securely</button>
+    </form>
 
-<p class="security-note">Secure account verification • Your credentials are protected</p>
+    <div class="divider"><span>OR CONTINUE WITH</span></div>
+    <div class="alt-logins">
+      <a class="alt-button" href="/login/google" aria-label="Login with Google">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5Z" transform="translate(0 5) scale(1 .9)"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.76 7.18l7.73 6C44.42 38.02 46.98 31.95 46.98 24.55Z" transform="translate(0 0) scale(.9 .9)"/><path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19Z" transform="translate(2 4)"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.15 1.45-4.92 2.3-8.17 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48Z" transform="translate(0 0) scale(.9 .9)"/></svg>
+        Login with Gmail
+      </a>
+      <a class="alt-button" href="/login/mobile" aria-label="Login with Mobile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0871eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2" width="11" height="20" rx="2"/><path d="M10 18.5h4"/></svg>
+        Login with Mobile
+      </a>
+    </div>
 
-<div id="verification-panel" class="verification-panel" hidden aria-live="polite">
-<div class="verification-circle">
-<div class="verification-ring"></div>
-<div class="verification-count" id="verification-count">1</div>
-</div>
-<div class="verification-message" id="verification-message">Please wait while we confirm your account..</div>
-<div class="verification-submessage" id="verification-submessage">Account verification in progress</div>
-</div>
+    <p class="secure-note">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 4 5v6c0 5.1 3.4 9.7 8 11 4.6-1.3 8-5.9 8-11V5l-8-3Zm-1.1 14.2-3.2-3.1 1.5-1.5 1.7 1.7 4-4 1.5 1.5-5.5 5.4Z"/></svg>
+      Secure &amp; Encrypted Login&nbsp; • &nbsp;Your information is protected
+    </p>
+  </div>
+
+  <div id="verification-panel" class="verification-panel" hidden aria-live="polite">
+    <div class="verification-circle"><div class="verification-ring"></div><div class="verification-count" id="verification-count">•••</div></div>
+    <div class="verification-message" id="verification-message">Your account is being securely verified.</div>
+    <div class="verification-submessage" id="verification-submessage">Please wait while we check your credentials and access permissions…</div>
+  </div>
 </section>
+<footer class="footer">© 2026 Multi-System Management Expense Software<br>One Platform&nbsp; • &nbsp;Smarter Management</footer>
 </main>
 
 <script>
@@ -97,8 +151,8 @@ h1{margin:0;font-size:28px;line-height:1.2;font-weight:750;letter-spacing:-.4px;
   const eyeIcon = document.getElementById('eye-icon');
   const button = document.getElementById('login-button');
   const errorBox = document.getElementById('login-error');
+  const content = document.getElementById('login-content');
   const panel = document.getElementById('verification-panel');
-  const count = document.getElementById('verification-count');
   const message = document.getElementById('verification-message');
   const submessage = document.getElementById('verification-submessage');
 
@@ -118,73 +172,44 @@ h1{margin:0;font-size:28px;line-height:1.2;font-weight:750;letter-spacing:-.4px;
     errorBox.style.display = 'block';
   }
 
-  function setStage(seconds) {
-    count.textContent = String(seconds);
-    if (seconds <= 4) {
-      message.textContent = 'Please wait while we confirm your account..';
-      submessage.textContent = 'Account verification in progress';
-    } else if (seconds <= 9) {
-      message.textContent = 'Please wait while we verify your identity and access permissions…';
-      submessage.textContent = 'Identity and access permissions are being checked';
-    } else {
-      message.textContent = 'Your account and role are being securely verified.';
-      submessage.textContent = 'Please wait a moment…';
-    }
-  }
-
   form.addEventListener('submit', async function (event) {
     event.preventDefault();
     if (!username.value.trim() || !password.value) return;
-
     errorBox.style.display = 'none';
-    form.classList.add('verification-hidden');
+    content.classList.add('verification-hidden');
     panel.hidden = false;
     button.disabled = true;
     username.disabled = true;
     password.disabled = true;
     toggle.disabled = true;
 
-    for (let second = 1; second <= 15; second++) {
-      setStage(second);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-
     try {
       const body = new URLSearchParams();
       body.set('username', username.value.trim());
       body.set('password', password.value);
-
       const response = await fetch('/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8','X-Login-Flow': 'account-verification'},
         body: body.toString(),
         credentials: 'same-origin'
       });
-
       const data = await response.json();
       if (data.ok && data.redirect) {
         message.textContent = 'Account verified successfully.';
-        submessage.textContent = 'Opening your ' + (data.role || 'account') + ' Home…';
-        count.textContent = '✓';
+        submessage.textContent = 'Opening your secure Home page…';
+        document.getElementById('verification-count').textContent = '✓';
         setTimeout(function () { window.location.href = data.redirect; }, 350);
         return;
       }
-
-      panel.hidden = true;
-      form.classList.remove('verification-hidden');
-      button.disabled = false;
-      username.disabled = false;
-      password.disabled = false;
-      toggle.disabled = false;
-      setError(data.error || 'Invalid username or password!');
+      throw new Error(data.error || 'Invalid username or password.');
     } catch (err) {
       panel.hidden = true;
-      form.classList.remove('verification-hidden');
+      content.classList.remove('verification-hidden');
       button.disabled = false;
       username.disabled = false;
       password.disabled = false;
       toggle.disabled = false;
-      setError('Login service is temporarily unavailable. Please try again.');
+      setError(err.message || 'Login service is temporarily unavailable. Please try again.');
     }
   });
 })();
