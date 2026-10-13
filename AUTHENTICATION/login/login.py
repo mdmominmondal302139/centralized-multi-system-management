@@ -14,6 +14,7 @@ spec.loader.exec_module(service)
 
 bp = Blueprint("login_page", __name__)
 
+
 HOME_BY_ROLE = {
     "SYSTEM_SUPER_ADMINISTRATOR": "/system_super_administrator",
     "BRANCH_OFFICER": "/branch_officer/home",
