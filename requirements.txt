@@ -3,5 +3,6 @@ PyMongo>=4.8
 python-dotenv>=1.0
 Werkzeug>=3.0
 certifi>=2024.0
-
 bcrypt>=4.1.0
+Authlib>=1.3.0
+requests>=2.31.0
