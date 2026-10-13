@@ -1,269 +1,133 @@
-import re
-import hashlib
-import base64
-import hmac
+from flask import Blueprint, render_template, request, session, redirect, jsonify
+from pathlib import Path
+import importlib.util
 
-from DATABASE.mongodb import get_database, clean, ensure_system_administrator_id
+BASE = Path(__file__).resolve().parent
+SERVICE_PATH = BASE / "services.py"
+
+spec = importlib.util.spec_from_file_location("login_services", SERVICE_PATH)
+if spec is None or spec.loader is None:
+    raise ImportError(f"Could not load login services from: {SERVICE_PATH}")
+
+service = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(service)
+
+bp = Blueprint("login_page", __name__)
 
 
-SYSTEM_ROLES = {
-    "MEMBER",
-    "BRANCH_OFFICER",
-    "ACCOUNT_OFFICER",
-    "MEAL_MANAGER",
-    "OPERATOR",
-    "SYSTEM_SUPER_ADMINISTRATOR",
-    "BLOOD_DONOR",
+HOME_BY_ROLE = {
+    "SYSTEM_SUPER_ADMINISTRATOR": "/system_super_administrator",
+    "BRANCH_OFFICER": "/branch_officer/home",
+    "ACCOUNT_OFFICER": "/account_officer/home",
+    "MEAL_MANAGER": "/meal_manager/home",
+    "OPERATOR": "/operator/dashboard",
+    "MEMBER": "/member/home",
+    "BLOOD_DONOR": "/system_super_administrator/blood-donor-account",
+}
+
+ROLE_LABELS = {
+    "SYSTEM_SUPER_ADMINISTRATOR": "System Super Administrator",
+    "BRANCH_OFFICER": "Branch Officer",
+    "ACCOUNT_OFFICER": "Account Officer",
+    "MEAL_MANAGER": "Meal Manager",
+    "OPERATOR": "Operator",
+    "MEMBER": "Member",
+    "BLOOD_DONOR": "Blood Donor",
 }
 
 
-def _normalize_role(value, fallback="MEMBER"):
-    value = str(value or "").strip().upper().replace("-", "_").replace(" ", "_")
-    aliases = {
-        "SYSTEM_SUPER_ADMIN": "SYSTEM_SUPER_ADMINISTRATOR",
-        "SYSTEM_SUPER_ADMINISTRATOR": "SYSTEM_SUPER_ADMINISTRATOR",
-        "BRANCH_OFFICER": "BRANCH_OFFICER",
-        "ACCOUNT_OFFICER": "ACCOUNT_OFFICER",
-        "ACCOUNTS_OFFICER": "ACCOUNT_OFFICER",
-        "MEAL_MANAGER": "MEAL_MANAGER",
-        "OPERATOR": "OPERATOR",
-        "MEMBER": "MEMBER",
-        "BLOOD_DONOR": "BLOOD_DONOR",
-    }
-    return aliases.get(value, fallback)
+def _is_ajax_login():
+    return request.headers.get("X-Login-Flow") == "account-verification"
 
 
-def _legacy_pbkdf2_ok(stored, password):
-    try:
-        parts = str(stored).split("$", 2)
-        if len(parts) != 3:
-            return False
-
-        header, salt, expected = parts
-        header_parts = header.split(":")
-        if len(header_parts) != 3:
-            return False
-
-        algorithm, iterations_text, method = header_parts
-        if algorithm.lower() != "pbkdf2":
-            return False
-
-        iterations = int(iterations_text)
-        if iterations <= 0:
-            return False
-
-        derived = hashlib.pbkdf2_hmac(
-            method,
-            str(password).encode("utf-8"),
-            salt.encode("utf-8"),
-            iterations,
-        )
-
-        expected = expected.strip()
-        actual_base64 = base64.b64encode(derived).decode("ascii")
-        if hmac.compare_digest(actual_base64, expected):
-            return True
-
-        return hmac.compare_digest(derived.hex(), expected)
-    except Exception as exc:
-        print(f"[PASSWORD VERIFY ERROR] PBKDF2: {type(exc).__name__}: {exc}")
-        return False
-
-
-def _password_ok(stored, password):
-    if stored is None:
-        return False
-
-    stored = str(stored)
-    password = str(password or "")
-    if not stored or not password:
-        return False
-
-    if stored.startswith("pbkdf2:"):
-        return _legacy_pbkdf2_ok(stored, password)
-
-    if stored.startswith("scrypt:"):
-        try:
-            from werkzeug.security import check_password_hash
-            return bool(check_password_hash(stored, password))
-        except Exception as exc:
-            print(f"[PASSWORD VERIFY ERROR] scrypt: {type(exc).__name__}: {exc}")
-            return False
-
-    if stored.startswith(("$2a$", "$2b$", "$2y$")):
-        try:
-            import bcrypt
-            return bool(bcrypt.checkpw(password.encode("utf-8"), stored.encode("utf-8")))
-        except Exception as exc:
-            print(f"[PASSWORD VERIFY ERROR] bcrypt: {type(exc).__name__}: {exc}")
-            return False
-
-    # Backward compatibility for accounts whose password is stored as plain text.
-    return hmac.compare_digest(stored, password)
-
-
-def _find_user(collection, username):
-    value = str(username or "").strip()
-    if not value:
-        return None
-
-    fields = ("username", "user_name", "login_username", "login", "user")
-    for field in fields:
-        row = collection.find_one({field: value})
-        if row:
-            return row
-
-    pattern = re.compile("^" + re.escape(value) + "$", re.IGNORECASE)
-    for field in fields:
-        row = collection.find_one({field: pattern})
-        if row:
-            return row
-
-    return None
-
-
-def _stored_password(row):
-    for key in (
-        "password_hash",
-        "hashed_password",
-        "passwordHash",
-        "password",
-        "passwd",
-        "passcode",
-        "pwd",
-        "pass",
-    ):
+def _first_value(row, *keys, default=""):
+    for key in keys:
         value = row.get(key)
-        if value is not None and str(value) != "":
+        if value is not None and str(value).strip():
             return value
-    return None
+    return default
 
 
-def _account_is_active(row):
-    """Accept the project's existing active/status fields without treating
-    a normal 'status: active' account as inactive."""
-    if row.get("active") is False:
-        return False
-    status = str(row.get("status") or "").strip().lower()
-    if status and status not in {"active", "enabled", "approved"}:
-        return False
-    return True
+def _session_text(row, *keys):
+    value = _first_value(row, *keys, default="")
+    return str(value) if value is not None else ""
 
 
-def _clean_account(row):
+def _build_login_session(row, role, submitted_username):
     """
-    Normalize the returned account while preserving both identifiers:
-    MongoDB _id is used for profile document lookup; user_id may be a separate
-    UUID/business identifier and must not overwrite _id.
+    Keep MongoDB _id separate from the account's business user_id.
+    Profile lookup in this project needs the MongoDB _id in session['user_id'].
+    The original UUID/business user_id is preserved in account_user_id.
     """
-    item = clean(row) or {}
+    mongo_id = _session_text(row, "_id", "id")
+    business_user_id = _session_text(row, "user_id", "account_user_id")
+    username = _session_text(
+        row, "username", "user_name", "login_username", "login", "user"
+    ) or submitted_username
 
-    raw_id = row.get("_id")
-    if raw_id is not None:
-        item["_id"] = str(raw_id)
+    return {
+        "authenticated": True,
+        "user_id": mongo_id or business_user_id,
+        "_id": mongo_id,
+        "id": mongo_id,
+        "account_user_id": business_user_id,
+        "username": username,
+        "email": _session_text(row, "email"),
+        "phone": _session_text(row, "phone", "mobile", "phone_number"),
+        "name": _session_text(
+            row, "name", "full_name", "fullName", "display_name"
+        ),
+        "administrator_id": _session_text(row, "administrator_id"),
+        "member_id": _session_text(row, "member_id"),
+        "login_id": _session_text(row, "login_id"),
+        "role": role,
+        "branch_id": _session_text(row, "branch_id", "branch", "branch_name"),
+        "branch_name": _session_text(row, "branch_name", "branch"),
+    }
 
-    if row.get("id") is not None:
-        item["id"] = str(row.get("id"))
 
-    if row.get("user_id") is not None:
-        item["user_id"] = str(row.get("user_id"))
+@bp.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
 
-    if row.get("account_user_id") is not None:
-        item["account_user_id"] = str(row.get("account_user_id"))
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
 
-    return item
+        if not username or not password:
+            error = "Please enter your username and password."
+            if _is_ajax_login():
+                return jsonify({"ok": False, "error": error}), 400
+            return render_template("AUTHENTICATION/login/login.html", error=error)
 
+        try:
+            # Role is determined from the saved account, not from the form.
+            row = service.authenticate(username, password, "")
 
-def authenticate(username, password, role=""):
-    db = get_database()
-    username = str(username or "").strip()
-    password = str(password or "")
+            if not row:
+                error = "Invalid username or password!"
+                if _is_ajax_login():
+                    return jsonify({"ok": False, "error": error}), 401
+            else:
+                role = str(row.get("role") or "MEMBER").strip().upper()
+                session.clear()
+                session.update(_build_login_session(row, role, username))
 
-    requested_role = (
-        _normalize_role(role, "")
-        if str(role or "").strip()
-        else ""
-    )
-    if requested_role not in SYSTEM_ROLES:
-        requested_role = ""
+                home = HOME_BY_ROLE.get(role, "/")
+                if _is_ajax_login():
+                    return jsonify({
+                        "ok": True,
+                        "redirect": home,
+                        "role": ROLE_LABELS.get(
+                            role, role.replace("_", " ").title()
+                        ),
+                    })
+                return redirect(home)
 
-    if not username or not password:
-        return None
+        except Exception as exc:
+            print(f"[LOGIN ERROR] {type(exc).__name__}: {exc}")
+            error = "Login service is temporarily unavailable. Please try again."
+            if _is_ajax_login():
+                return jsonify({"ok": False, "error": error}), 500
 
-    # SYSTEM SUPER ADMINISTRATOR
-    if not requested_role or requested_role == "SYSTEM_SUPER_ADMINISTRATOR":
-        row = _find_user(db["system_super_administrators"], username)
-        if row and _account_is_active(row) and _password_ok(_stored_password(row), password):
-            # Allocate the persistent public ID (001, 002, ...) without
-            # replacing MongoDB _id or the account's business user_id.
-            try:
-                row = ensure_system_administrator_id(row)
-            except Exception as exc:
-                # Do not prevent a valid login if ID assignment is temporarily
-                # unavailable; the profile page will retry it.
-                print(f"[ADMINISTRATOR ID ERROR] {type(exc).__name__}: {exc}")
-
-            item = _clean_account(row)
-            item["role"] = "SYSTEM_SUPER_ADMINISTRATOR"
-            item["username"] = (
-                item.get("username")
-                or item.get("user_name")
-                or item.get("login_username")
-                or username
-            )
-            item["name"] = (
-                item.get("name")
-                or item.get("full_name")
-                or item.get("fullName")
-                or username
-            )
-            return item
-
-    # NORMAL USERS
-    row = _find_user(db["users"], username)
-    if row and _account_is_active(row) and _password_ok(_stored_password(row), password):
-        item = _clean_account(row)
-        stored_role = _normalize_role(
-            item.get("role") or item.get("power") or item.get("user_role"),
-            "MEMBER",
-        )
-        if requested_role and requested_role != stored_role:
-            return None
-        item["role"] = stored_role
-        item["username"] = (
-            item.get("username")
-            or item.get("user_name")
-            or item.get("login_username")
-            or username
-        )
-        item["name"] = (
-            item.get("name")
-            or item.get("full_name")
-            or item.get("fullName")
-            or username
-        )
-        return item
-
-    # BLOOD DONOR
-    if not requested_role or requested_role == "BLOOD_DONOR":
-        row = _find_user(
-            db["system_super_administrator_blood_donor_accounts"],
-            username,
-        )
-        if (
-            row
-            and str(row.get("status") or "ACTIVE").strip().upper() == "ACTIVE"
-            and _password_ok(_stored_password(row), password)
-        ):
-            item = _clean_account(row)
-            item["role"] = "BLOOD_DONOR"
-            item["username"] = (
-                item.get("username")
-                or item.get("user_name")
-                or item.get("login_username")
-                or username
-            )
-            item["name"] = item.get("full_name") or item.get("name") or username
-            return item
-
-    return None
+    return render_template("AUTHENTICATION/login/login.html", error=error)
