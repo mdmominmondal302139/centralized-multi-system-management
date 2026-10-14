@@ -1,0 +1,299 @@
+from flask import Blueprint, render_template, request, session, redirect, url_for, Response
+from pathlib import Path
+import importlib.util
+from datetime import datetime, date
+import calendar
+import re
+import json
+
+ROLE = "MEMBER"
+PAGE = "meal_management"
+BASE = Path(__file__).resolve().parent
+spec = importlib.util.spec_from_file_location(f"{ROLE}_{PAGE}_services", BASE / "services.py")
+service = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(service)
+bp = Blueprint("member_meal_management_bp", __name__, url_prefix="/member/meal", template_folder=str(BASE))
+
+MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+
+def _context():
+    return {"role": session.get("role"), "user_id": session.get("user_id"), "username": session.get("username"), "branch_id": session.get("branch_id"), "branch_name": session.get("branch_name")}
+
+
+def _current_member_account():
+    """Return the logged-in member account from MongoDB, where possible."""
+    from DATABASE.mongodb import get_database
+    db = get_database()
+    user_id = str(session.get("user_id") or "").strip()
+    username = str(session.get("username") or "").strip()
+    query_parts = []
+    if user_id:
+        query_parts.extend([{"id": user_id}, {"user_id": user_id}])
+        # MongoDB _id may be stored as ObjectId rather than a string.
+        try:
+            from bson import ObjectId
+            if ObjectId.is_valid(user_id):
+                query_parts.append({"_id": ObjectId(user_id)})
+        except Exception:
+            pass
+        query_parts.append({"_id": user_id})
+    if username:
+        query_parts.extend([{"username": username}, {"email": username}])
+    if query_parts:
+        user = db["users"].find_one({"$or": query_parts})
+        if user:
+            return user
+    return {}
+
+def _current_member_full_name():
+    """Use the registered Full Name from the logged-in member's account."""
+    user = _current_member_account()
+    return str(user.get("full_name") or user.get("name") or
+               session.get("full_name") or session.get("member_name") or
+               user.get("username") or session.get("username") or "").strip()
+
+def _form_options():
+    from DATABASE.mongodb import get_database
+    db = get_database()
+    branch_names = set()
+    for collection_name in ("branches", "branch_management"):
+        for x in db[collection_name].find({}):
+            value = str(x.get("branch_name") or x.get("name") or x.get("branch") or "").strip()
+            if value:
+                branch_names.add(value)
+
+    members = []
+    seen = set()
+    for x in db["users"].find({"role":{"$regex":"^MEMBER$","$options":"i"},"status":{"$ne":"Inactive"}}):
+        name = str(x.get("full_name") or x.get("name") or x.get("username") or "").strip()
+        if not name or name.casefold() in seen:
+            continue
+        seen.add(name.casefold())
+        # Member's branch is sourced from the account record created during registration.
+        member_branch = str(x.get("branch_name") or x.get("branch") or x.get("branchName") or "").strip()
+        mobile = str(x.get("mobile") or x.get("mobile_number") or x.get("phone") or x.get("contact_number") or "").strip()
+        members.append({"name": name, "branch": member_branch, "mobile": mobile})
+    members.sort(key=lambda item: item["name"].casefold())
+    return {"branches": sorted(branch_names, key=str.casefold), "members": members}
+
+def _month_key(value):
+    try:
+        d = datetime.strptime(str(value), "%Y-%m")
+        return d.strftime("%Y-%m")
+    except Exception:
+        return None
+
+def _month_label(key):
+    d = datetime.strptime(key, "%Y-%m")
+    return d.strftime("%B %Y")
+
+def _requested_month():
+    raw = request.args.get("month", "")
+    return _month_key(raw)
+
+def _requested_member():
+    return str(request.args.get("member", "")).strip()
+
+@bp.route("/", methods=["GET", "POST"])
+def page():
+    if session.get("authenticated") is not True or session.get("role") != ROLE:
+        return redirect(url_for("login"))
+
+    # Consume the last action notice once, so refreshing the page won't repeat it.
+    message = session.pop("_meal_management_notice", None)
+    error = None
+    try:
+        options = _form_options()
+    except Exception as exc:
+        options = {"branches": [], "members": []}
+        error = "Unable to load meal options. Please try again."
+
+    try:
+        if request.method == "POST":
+            action = request.form.get("action", "save")
+            data = dict(request.form)
+            return_month = _month_key(request.form.get("return_month", ""))
+            if action == "delete_month":
+                deleted_count = service.delete_member_month(
+                    _context(),
+                    request.form.get("delete_member", ""),
+                    _month_key(request.form.get("delete_month", "")) or "",
+                )
+                message = f"{deleted_count} meal record(s) deleted successfully."
+            elif action == "delete":
+                service.delete_record(_context(), request.form.get("record_id", ""))
+                message = "Meal entry deleted successfully."
+            elif action == "update":
+                service.update_record(_context(), request.form.get("record_id", ""), data)
+                message = "Meal entry updated successfully."
+            elif action == "bulk_save":
+                try:
+                    entries = json.loads(request.form.get("meal_entries", "[]"))
+                except (TypeError, ValueError):
+                    entries = []
+                if not isinstance(entries, list) or not entries:
+                    raise ValueError("Please select at least one meal type.")
+                # Always save the registered account name, not an edited/submitted value.
+                account_full_name = _current_member_full_name()
+                common = {
+                    "member_name": account_full_name,
+                    "branch_name": request.form.get("branch_name", "").strip(),
+                    "mobile": request.form.get("mobile", "").strip(),
+                    "month": request.form.get("month", "").strip(),
+                    "date": request.form.get("date", "").strip(),
+                    "note": request.form.get("note", "").strip(),
+                }
+                if not common["member_name"] or not common["branch_name"] or not common["date"]:
+                    raise ValueError("Please ensure your account Full Name, Branch Name, and Date are available.")
+                saved_count = 0
+                for entry in entries:
+                    if not isinstance(entry, dict):
+                        continue
+                    item = dict(common)
+                    item.update({
+                        "type": str(entry.get("type", "")).strip(),
+                        "quantity": str(entry.get("quantity", "1")).strip(),
+                        "meal_charge": str(entry.get("meal_charge", "0")).strip(),
+                        "rice_charge": str(entry.get("rice_charge", "0")).strip(),
+                        "status": str(entry.get("status", "ON")).strip().upper(),
+                    })
+                    if item["type"] not in ("Breakfast", "Lunch", "Dinner"):
+                        continue
+                    service.save_or_update_record(_context(), item)
+                    saved_count += 1
+                if saved_count == 0:
+                    raise ValueError("Please select Breakfast, Lunch, or Dinner.")
+                message = "Meal entries saved successfully."
+            else:
+                service.create_record(_context(), data)
+                message = "Meal entry saved successfully."
+            # Post/Redirect/Get: store a one-time notice and preserve the month/member view.
+            session["_meal_management_notice"] = message
+            target_month = return_month or _month_key(request.form.get("month", ""))
+            target_member = str(request.args.get("member") or request.form.get("return_member") or "").strip()
+            if target_month:
+                args = {"month": target_month}
+                if target_member:
+                    args["member"] = target_member
+                return redirect(url_for("member_meal_management_bp.page", **args))
+            return redirect(url_for("member_meal_management_bp.page"))
+    except Exception as exc:
+        error = "Unable to complete the request. Please try again."
+
+    month_key = _requested_month()
+    if month_key:
+        try:
+            search = str(request.args.get("search", "")).strip()
+            member = _requested_member()
+            month_rows = service.month_rows(_context(), month_key, search=search, member=member)
+        except Exception as exc:
+            month_rows = []
+            error = "Unable to complete the request. Please try again."
+        return render_template(
+            "meal_management.html",
+            view="month", month_key=month_key, month_label=_month_label(month_key),
+            month_rows=month_rows, search=str(request.args.get("search","")).strip(), member=member,
+            message=message, error=error, session=session, options=options, current_member_full_name=_current_member_full_name(),
+            month_names=MONTH_NAMES, today=date.today().isoformat(), today_display=date.today().strftime("%d.%m.%Y"), current_month=date.today().strftime("%Y-%m"), current_year=date.today().year
+        )
+
+    try:
+        member_rows = service.member_status_rows(_context(), limit=500)
+    except Exception as exc:
+        member_rows = []
+        error = "Unable to complete the request. Please try again."
+
+    return render_template(
+        "meal_management.html",
+        view="list", member_rows=member_rows, month_names=MONTH_NAMES,
+        today=date.today().isoformat(), today_display=date.today().strftime("%d.%m.%Y"), current_month=date.today().strftime("%Y-%m"), current_year=date.today().year, message=message, error=error,
+        session=session, options=options, current_member_full_name=_current_member_full_name()
+    )
+
+@bp.route("/download/<month>", methods=["GET"])
+def download_month(month):
+    if session.get("authenticated") is not True or session.get("role") != ROLE:
+        return redirect(url_for("login"))
+    month_key = _month_key(month)
+    if not month_key:
+        return Response("Invalid month.", status=400, mimetype="text/plain")
+    member = str(request.args.get("member", "")).strip()
+    rows = service.month_rows(_context(), month_key, member=member)
+    label = _month_label(month_key)
+
+    html = ["<html><head><meta charset='utf-8'><title>Meal Record - %s</title>"
+            "<style>body{font-family:Arial,sans-serif;font-size:13px}h1{text-align:center}table{width:100%%;border-collapse:collapse}th,td{border:1px solid #555;padding:7px;text-align:left}th{background:#eee}.off{color:#c62828;font-weight:bold}.on{color:#087f46;font-weight:bold}</style></head><body>"
+            "<h1>%s — MEMBER-WISE MEAL RECORD</h1><table><thead><tr><th>SL</th><th>Date</th><th>Day</th><th>Member</th><th>Branch</th><th>Meal Type</th><th>Meal</th><th>Meal Charge</th><th>Rice Charge</th><th>Status</th></tr></thead><tbody>" % (label, label)]
+    sl = 0
+    for day in rows:
+        if day["status"] == "OFF":
+            sl += 1
+            html.append("<tr><td>%s</td><td>%s</td><td>%s</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td class='off'>OFF</td></tr>" % (sl, day["date"], day["day"]))
+        else:
+            for r in day["records"]:
+                sl += 1
+                html.append("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td class='on'>ON</td></tr>" %
+                            (sl, day["date"], day["day"], r["member"], r["branch"], r["meal_type"], r["meal"], r["meal_charge"], r["rice_charge"]))
+    html.append("</tbody></table></body></html>")
+    body = "".join(html)
+    suffix = ("_" + re.sub(r"[^A-Za-z0-9_-]+", "_", member)) if member else ""
+    filename = "Meal_Record_%s%s.doc" % (month_key, suffix)
+    return Response(body, mimetype="application/msword; charset=utf-8",
+                    headers={"Content-Disposition": f'attachment; filename="{filename}"'})
+
+
+@bp.route("/download-xlsx/<month>", methods=["GET"])
+def download_month_xlsx(month):
+    if session.get("authenticated") is not True or session.get("role") != ROLE:
+        return redirect(url_for("login"))
+    from io import BytesIO
+    from zipfile import ZipFile, ZIP_DEFLATED
+    from xml.sax.saxutils import escape
+
+    month_key = _month_key(month)
+    if not month_key:
+        return Response("Invalid month.", status=400, mimetype="text/plain")
+    member = str(request.args.get("member", "")).strip()
+    rows = service.month_rows(_context(), month_key, member=member)
+    sheet_rows = [["SL", "Date", "Day", "Member", "Branch", "Meal Type", "Meal", "Meal Charge", "Rice Charge", "Status"]]
+    sl = 0
+    for day in rows:
+        if day["status"] == "OFF":
+            sl += 1
+            sheet_rows.append([sl, day["date"], day["day"], "", "", "", "", "", "", "OFF"])
+        else:
+            for r in day["records"]:
+                sl += 1
+                sheet_rows.append([sl, day["date"], day["day"], r["member"], r["branch"], r["meal_type"], r["meal"], r["meal_charge"], r["rice_charge"], "ON"])
+
+    def col_name(n):
+        result = ""
+        while n:
+            n, rem = divmod(n - 1, 26)
+            result = chr(65 + rem) + result
+        return result
+
+    xml_rows = []
+    for ri, row in enumerate(sheet_rows, 1):
+        cells = []
+        for ci, value in enumerate(row, 1):
+            ref = f"{col_name(ci)}{ri}"
+            val = escape(str(value if value is not None else ""))
+            cells.append(f'<c r="{ref}" t="inlineStr"><is><t xml:space="preserve">{val}</t></is></c>')
+        xml_rows.append(f'<row r="{ri}">{"".join(cells)}</row>')
+    sheet_xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' + "".join(xml_rows) + '</sheetData></worksheet>'
+    output = BytesIO()
+    with ZipFile(output, "w", ZIP_DEFLATED) as workbook:
+        workbook.writestr("[Content_Types].xml", '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>''')
+        workbook.writestr("_rels/.rels", '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>''')
+        workbook.writestr("xl/workbook.xml", '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Meal Records" sheetId="1" r:id="rId1"/></sheets></workbook>''')
+        workbook.writestr("xl/_rels/workbook.xml.rels", '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>''')
+        workbook.writestr("xl/worksheets/sheet1.xml", sheet_xml)
+    suffix = ("_" + re.sub(r"[^A-Za-z0-9_-]+", "_", member)) if member else ""
+    filename = f"Meal_Record_{month_key}{suffix}.xlsx"
+    return Response(output.getvalue(), mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    headers={"Content-Disposition": f'attachment; filename="{filename}"'})
