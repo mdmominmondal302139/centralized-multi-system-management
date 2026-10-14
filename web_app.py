@@ -22,6 +22,37 @@ if os.getenv("FLASK_ENV", "").lower() == "production":
     app.config["SESSION_COOKIE_SECURE"] = True
 
 
+# ------------------------------------------------------
+# Existing MongoDB connection
+# Uses config/member_database.py already present in project.
+# No new project file or folder is required.
+# ------------------------------------------------------
+def initialize_database_connection():
+    """Initialize and verify the project's existing MongoDB connection."""
+    mongo_uri = (os.getenv("MONGODB_URI") or "").strip()
+
+    if not mongo_uri:
+        print("[WARN] MongoDB connection skipped: MONGODB_URI is not set in .env")
+        return None
+
+    try:
+        from config.member_database import get_database
+
+        client, database = get_database()
+        client.admin.command("ping")
+        app.extensions["mongo_client"] = client
+        app.extensions["mongo_db"] = database
+        print(f"[OK] MongoDB connected: {database.name}")
+        return database
+    except Exception as exc:
+        print(f"[ERROR] MongoDB connection failed: {exc}")
+        return None
+
+
+# Establish the connection before importing route modules.
+initialize_database_connection()
+
+
 def import_module_from_file(route_file: Path, module_name: str):
     """Load a page module from its file path."""
     spec = importlib.util.spec_from_file_location(
@@ -131,7 +162,6 @@ def load_blueprints():
             home_route_files = {
                 ("MEMBER", "member_home"),
                 ("BRANCH_OFFICER", "branch_officer_home"),
-                ("ACCOUNT_OFFICER", "account_officer_home"),
                 ("MEAL_MANAGER", "meal_manager_home"),
             }
 
@@ -164,7 +194,6 @@ def load_blueprints():
             elif page_dir.name not in {
                 "member_home",
                 "branch_officer_home",
-                "account_officer_home",
                 "meal_manager_home",
             }:
                 print(
@@ -201,19 +230,96 @@ def load_blueprints():
                     )
 
 
+    # --------------------------------------------------
+    # 3. Existing lowercase modules supplied in download.zip
+    # These use their own existing HTML and services files.
+    # --------------------------------------------------
+    member_module_files = (
+        "home/home.py",
+        "profile/profile.py",
+        "income/income.py",
+        "expense/expense.py",
+        "meal/meal.py",
+        "meal_management/meal_management.py",
+        "savings/savings.py",
+        "records/records.py",
+        "work/work.py",
+    )
+
+    for rel in member_module_files:
+        route_file = BASE / rel
+        if not route_file.is_file():
+            print(f"[WARN] Member module not found: {route_file}")
+            continue
+        try:
+            module = import_module_from_file(
+                route_file,
+                f"existing_member_{route_file.parent.name}_{route_file.stem}",
+            )
+            register_blueprint_once(module, route_file)
+        except Exception as exc:
+            print(f"[ERROR] Could not load member module {route_file}: {exc}")
+
+
+# Explicit Member Meal Management route (keeps all existing role blueprints intact).
+_member_meal_route = BASE / "MEMBER" / "meal" / "meal_management.py"
+if _member_meal_route.is_file():
+    try:
+        _member_meal_module = import_module_from_file(
+            _member_meal_route, "page_MEMBER_meal_management"
+        )
+        register_blueprint_once(_member_meal_module, _member_meal_route)
+    except Exception as exc:
+        print(f"[ERROR] Could not load Member Meal Management {_member_meal_route}: {exc}")
+
 # Register the new authentication features using package imports so relative imports work.
 def register_authentication_features():
-    from AUTHENTICATION.forgot_password.forgot_password import forgot_password_bp
-    from AUTHENTICATION.google_login.google_login import google_login_bp
-    from AUTHENTICATION.mobile_login.mobile_login import mobile_login_bp
-    for blueprint in (forgot_password_bp, google_login_bp, mobile_login_bp):
-        if blueprint.name not in app.blueprints:
-            app.register_blueprint(blueprint)
-            print(f"[OK] Authentication feature registered: {blueprint.name}")
+    # Authentication feature files are optional in partial project archives.
+    feature_imports = (
+        ("AUTHENTICATION.forgot_password.forgot_password", "forgot_password_bp"),
+        ("AUTHENTICATION.google_login.google_login", "google_login_bp"),
+        ("AUTHENTICATION.mobile_login.mobile_login", "mobile_login_bp"),
+    )
+    for module_path, attribute in feature_imports:
+        try:
+            module = __import__(module_path, fromlist=[attribute])
+            blueprint = getattr(module, attribute)
+            if blueprint.name not in app.blueprints:
+                app.register_blueprint(blueprint)
+                print(f"[OK] Authentication feature registered: {blueprint.name}")
+        except Exception as exc:
+            print(f"[WARN] Authentication feature not loaded ({module_path}): {exc}")
 
 # Load all routes before starting the server.
 load_blueprints()
 register_authentication_features()
+
+
+# ------------------------------------------------------
+# Member navigation aliases
+# The existing HTML sidebar may point to the trailing slash or
+# to New/List submenu URLs. Keep these routes inside this app file.
+# ------------------------------------------------------
+@app.route("/member/")
+def member_root():
+    if session.get("authenticated") and session.get("role") == "MEMBER":
+        return redirect("/member/home")
+    return redirect("/login")
+
+
+@app.route("/member/<section>/<view>")
+def member_section_alias(section, view):
+    aliases = {
+        "income": {"new", "list"},
+        "expense": {"new", "list"},
+        "meal": {"new", "list"},
+        "savings": {"new", "list"},
+    }
+    if section in aliases and view in aliases[section]:
+        if session.get("authenticated") and session.get("role") == "MEMBER":
+            return redirect(f"/member/{section}")
+        return redirect("/login")
+    return "Not Found", 404
 
 
 # ------------------------------------------------------
@@ -229,14 +335,8 @@ def root():
             "BRANCH_OFFICER":
                 "/branch_officer/home",
 
-            "ACCOUNT_OFFICER":
-                "/account_officer/home",
-
             "MEAL_MANAGER":
                 "/meal_manager/home",
-
-            "OPERATOR":
-                "/operator/dashboard",
 
             "MEMBER":
                 "/member/home",
