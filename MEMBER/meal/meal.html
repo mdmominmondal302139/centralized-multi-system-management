@@ -1,10 +1,837 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MEMBER — My Meal</title><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f4f7fb;color:#172033}.sidebar{position:fixed;left:0;top:0;bottom:0;width:270px;background:#101827;color:#fff;padding:22px 15px;overflow:auto}.brand{font-size:19px;font-weight:800;margin-bottom:5px}.scope{font-size:12px;color:#aebbd0;margin-bottom:20px}.nav{display:block;width:100%;border:0;background:transparent;color:#dbe4f0;text-align:left;padding:11px 12px;border-radius:8px;margin:3px 0;cursor:pointer;font-size:14px}.nav:hover,.nav.active{background:#263750;color:#fff}.main{margin-left:270px;padding:28px;min-height:100vh}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.head h1{margin:0 0 5px;font-size:27px}.muted{color:#64748b;font-size:13px}.badge{padding:8px 12px;background:#e8eef8;border-radius:20px;font-size:12px;font-weight:700}.work{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;box-shadow:0 3px 12px #0f172a0a}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px}.card b{display:block;font-size:23px;margin-top:8px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.field,select,button,input,textarea{font:inherit}.field,select,input,textarea{padding:10px 11px;border:1px solid #cbd5e1;border-radius:7px;background:#fff}.btn{border:0;background:#172033;color:#fff;padding:9px 13px;border-radius:7px;cursor:pointer}.btn.alt{background:#e8eef8;color:#172033}.btn.danger{background:#b42318}.btn.success{background:#166534}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;vertical-align:top}th{background:#f8fafc}.formgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.formgrid label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}.notice{padding:11px 13px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:12px}.actions{display:flex;gap:7px;flex-wrap:wrap}@media(max-width:900px){.sidebar{width:220px}.main{margin-left:220px}.grid,.formgrid{grid-template-columns:1fr 1fr}}@media(max-width:650px){.sidebar{position:static;width:100%;height:auto}.main{margin-left:0;padding:16px}.grid,.formgrid{grid-template-columns:1fr}}</style></head><body><aside class="sidebar"><div class="brand">MEMBER</div><div class="scope">NORMAL USER / OWN RECORDS</div><button class="nav " data-path="home">🏠 Home</button><button class="nav " data-path="profile">👤 My Profile</button><button class="nav " data-path="income">💰 My Income</button><button class="nav " data-path="expense">💸 My Expense</button><button class="nav active" data-path="meal">🍽 My Meal</button><button class="nav " data-path="savings">💾 My Savings</button><button class="nav " data-path="records">📋 My Records</button><button class="nav " data-path="work">📝 My Work</button><button class="nav " data-path="logout">🚪 Logout</button></aside><main class="main"><div class="head"><div><h1>My Meal</h1><div class="muted">MEMBER working page — all data is limited to the logged-in Member.</div></div><div class="badge">MEMBER</div></div><section class="work"><h2>My Meal</h2><div class="toolbar"><label>Month <input id="month" type="month"></label><button class="btn" id="load">Load</button></div><form id="form"><div class="formgrid"><label>Meal Type<input id="f_meal_type" ></label><label>Meal Count<input id="f_meal_count" ></label><label>Description<input id="f_note" ></label></div><br><button class="btn success">Add Record</button><button type="button" class="btn alt" id="clear">Clear</button></form><br><div id="msg" class="muted"></div><table><thead><tr><th>Meal Type</th><th>Meal Count</th><th>Description</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></section></main><script>const qs=new URLSearchParams(location.search);const keep=qs.toString();document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{location.href='/member/'+b.dataset.path+(keep?'?'+keep:'')});</script><script>
-const p=new URLSearchParams(location.search),api='/member/api/meal?'+p;
-document.getElementById('month').value=new Date().toISOString().slice(0,7);
-async function load(){const r=await fetch(api+'&month='+document.getElementById('month').value);const data=await r.json();document.getElementById('rows').innerHTML=data.map((x,i)=>`<tr><td>${x["meal_type"]||""}</td><td>${x["meal_count"]||""}</td><td>${x["note"]||""}</td><td class="actions"><button class="btn alt" onclick="editRow(${i})">Edit</button><button class="btn danger" onclick="delRow(${i})">Delete</button></td></tr>`).join('');window.current=data}
-let currentId=null;document.getElementById('form').onsubmit=async e=>{e.preventDefault();const d={"meal_type":document.getElementById("f_meal_type").value,"meal_count":document.getElementById("f_meal_count").value,"note":document.getElementById("f_note").value,month:document.getElementById('month').value,date:new Date().toISOString().slice(0,10)};const r=await fetch(currentId?('/member/api/meal/'+currentId+'?'+p):api,{method:currentId?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});currentId=null;document.getElementById('msg').textContent=r.ok?'Saved/updated':'Save failed';load()};
-document.getElementById('clear').onclick=()=>{currentId=null;document.getElementById('form').reset()};
-window.delRow=async i=>{const x=window.current[i];if(!confirm('Delete this own record?'))return;const id=x.id||x._id;await fetch('/member/api/meal/'+id+'?'+p,{method:'DELETE'});load()};
-window.editRow=i=>{const x=window.current[i];currentId=x.id||x._id;for(const n of ['meal_type', 'meal_count', 'note'])document.getElementById('f_'+n).value=x[n]||'';document.getElementById('msg').textContent='Record loaded for editing.'};
-document.getElementById('load').onclick=load;load();
-</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meal Management</title>
+<link rel="stylesheet" href="/static/app.css">
+<style>
+.ssa-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:280px!important;height:100vh!important;overflow:hidden!important;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.06);display:flex;flex-direction:column;z-index:1000}
+.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #e7edf4;flex:0 0 auto}.ssa-brand-title{font-size:16px;font-weight:800;color:#12355e;line-height:1.25}.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:5px;letter-spacing:.6px}
+.ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1 1 auto}.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap}.ssa-nav a:hover{background:#eef6ff;color:#0d65bd}.ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
+.ssa-profile{flex:0 0 auto;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
+.ssa-content{margin-left:280px!important;width:calc(100% - 280px)!important;min-height:100vh;box-sizing:border-box;overflow-x:hidden}.ssa-content>.page{width:100%!important;max-width:none!important;box-sizing:border-box;padding:24px 24px 32px}
+.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity span{color:#73869c;font-size:11px}
+.ssa-content .card{max-width:100%;box-sizing:border-box}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form button{border:0;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}
+.record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(15,23,42,.06)}.record-table{width:100%;min-width:1100px;border-collapse:collapse;font-size:14px;background:#fff}.record-table th{padding:13px 14px;text-align:left;background:#f3f7fb;color:#243447;font-weight:700;border-bottom:2px solid #d9e2ec;white-space:nowrap}.record-table td{padding:11px 14px;border-bottom:1px solid #e7edf3;color:#334155;vertical-align:middle;white-space:nowrap}.record-table tbody tr:hover{background:#f8fbff}.record-table .empty{text-align:center;padding:28px;color:#64748b}
+.status-on{display:inline-flex;align-items:center;gap:5px;color:#087f46;font-weight:800}.status-off{display:inline-flex;align-items:center;gap:5px;color:#c62828;font-weight:800}.btn{display:inline-block;text-decoration:none;border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;font-size:12px}.btn-update{background:#16834d;color:#fff}.btn-delete{background:#ffe3e3!important;color:#171717!important;border:1px solid #ffc2c2!important}.btn-delete:hover{background:#ffd1d1!important;color:#000!important}.btn-open{background:#1769aa;color:#fff}.btn-download{background:#5b3aa4;color:#fff}.btn-cancel{background:#64748b;color:#fff}.action-row{display:flex;gap:7px;align-items:center}.month-table td{padding:14px}.month-table{min-width:620px}.month-title{font-weight:800;color:#173a61}.month-actions{display:flex;gap:8px;flex-wrap:wrap}.status-filter-bar{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:12px;margin:16px 0}.status-filter-bar label{display:flex;flex-direction:column;gap:6px;color:#203c5d;font-size:13px;font-weight:800}.status-filter-bar input,.status-filter-bar select{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid #cbd9e8;border-radius:9px;background:#fff;color:#15385f;font-size:14px}.status-filter-bar input:focus,.status-filter-bar select:focus{outline:none;border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.status-filter-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;color:#64748b;font-size:13px}.status-filter-reset{border:1px solid #cbd9e8;background:#f8fafc;color:#234563;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer}@media(max-width:760px){.status-filter-bar{grid-template-columns:1fr}}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.back-link{font-weight:700;text-decoration:none;color:#1769aa}.filter-bar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:15px}.filter-bar label{display:flex;flex-direction:column;gap:5px;font-weight:700;color:#203c5d}.filter-bar input,.filter-bar select{padding:9px 10px;border:1px solid #cbd9e8;border-radius:8px}.day-summary{font-weight:800;color:#173a61}
+.edit-form{display:none!important;margin-top:8px;padding:12px;background:#f7fafc;border:1px solid #dce6ef;border-radius:9px}.edit-form.open{display:grid!important;grid-template-columns:repeat(4,minmax(120px,1fr));gap:8px}.edit-form input,.edit-form select{padding:7px;border:1px solid #cbd9e8;border-radius:7px}.edit-form button{padding:7px 10px;border-radius:7px;border:0;font-weight:700;cursor:pointer}
+/* Clean modal editor: keep edit controls in a centered dialog, not inside the table */
+.meal-edit-overlay{display:none;position:fixed;inset:0;z-index:3000;background:rgba(12,29,52,.48);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+.meal-edit-overlay.visible{display:flex}
+.meal-edit-dialog{width:min(760px,100%);max-height:90vh;overflow:auto;background:#fff;border:1px solid #d9e6f5;border-radius:18px;box-shadow:0 24px 70px rgba(12,35,65,.25)}
+.meal-edit-head{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:20px 24px;background:linear-gradient(135deg,#f2f8ff,#fff);border-bottom:1px solid #e4edf8}
+.meal-edit-head h2{margin:0!important;font-size:21px!important;color:#173b65!important}.meal-edit-head p{margin:4px 0 0;color:#6d829b;font-size:13px}
+.meal-edit-close{border:0!important;background:#eaf2fb!important;color:#345578!important;width:36px;height:36px;padding:0!important;border-radius:10px!important;font-size:22px;cursor:pointer}
+.meal-edit-body{padding:22px 24px 24px}.meal-edit-body .edit-form{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
+.meal-edit-body .edit-form label{display:flex;flex-direction:column;gap:6px;color:#294968;font-size:13px;font-weight:500}
+.meal-edit-body .edit-form input,.meal-edit-body .edit-form select{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border:1px solid #cbdced;border-radius:10px;background:#fbfdff;color:#173653;font-size:14px}
+.meal-edit-body .edit-form input:focus,.meal-edit-body .edit-form select:focus{outline:none;border-color:#4b9be8;box-shadow:0 0 0 3px rgba(58,145,226,.13)}
+.meal-edit-body .edit-form .edit-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:10px;padding-top:8px;border-top:1px solid #edf2f8}
+.meal-edit-body .edit-form .edit-actions button{min-height:42px;padding:10px 18px;border-radius:9px;font-size:14px}
+.meal-edit-cancel{background:#eef3f8!important;color:#3c5876!important}
+@media(max-width:560px){.meal-edit-overlay{padding:10px}.meal-edit-head{padding:16px}.meal-edit-body{padding:16px}.meal-edit-body .edit-form{grid-template-columns:1fr}.meal-edit-body .edit-form .edit-actions{grid-column:1}.meal-edit-body .edit-form .edit-actions button{flex:1}}
+
+.meal-entry-card{padding:22px!important;border:1px solid #dbe6f1;box-shadow:0 8px 24px rgba(24,55,90,.06)}
+.meal-entry-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}.meal-entry-heading h2{margin:0 0 5px}.meal-entry-heading p{margin:0;color:#718096;font-size:13px}.meal-entry-pill{font-size:10px;letter-spacing:.8px;font-weight:800;color:#14764b;background:#e6f7ee;border:1px solid #bce8cf;padding:7px 10px;border-radius:20px;white-space:nowrap}
+.ssa-content .meal-entry-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px 14px}
+.meal-mode-row{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #e7edf4;padding-top:17px}.meal-mode-row strong,.meal-submit-row strong{display:block;color:#173a61}.meal-mode-row small,.meal-submit-row small{display:block;color:#718096;font-size:12px;margin-top:4px}.meal-mode-actions{display:flex;gap:8px}.meal-mode-btn{background:#f0f5fa!important;color:#38516e!important;border:1px solid #d7e2ee!important;padding:9px 13px!important;border-radius:9px!important}.meal-mode-btn.active{background:#1769aa!important;color:#fff!important;border-color:#1769aa!important}
+.meal-type-checks{grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap}.ssa-content .card form .meal-check{display:flex;flex-direction:row;align-items:center;gap:9px;border:1px solid #dbe5ef;border-radius:10px;padding:10px 14px;background:#fff;cursor:pointer}.meal-check input{width:16px!important;height:16px;accent-color:#16834d}.meal-check span{font-weight:800;color:#294663}
+.meal-charge-grid{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.meal-charge-card{border:1px solid #dbe5ef;border-radius:13px;padding:15px;background:linear-gradient(180deg,#fff,#fbfdff);min-width:0}.meal-charge-card h3{margin:0 0 13px;color:#173a61;font-size:16px}.meal-charge-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.meal-charge-fields label{font-size:12px!important;gap:5px!important}.meal-charge-fields input,.meal-charge-fields select{padding:9px!important}.meal-card-total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:1px dashed #d5e0eb;color:#64748b;font-size:12px}.meal-card-total strong{color:#16834d;font-size:16px}
+.ssa-content .card form .meal-note-label{grid-column:1/3}.meal-submit-row{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:#f4f8fc;border:1px solid #dbe6f1;border-radius:12px;padding:14px 16px}.meal-save-btn{background:#16834d!important;color:white!important;padding:13px 22px!important;border-radius:9px!important;font-size:14px!important;font-weight:800!important;box-shadow:0 4px 10px rgba(22,131,77,.15)}
+@media(max-width:1100px){.meal-charge-grid{grid-template-columns:1fr}.ssa-content .meal-entry-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.ssa-content .meal-entry-form{grid-template-columns:1fr}.meal-entry-heading{flex-direction:column}.meal-submit-row{align-items:stretch}.meal-save-btn{width:100%}.ssa-content .card form .meal-note-label{grid-column:1/-1}}
+@media(max-width:1000px){.ssa-content .card form{grid-template-columns:repeat(2,minmax(180px,1fr))}.edit-form.open{grid-template-columns:repeat(2,minmax(120px,1fr))}}
+@media(max-width:700px){.ssa-content{margin-left:280px!important;min-width:700px}.ssa-content .card form{grid-template-columns:1fr}.edit-form.open{grid-template-columns:1fr}}
+
+/* Clean, bright, high-contrast Meal Management theme */
+:root{color-scheme:light}
+html,body{background:#f7faff!important;color:#172b45!important}
+body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px;line-height:1.5}
+.ssa-sidebar{background:#ffffff!important;border-right:1px solid #dce7f4!important;box-shadow:4px 0 20px rgba(26,54,93,.045)!important}
+.ssa-brand{background:#fff!important;border-bottom:1px solid #e8eff8!important;padding:22px 18px 17px!important}
+.ssa-brand-title{color:#123a67!important;letter-spacing:.15px}
+.ssa-brand-scope{color:#637c9b!important}
+.ssa-nav{scrollbar-width:thin;scrollbar-color:#d2dfef #fff}
+.ssa-nav a{color:#314d70!important;font-size:14px!important;transition:background .16s ease,color .16s ease}
+.ssa-nav a:hover{background:#f0f7ff!important;color:#0868c9!important}
+.ssa-nav a.active{background:#e7f2ff!important;color:#075eb5!important;box-shadow:inset 3px 0 #1680e8}
+.ssa-nav-group{color:#8295ad!important}
+.ssa-profile{background:#fbfdff!important;border-top:1px solid #e5edf7!important}
+.ssa-profile-link{color:#173c67!important}
+.ssa-profile small{color:#657f9f!important}
+.ssa-content{background:#f7faff!important}
+.ssa-content>.page{padding:27px 28px 38px!important}
+.ssa-content h1{font-size:30px!important;letter-spacing:-.65px;color:#102d50!important;margin:0 0 24px!important;font-weight:800!important}
+.ssa-content h2{color:#173b65!important;font-size:22px!important;letter-spacing:-.25px}
+.ssa-content h3{color:#1c416b!important}
+.ssa-page-identity{background:#fff!important;border-color:#dce8f5!important;color:#184674!important;box-shadow:0 2px 8px rgba(31,68,112,.035)}
+.ssa-page-identity span{color:#6d829d!important}
+.ssa-content .card{background:#fff!important;border:1px solid #e0eaf5!important;border-radius:16px!important;box-shadow:0 5px 18px rgba(32,66,110,.045)!important;margin-bottom:20px!important}
+.ssa-content .card form label,.filter-bar label{color:#1e3d62!important;font-size:13px!important;font-weight:750!important}
+.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea,
+.filter-bar input,.filter-bar select,.edit-form input,.edit-form select{
+  background:#fff!important;color:#172f4f!important;border:1px solid #c9d9eb!important;border-radius:10px!important;
+  box-shadow:0 1px 2px rgba(20,48,82,.025)!important;min-height:41px
+}
+.ssa-content .card form input::placeholder,.ssa-content .card form textarea::placeholder{color:#91a2b7!important}
+.ssa-content .card form input:focus,.ssa-content .card form select:focus,.ssa-content .card form textarea:focus,
+.filter-bar input:focus,.filter-bar select:focus{
+  border-color:#5aa2ed!important;box-shadow:0 0 0 3px rgba(50,139,231,.13)!important;outline:none!important
+}
+.ssa-content .card form button,.meal-save-btn{background:#138653!important;color:#fff!important;box-shadow:0 4px 10px rgba(19,134,83,.15)!important}
+.ssa-content .card form button:hover,.meal-save-btn:hover{background:#0e7547!important;transform:translateY(-1px)}
+.meal-entry-card{padding:25px!important;border:1px solid #dfeaf6!important;box-shadow:0 8px 26px rgba(30,65,108,.055)!important;background:#fff!important}
+.meal-entry-heading{margin-bottom:22px!important}
+.meal-entry-heading h2{color:#12365f!important;font-size:23px!important}
+.meal-entry-heading p{color:#687f9b!important;font-size:13px!important}
+.meal-entry-pill{color:#087746!important;background:#e9fbf1!important;border-color:#c4efd6!important}
+.meal-mode-row{background:#f7fbff!important;border-color:#e0ebf7!important}
+.meal-check{background:#fff!important;border-color:#d7e4f2!important;box-shadow:0 1px 2px rgba(24,53,89,.025)}
+.meal-check:hover{border-color:#8bb9ec!important;background:#fafdff!important}
+.meal-check span{color:#24496f!important}
+.meal-charge-card{background:linear-gradient(180deg,#fff 0%,#fafdff 100%)!important;border-color:#dce8f5!important;box-shadow:0 3px 10px rgba(29,66,110,.035)}
+.meal-charge-card h3{color:#173d68!important}
+.meal-charge-fields label{color:#365474!important}
+.meal-card-total{color:#6d829b!important;border-top-color:#dce7f3!important}
+.meal-card-total strong{color:#07824b!important}
+.meal-submit-row{background:#f5faff!important;border-color:#dce8f5!important}
+.record-table-wrap{border-color:#dce7f2!important;box-shadow:0 5px 18px rgba(31,65,108,.045)!important}
+.record-table{background:#fff!important}
+.record-table th{background:#edf5ff!important;color:#1c3c62!important;border-bottom:1px solid #d7e5f5!important}
+.record-table td{color:#304966!important;border-bottom-color:#edf2f8!important}
+.record-table tbody tr:nth-child(even){background:#fbfdff!important}
+.record-table tbody tr:hover{background:#f0f7ff!important}
+.record-table .empty{color:#7489a2!important}
+.status-on{color:#07824b!important}.status-off{color:#d12f43!important}
+.btn-update{background:#138653!important}.btn-delete{background:#ffe3e3!important;color:#171717!important;border-color:#ffc2c2!important}.btn-delete:hover{background:#ffd1d1!important;color:#000!important}.btn-open{background:#1675c8!important}.btn-download{background:#6545b5!important}
+.month-table th{background:#edf5ff!important}
+.month-title,.day-summary{color:#183e68!important}
+.edit-form{background:#f6faff!important;border-color:#dce8f5!important}
+.back-link{color:#126fc0!important}
+.ssa-logout{background:#ef4652!important;box-shadow:0 3px 8px rgba(239,70,82,.12)}
+.ssa-logout:hover{background:#d93442!important}
+@media(max-width:1100px){.ssa-content>.page{padding:22px 18px 30px!important}.ssa-content h1{font-size:27px!important}}
+@media(max-width:700px){.ssa-content{min-width:0!important;width:100%!important;margin-left:0!important;padding-top:0!important}.ssa-content>.page{padding:18px 12px 26px!important}.ssa-content h1{font-size:24px!important}.meal-entry-card{padding:17px!important}}
+
+
+/* Refinements: regular-weight typography, member-linked branch, editable recent month, DD.MM.YYYY date */
+.ssa-content, .ssa-content p, .ssa-content label, .ssa-content input, .ssa-content select,
+.ssa-content textarea, .ssa-content button, .ssa-nav a, .ssa-content table,
+.ssa-content th, .ssa-content td, .meal-entry-heading p, .meal-check span {
+  font-weight: 400 !important;
+}
+.ssa-content h1,.ssa-content h2,.ssa-content h3,.meal-entry-heading h2,.meal-charge-card h3 {
+  font-weight: 500 !important;
+}
+.ssa-content .card form label,.filter-bar label {font-weight:400!important}
+.meal-entry-card label,.meal-charge-fields label {font-weight:400!important}
+.meal-entry-card input,.meal-entry-card select,.meal-entry-card textarea {font-weight:400!important}
+
+
+/* Requested typography: regular, clean, readable weights */
+.ssa-brand-title,.ssa-nav-group,.ssa-nav a.active,.ssa-avatar,.ssa-logout,
+.ssa-content h1,.ssa-content h2,.ssa-content h3,.meal-entry-pill,
+.meal-mode-row strong,.meal-submit-row strong,.meal-check span,.meal-charge-card h3,
+.meal-card-total strong,.meal-save-btn,.record-table th,.status-on,.status-off,.btn,
+.month-title,.day-summary,.filter-bar label,.ssa-content .card form label {font-weight:400!important}
+.ssa-content p,.ssa-content label,.ssa-content input,.ssa-content select,.ssa-content textarea,
+.ssa-content button,.ssa-nav a,.ssa-content table,.ssa-content th,.ssa-content td {font-weight:400!important}
+.ssa-content h1{font-weight:500!important}.ssa-content h2,.ssa-content h3{font-weight:500!important}
+
+
+/* Final Delete-only override: keep the Delete button pale red with black text */
+.ssa-content .card form button.btn-delete,
+.ssa-content .card form button.btn-delete:visited {
+  background: #ffe3e3 !important;
+  background-color: #ffe3e3 !important;
+  color: #171717 !important;
+  border: 1px solid #ffc2c2 !important;
+  box-shadow: none !important;
+}
+.ssa-content .card form button.btn-delete:hover,
+.ssa-content .card form button.btn-delete:focus {
+  background: #ffd1d1 !important;
+  background-color: #ffd1d1 !important;
+  color: #000 !important;
+}
+
+
+/* Collapsible sidebar account menu: profile and logout appear only after clicking the user row. */
+.ssa-profile-toggle{width:100%;display:flex;align-items:center;gap:10px;padding:4px 0;border:0;background:transparent;text-align:left;color:#173c67;cursor:pointer;font:inherit}
+.ssa-profile-toggle:hover{opacity:.88}
+.ssa-profile-user{display:block;min-width:0;flex:1}
+.ssa-profile-user strong{font-size:12px;display:block}
+.ssa-profile-user small{display:block;color:#657f9f;margin-top:2px;font-size:11px}
+.ssa-profile-chevron{margin-left:auto;font-size:14px;color:#71849a;transform:rotate(180deg);transition:transform .18s ease}
+.ssa-profile-toggle[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(0deg)}
+.ssa-profile-actions{padding-top:9px;display:grid;gap:7px}
+.ssa-profile-actions[hidden]{display:none!important}
+.ssa-profile-action{display:block;text-align:center;text-decoration:none;background:#eaf3ff;color:#155da5;border:1px solid #d5e6fb;border-radius:7px;padding:8px;font-weight:500}
+.ssa-profile-action:hover{background:#dcecff}
+.ssa-profile-actions .ssa-logout{margin-top:0}
+
+
+/* Bazar List and Bazar Duty buttons */
+.bazar-list-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;box-sizing:border-box;padding:10px 17px;border:1px solid #b8e3ce;border-radius:10px;background:linear-gradient(135deg,#e9fff3,#ffffff);color:#147344;text-decoration:none;font-size:14px;font-weight:600;transition:.18s}
+.bazar-list-btn:hover{background:#d9f8e7;border-color:#80d5a8;transform:translateY(-1px)}
+/* Bazar Duty List header button: added without changing existing page sections */
+.bazar-duty-list-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;box-sizing:border-box;padding:10px 17px;border:1px solid #b9d8fb;border-radius:10px;background:linear-gradient(135deg,#eaf4ff,#ffffff);color:#145da8;text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap;box-shadow:0 3px 10px rgba(24,91,160,.10);transition:background .15s ease,transform .15s ease,border-color .15s ease}
+.bazar-duty-list-btn:hover{background:#dceeff;border-color:#86baf0;transform:translateY(-1px)}
+/* Strongly outlined Meal Management module selector */
+.meal-module-selector-wrap{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.meal-module-selector-label{font-size:13px;font-weight:700;color:#203b5b}
+.meal-module-selector{min-width:260px;min-height:46px;box-sizing:border-box;padding:10px 42px 10px 14px;border:3px solid #174f8b!important;border-radius:10px;background-color:#fff;color:#123b68;font-size:15px;font-weight:700;box-shadow:0 0 0 2px rgba(23,79,139,.12),0 4px 12px rgba(23,79,139,.12);outline:2px solid transparent;outline-offset:2px;cursor:pointer}
+.meal-module-selector:focus{outline:3px solid #79b7ff;outline-offset:2px;border-color:#0b3f7a!important}
+@media(max-width:700px){.meal-module-selector{min-width:min(260px,80vw);width:100%}}
+
+.meal-page-header .ssa-page-identity{margin-left:auto}
+@media(max-width:700px){.meal-page-header .ssa-page-identity{margin-left:0}.bazar-duty-list-btn,.bazar-list-btn{min-height:40px;padding:9px 13px}}
+</style>
+<style>/* Module dropdown stays in the page header and scrolls away with the header */
+.meal-module-selector-wrap{position:static!important;top:auto!important;right:auto!important;z-index:auto!important;margin:0!important;padding:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;display:flex!important;align-items:center!important;gap:9px!important;flex-wrap:wrap!important}
+.meal-module-selector-label{white-space:nowrap!important}
+@media(max-width:700px){.meal-module-selector-wrap{max-width:100%!important;padding:0!important;gap:6px!important}.meal-module-selector-label{display:block!important}.meal-module-selector{min-width:0!important;width:100%!important}}</style>
+
+<style>
+/* User-requested UI standard: pill dropdowns, pale-red Delete, pale-green Edit/Update */
+.ssa-content select,
+.ssa-content .card form select,
+.ssa-content .filter-bar select,
+.ssa-content .status-filter-bar select,
+.ssa-content .edit-form select,
+.ssa-content .meal-edit-body .edit-form select,
+.ssa-content .meal-module-selector {
+  border-radius: 999px !important;
+}
+.ssa-content .btn-update,
+.ssa-content button.btn-update,
+.ssa-content .edit-actions .btn-update {
+  background: #DCFCE7 !important;
+  background-color: #DCFCE7 !important;
+  color: #166534 !important;
+  border: 1px solid #BBF7D0 !important;
+  box-shadow: none !important;
+  font-weight: 400 !important;
+}
+.ssa-content .btn-update:hover,
+.ssa-content button.btn-update:hover,
+.ssa-content .edit-actions .btn-update:hover {
+  background: #BBF7D0 !important;
+  color: #14532D !important;
+}
+.ssa-content .btn-delete,
+.ssa-content button.btn-delete,
+.meal-delete-confirm {
+  background: #FEE2E2 !important;
+  background-color: #FEE2E2 !important;
+  color: #7F1D1D !important;
+  border: 1px solid #FECACA !important;
+  box-shadow: none !important;
+  font-weight: 400 !important;
+}
+.ssa-content .btn-delete:hover,
+.ssa-content button.btn-delete:hover,
+.meal-delete-confirm:hover {
+  background: #FECACA !important;
+  color: #7F1D1D !important;
+}
+</style>
+
+
+<style id="unified-pill-box-and-action-button-design">
+/* Make every form control use the same fully rounded pill shape. */
+.ssa-content input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.ssa-content select,
+.ssa-content textarea,
+.ssa-content .form-control,
+.ssa-content .filter-control,
+.ssa-content .field-control,
+.ssa-content .custom-select,
+.ssa-content input[type="date"],
+.ssa-content input[type="datetime-local"],
+.ssa-content input[type="month"],
+.ssa-content input[type="time"],
+.ssa-content input[type="search"],
+.ssa-content input[type="email"],
+.ssa-content input[type="tel"],
+.ssa-content input[type="number"],
+.ssa-content input[type="text"],
+.ssa-content input[type="password"] {
+  border-radius: 999px !important;
+  box-sizing: border-box;
+}
+.ssa-content textarea {
+  border-radius: 22px !important;
+}
+/* Light-red Delete buttons. */
+.ssa-content .btn-delete,
+.ssa-content button.btn-delete,
+.ssa-content a.btn-delete,
+.ssa-content .delete-btn,
+.ssa-content .btn-danger,
+.ssa-content button[aria-label*="Delete" i],
+.ssa-content a[aria-label*="Delete" i],
+.ssa-content button[title*="Delete" i],
+.ssa-content a[title*="Delete" i] {
+  background: #FEE2E2 !important;
+  color: #7F1D1D !important;
+  border: 1px solid #FECACA !important;
+  box-shadow: none !important;
+  font-weight: 400 !important;
+}
+.ssa-content .btn-delete:hover,
+.ssa-content .delete-btn:hover,
+.ssa-content .btn-danger:hover {
+  background: #FECACA !important;
+  color: #7F1D1D !important;
+}
+/* Light-green Edit/Update buttons. */
+.ssa-content .btn-update,
+.ssa-content .btn-edit,
+.ssa-content .edit-btn,
+.ssa-content .update-btn,
+.ssa-content button[aria-label*="Edit" i],
+.ssa-content a[aria-label*="Edit" i],
+.ssa-content button[aria-label*="Update" i],
+.ssa-content a[aria-label*="Update" i],
+.ssa-content button[title*="Edit" i],
+.ssa-content a[title*="Edit" i],
+.ssa-content button[title*="Update" i],
+.ssa-content a[title*="Update" i] {
+  background: #DCFCE7 !important;
+  color: #166534 !important;
+  border: 1px solid #BBF7D0 !important;
+  box-shadow: none !important;
+  font-weight: 400 !important;
+}
+.ssa-content .btn-update:hover,
+.ssa-content .btn-edit:hover,
+.ssa-content .edit-btn:hover,
+.ssa-content .update-btn:hover {
+  background: #BBF7D0 !important;
+  color: #166534 !important;
+}
+</style>
+
+<style id="ssa-unified-sidebar-style">
+/* Shared Member sidebar: based on Home HTML dimensions and colours. */
+.ssa-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:280px!important;height:100vh!important;background:#fff!important;border-right:1px solid #dce5ef!important;box-shadow:2px 0 12px rgba(16,44,80,.05)!important;display:flex!important;flex-direction:column!important;z-index:10000!important;color:#102c50!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;font-weight:400!important;line-height:1.4!important;overflow:hidden!important}
+.ssa-sidebar *{box-sizing:border-box!important;font-family:Arial,Helvetica,sans-serif!important}
+.ssa-sidebar .ssa-brand{display:block!important;flex:0 0 auto!important;padding:16px 18px 13px!important;border-bottom:1px solid #e7edf4!important;background:#fff!important}
+.ssa-sidebar .ssa-brand-title{font-size:16px!important;font-weight:700!important;color:#12355e!important;line-height:1.25!important;letter-spacing:0!important}
+.ssa-sidebar .ssa-brand-subtitle{font-size:12px!important;font-weight:400!important;color:#314b68!important;margin-top:4px!important;line-height:1.3!important}
+.ssa-sidebar .ssa-brand-scope{font-size:10px!important;font-weight:400!important;color:#6f8299!important;margin-top:4px!important;letter-spacing:.4px!important;text-transform:none!important}
+.ssa-sidebar .ssa-nav{padding:8px 10px 12px!important;overflow-y:auto!important;overflow-x:hidden!important;flex:1 1 auto!important;min-height:0!important;display:block!important}
+.ssa-sidebar .ssa-nav-group{font-size:10px!important;font-weight:700!important;color:#8b9aab!important;text-transform:uppercase!important;padding:9px 10px 6px!important;letter-spacing:.7px!important}
+.ssa-sidebar .ssa-nav a,.ssa-sidebar .ssa-nav summary{display:flex!important;align-items:center!important;gap:10px!important;text-decoration:none!important;color:#314b68!important;padding:8px 10px!important;border-radius:8px!important;margin:2px 0!important;font-size:13px!important;font-weight:400!important;line-height:1.35!important;white-space:normal!important;cursor:pointer!important;list-style:none!important}
+.ssa-sidebar .ssa-nav summary::-webkit-details-marker{display:none!important}
+.ssa-sidebar .ssa-nav summary:after{content:'⌄';margin-left:auto;color:#8298b0;font-size:11px}
+.ssa-sidebar .ssa-nav a:hover,.ssa-sidebar .ssa-nav summary:hover{background:#eef6ff!important;color:#0d65bd!important}
+.ssa-sidebar .ssa-nav a.active,.ssa-sidebar .ssa-nav summary.active{background:#e9f3ff!important;color:#0b67c0!important;font-weight:700!important}
+.ssa-sidebar .ssa-ico{width:18px!important;min-width:18px!important;text-align:center!important;font-size:15px!important;font-weight:400!important;color:inherit!important}
+.ssa-sidebar .ssa-subnav{padding:0 0 4px 27px!important}
+.ssa-sidebar .ssa-subnav a{font-size:12px!important;padding:7px 9px!important;margin:1px 0!important;color:#58728c!important}
+.ssa-sidebar .ssa-profile{position:relative!important;flex:0 0 auto!important;margin-top:auto!important;border-top:1px solid #e7edf4!important;padding:10px 12px!important;background:#fbfdff!important}
+.ssa-sidebar .ssa-profile-trigger{display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;border:1px solid transparent!important;border-radius:10px!important;padding:7px!important;background:transparent!important;color:#45627e!important;text-align:left!important;font:inherit!important;font-weight:400!important;cursor:pointer!important}
+.ssa-sidebar .ssa-profile-trigger:hover,.ssa-sidebar .ssa-profile-trigger[aria-expanded="true"]{background:#eef6ff!important;border-color:#d7e8fb!important}
+.ssa-sidebar .ssa-avatar{width:34px!important;height:34px!important;min-width:34px!important;border-radius:50%!important;background:#e9f3ff!important;display:grid!important;place-items:center!important;color:#4a8bc8!important;font-size:13px!important;font-weight:400!important}
+.ssa-sidebar .ssa-profile-copy{display:block!important;min-width:0!important;flex:1!important}
+.ssa-sidebar .ssa-profile-name{display:block!important;color:#45627e!important;font-size:12px!important;font-weight:400!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:175px!important}
+.ssa-sidebar .ssa-profile-role{display:block!important;color:#8298b0!important;margin-top:3px!important;font-size:10px!important;font-weight:400!important}
+.ssa-sidebar .ssa-profile-chevron{margin-left:auto!important;color:#8298b0!important;font-size:11px!important;transition:transform .15s ease!important}
+.ssa-sidebar .ssa-profile-trigger[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(180deg)!important}
+.ssa-sidebar .ssa-profile-dropdown{display:none!important;position:absolute!important;left:12px!important;right:12px!important;bottom:calc(100% - 3px)!important;margin:0!important;padding:5px!important;border:1px solid #e1eaf4!important;border-radius:10px!important;background:#fff!important;box-shadow:0 8px 24px rgba(16,44,80,.12)!important;z-index:10001!important}
+.ssa-sidebar .ssa-profile-dropdown.is-open{display:block!important}
+.ssa-sidebar .ssa-profile-dropdown a{display:block!important;padding:10px!important;border-radius:7px!important;text-decoration:none!important;font-size:12px!important;font-weight:400!important;color:#4b7fae!important;background:#f5f9ff!important;margin:2px 0!important}
+.ssa-sidebar .ssa-profile-dropdown a.logout-option{background:#fff3f3!important;color:#df5c66!important}
+.ssa-sidebar .ssa-profile-dropdown a:hover{filter:brightness(.97)!important}
+@media(max-width:650px){.ssa-sidebar{position:relative!important;width:100%!important;height:auto!important;min-height:0!important}.ssa-sidebar .ssa-nav{max-height:60vh}.ssa-sidebar .ssa-profile{margin-top:0!important}}
+</style>
+
+<style id="member-home-sidebar-match">
+/* Sidebar-only visual update: colors, spacing, typography and dropdowns matched to Member home.html. */
+/* Member sidebar buttons/dropdowns follow home.html exactly. */
+.ssa-nav-item{display:block!important;border:0!important;margin:0!important;padding:0!important;background:transparent!important}
+.ssa-sidebar .ssa-nav-item>summary{position:relative!important;user-select:none!important}
+.ssa-sidebar .ssa-nav-item>summary:after{content:'⌄'!important;margin-left:auto!important;color:inherit!important;font-size:14px!important}
+.ssa-sidebar .ssa-nav-item[open]>summary:after{content:'⌃'!important}
+.ssa-sidebar .ssa-nav-item>summary.active{background:#dff4e8!important;color:#075b43!important;font-weight:600!important}
+.ssa-sidebar .ssa-nav-item .ssa-subnav{display:block!important}
+
+.ssa-sidebar{width:280px!important;background:#fff!important;color:#263b32!important;border-right:1px solid #e5ece7!important;box-shadow:none!important;padding:24px 16px 14px!important;font-family:Inter,"Segoe UI",Arial,sans-serif!important;font-size:14px!important;overflow:hidden!important}
+.ssa-brand{padding:0 0 0!important;border:0!important;margin:0 0 0!important;background:transparent!important}
+.ssa-brand-title{font-size:22px!important;font-weight:700!important;letter-spacing:.2px!important;color:#075b43!important;line-height:1.25!important}
+.ssa-brand-subtitle,.ssa-brand-scope{font-size:13px!important;color:#718078!important;margin-top:5px!important;letter-spacing:0!important;font-weight:400!important;line-height:1.5!important;text-transform:none!important}
+.ssa-brand-scope:last-child{display:none!important}
+.ssa-nav{padding:0!important;margin-top:0!important;overflow-y:auto!important;overflow-x:hidden!important;flex:1 1 auto!important}
+.ssa-nav-group{font-size:11px!important;font-weight:400!important;color:#829188!important;text-transform:uppercase!important;padding:0!important;letter-spacing:1.3px!important;margin:29px 12px 10px!important}
+.ssa-nav>a,.ssa-nav-item>summary{display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;box-sizing:border-box!important;padding:12px 13px!important;margin:3px 0!important;border:0!important;border-radius:9px!important;background:transparent!important;color:#34483e!important;text-decoration:none!important;font-family:inherit!important;font-size:15px!important;font-weight:400!important;line-height:1.35!important;white-space:normal!important;cursor:pointer!important;list-style:none!important}
+.ssa-nav-item>summary::-webkit-details-marker{display:none!important}
+.ssa-nav>a:hover,.ssa-nav-item>summary:hover{background:#f2f8f4!important;color:#075b43!important}
+.ssa-nav>a.active,.ssa-nav-item>summary.active{background:#dff4e8!important;color:#075b43!important;font-weight:600!important}
+.ssa-ico{width:22px!important;min-width:22px!important;text-align:center!important;font-size:17px!important;color:inherit!important}
+.ssa-subnav{display:block!important;margin:0 0 5px 37px!important;padding:0!important}
+.ssa-subnav a{display:flex!important;align-items:center!important;padding:9px 10px!important;margin:1px 0!important;border-radius:7px!important;background:transparent!important;color:#52665b!important;font-size:13px!important;font-weight:400!important;line-height:1.4!important;white-space:normal!important}
+.ssa-subnav a:hover,.ssa-subnav a.active{background:#edf7f1!important;color:#075b43!important}
+.ssa-profile{position:relative!important;flex:0 0 auto!important;margin-top:auto!important;padding:14px 0 0!important;border-top:0!important;background:transparent!important}
+.ssa-profile-trigger{width:100%!important;display:flex!important;align-items:center!important;gap:11px!important;box-sizing:border-box!important;border:1px solid #e1eae5!important;background:#f8fbf9!important;color:#263b32!important;border-radius:12px!important;padding:12px!important;text-align:left!important;font-family:inherit!important;cursor:pointer!important}
+.ssa-avatar{width:38px!important;height:38px!important;min-width:38px!important;display:grid!important;place-items:center!important;border-radius:50%!important;background:#dff4e8!important;color:#075b43!important;font-weight:700!important;font-size:14px!important}
+.ssa-profile-copy{min-width:0!important;flex:1!important}.ssa-profile-name{display:block!important;font-size:14px!important;color:#263b32!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-weight:400!important}.ssa-profile-role{display:block!important;font-size:12px!important;color:#718078!important;margin-top:3px!important;font-weight:400!important}.ssa-profile-chevron{margin-left:auto!important;color:#52665b!important}
+.ssa-profile-dropdown{display:none!important;position:absolute!important;left:0!important;right:0!important;bottom:calc(100% + 9px)!important;z-index:10002!important;background:#fff!important;border-radius:10px!important;padding:6px!important;margin:0!important;box-shadow:0 8px 24px #001b1030!important;border:0!important}
+.ssa-profile-dropdown.is-open{display:block!important}.ssa-profile-dropdown a{display:block!important;text-decoration:none!important;color:#234238!important;padding:10px 12px!important;border-radius:7px!important;font-size:14px!important;font-weight:400!important;background:transparent!important}.ssa-profile-dropdown a:hover{background:#e4f5ec!important;color:#075b43!important}.ssa-profile-dropdown a.logout-option{color:#234238!important;background:transparent!important}
+@media(max-width:700px){.ssa-sidebar{width:280px!important;transform:translateX(-100%);transition:transform .2s;box-shadow:8px 0 28px #173d2718!important}.ssa-sidebar.open{transform:translateX(0)}}
+</style>
+
+</head>
+<body>
+<div class="ssa-shell">
+<aside class="ssa-sidebar" id="member-sidebar">
+<div class="ssa-brand"><div class="ssa-brand-title">MEMBER PANEL</div><div class="ssa-brand-subtitle">Personal Management System</div></div>
+<nav class="ssa-nav"><div class="ssa-nav-group">MAIN MENU</div>
+<a class="active" href="/member/home"><span class="ssa-ico">⌂</span>Home</a>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">↗</span>Income</summary><div class="ssa-subnav"><a href="/member/income">New Income</a><a href="/member/income">Income List</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">↘</span>Expense</summary><div class="ssa-subnav"><a href="/member/expense">New Expense</a><a href="/member/expense">Expense List</a></div></details>
+<details class="ssa-nav-item" open><summary class="active"><span class="ssa-ico">☷</span>Meal</summary><div class="ssa-subnav"><a href="/member/meal/?module=meal-entry">New Meal</a><a href="/member/meal/?module=meal-status-list">Meal List</a></div></details>
+<details class="ssa-nav-item"><summary><span class="ssa-ico">▣</span>Savings</summary><div class="ssa-subnav"><a href="/member/savings">New Savings</a><a href="/member/savings">Savings List</a></div></details>
+<a href="/member/meal-management"><span class="ssa-ico">☷</span>Meal Management</a>
+<a href="/member/records"><span class="ssa-ico">▤</span>Records</a>
+<a href="/member/work"><span class="ssa-ico">✓</span>Work</a>
+</nav>
+<div class="ssa-profile" id="ssaUnifiedProfile"><button class="ssa-profile-trigger" type="button" id="ssaUnifiedProfileTrigger" aria-expanded="false" aria-controls="ssaUnifiedProfileDropdown"><span class="ssa-avatar">MK</span><span class="ssa-profile-copy"><span class="ssa-profile-name">Mim Khan Test</span><span class="ssa-profile-role">Member</span></span><span class="ssa-profile-chevron" aria-hidden="true">⌃</span></button><div class="ssa-profile-dropdown" id="ssaUnifiedProfileDropdown"><a href="/member/profile">Profile</a><a class="logout-option" href="/member/logout">Logout</a></div></div></aside>
+
+<div class="ssa-content"><main class="page">
+<header class="meal-module-page-header meal-page-header"><h1>Meal Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','user') }}</strong><span>Member</span></div></header>
+{% if message %}<div class="ok" id="meal-server-success" data-message="{{ message|e }}" style="display:none">{{ message }}</div>{% endif %}{% if error %}<div class="err" id="meal-server-error" data-message="{{ error|e }}" style="display:none">{{ error }}</div>{% endif %}
+
+{% if view == 'month' %}
+<section class="card">
+  <div class="section-head">
+    <div><h2 style="margin-bottom:5px">{{ month_label }}{% if member %} → {{ member }}{% endif %} → Member-wise Meal Record</h2><div class="day-summary">ON days show all member meal records. OFF days show only OFF.</div></div>
+    <div><a class="back-link" href="{{ url_for('member_meal_management_bp.page') }}">← Meal Status List</a> <a class="btn btn-download" href="{{ url_for('member_meal_management_bp.download_month', month=month_key) }}{% if member %}?member={{ member|urlencode }}{% endif %}">↓ Download</a></div>
+  </div>
+  <form class="filter-bar" method="get">
+    <input type="hidden" name="month" value="{{ month_key }}">
+    <label>Search<input name="search" value="{{ search }}" placeholder="Member / Branch / Meal Type"></label>
+    <button class="btn btn-open" type="submit">Search</button>
+  </form>
+  <div class="record-table-wrap">
+  <table class="record-table">
+    <thead><tr><th>SL</th><th>Date</th><th>Day</th><th>Member</th><th>Branch</th><th>Meal Type</th><th>Meal</th><th>Meal Charge</th><th>Rice Charge</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for row in month_rows %}
+      {% if row.status == 'OFF' %}
+      <tr><td>{{ loop.index }}</td><td>{{ row.date }}</td><td>{{ row.day }}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="status-off">🔴 OFF</span></td><td>—</td></tr>
+      {% else %}
+      {% for r in row.records %}
+      <tr>
+        <td>{{ loop.index }}</td><td>{{ row.date }}</td><td>{{ row.day }}</td><td>{{ r.member }}</td><td>{{ r.branch }}</td><td>{{ r.meal_type }}</td><td>{{ r.meal }}</td><td>{{ r.meal_charge }}</td><td>{{ r.rice_charge }}</td><td><span class="status-on">🟢 ON</span></td>
+        <td><div class="action-row"><button class="btn btn-update" type="button" onclick="toggleEdit('{{ r.id }}')">Update</button>
+        <form method="post" style="display:inline" onsubmit="return showDeleteConfirm(this)"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.id }}"><input type="hidden" name="return_month" value="{{ month_key }}"><input type="hidden" name="return_member" value="{{ member }}"><button class="btn btn-delete" type="submit">Delete</button></form></div>
+        <form id="edit-{{ r.id }}" class="edit-form" style="display:none!important" method="post"><input type="hidden" name="action" value="update"><input type="hidden" name="record_id" value="{{ r.id }}"><input type="hidden" name="return_month" value="{{ month_key }}"><input type="hidden" name="return_member" value="{{ member }}">
+          <label>Date (DD.MM.YYYY)<input name="date" value="{{ r.date }}" placeholder="DD.MM.YYYY" required></label>
+          <label>Member Name<input name="member_name" value="{{ r.member }}" required></label>
+          <label>Branch Name<input name="branch_name" value="{{ r.branch }}" required></label>
+          <label>Meal Type<select name="type"><option {% if r.meal_type=='Breakfast' %}selected{% endif %}>Breakfast</option><option {% if r.meal_type=='Lunch' %}selected{% endif %}>Lunch</option><option {% if r.meal_type=='Dinner' %}selected{% endif %}>Dinner</option><option {% if r.meal_type=='Extra' %}selected{% endif %}>Extra</option><option {% if r.meal_type=='Meal' %}selected{% endif %}>Meal</option></select></label>
+          <label>Quantity<input name="quantity" type="number" min="0" step="1" value="{{ r.meal }}" required></label>
+          <label>Meal Charge (৳)<input name="meal_charge" type="number" min="0" step="0.01" value="{{ r.meal_charge }}" required></label>
+          <label>Rice Charge (৳)<input name="rice_charge" type="number" min="0" step="0.01" value="{{ r.rice_charge }}" required></label>
+          <label>Note<input name="note" value="{{ r.note }}"></label>
+          <div class="edit-actions"><button class="meal-edit-cancel" type="button" onclick="closeMealEdit()">Cancel</button><button class="btn btn-update" type="submit">✓ Save Update</button></div>
+        </form></td>
+      </tr>
+      {% endfor %}
+      {% endif %}
+    {% else %}
+      <tr><td colspan="11" class="empty">No records found for this month.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</section>
+
+{% else %}
+{% set meal_module = request.args.get('module', 'meal-entry') %}
+{% if meal_module != 'meal-status-list' %}
+<section class="card meal-entry-card" id="meal-entry">
+  <div class="meal-entry-heading"><div><h2>Meal Entry</h2><p>একবারে এক বা একাধিক Meal Type নির্বাচন করে আলাদা চার্জসহ Save করুন।</p></div><span class="meal-entry-pill">MULTI-MEAL ENTRY</span></div>
+  <form method="post" action="{{ url_for('member_meal_management_bp.page') }}" id="meal-entry-form" class="meal-entry-form" onsubmit="return prepareMealSubmit()">
+    <label>Member Full Name (Account)
+      <input name="member_name" id="meal-member-select" type="text" value="{{ current_member_full_name or session.get('full_name', session.get('member_name', '')) }}" readonly required aria-readonly="true" autocomplete="name" placeholder="Your account full name">
+    </label>
+    <label>Branch Name
+      <input name="branch_name" id="meal-branch-select" type="text" value="{{ session.get('branch_name', '') }}" readonly required aria-readonly="true" placeholder="Your branch">
+    </label>
+    <label>Mobile
+      <input name="mobile" id="meal-mobile-input" type="tel" value="{{ session.get('mobile', session.get('phone', '')) }}" readonly aria-readonly="true" autocomplete="tel" placeholder="Your mobile number">
+    </label>
+    <label>Date
+      <input name="date" id="meal-date-input" type="date" value="{{ today }}" required aria-label="Select meal date">
+      <small style="font-weight:400;color:#6d829b">Choose from calendar or edit the date.</small>
+    </label>
+    <input type="hidden" name="month" id="meal-month-select" value="{{ current_month }}">
+    <div class="meal-mode-row">
+      <div><strong>Choose Meal Types</strong><small>All Meals অথবা নিজের পছন্দমতো নির্বাচন করুন</small></div>
+      <div class="meal-mode-actions"><button type="button" class="meal-mode-btn active" id="all-meals-btn" onclick="selectMealMode('all')">All Meals</button><button type="button" class="meal-mode-btn" id="custom-meals-btn" onclick="selectMealMode('custom')">Custom Selection</button></div>
+    </div>
+    <div class="meal-type-checks">
+      <label class="meal-check"><input type="checkbox" class="meal-type-check" value="Breakfast" checked onchange="renderMealCards()"><span>☀️ Breakfast</span></label>
+      <label class="meal-check"><input type="checkbox" class="meal-type-check" value="Lunch" checked onchange="renderMealCards()"><span>🍽️ Lunch</span></label>
+      <label class="meal-check"><input type="checkbox" class="meal-type-check" value="Dinner" checked onchange="renderMealCards()"><span>🌙 Dinner</span></label>
+    </div>
+    <div id="meal-charge-cards" class="meal-charge-grid"></div>
+    <label class="meal-note-label">Note (Optional)<input name="note" placeholder="Add a note if needed"></label>
+    <input type="hidden" name="action" value="bulk_save">
+    <input type="hidden" name="meal_entries" id="meal-entries-json" value="">
+    <div class="meal-submit-row"><div><small id="meal-selected-summary">3 meal types selected</small><strong>Estimated Total: ৳ <span id="meal-grand-total">1.50</span></strong></div><button type="submit" class="meal-save-btn">✓ Save Selected Meals</button></div>
+  </form>
+</section>
+{% endif %}
+
+{% if meal_module == 'meal-status-list' %}
+<section class="card" id="meal-status-list">
+  <div class="section-head">
+    <div><h2>📋 Meal Status List</h2><div>Each Member and each Month + Year is shown separately.</div></div>
+  </div>
+  <div class="status-filter-bar" role="search" aria-label="Filter meal status records">
+    <label>Month filter
+      <select id="status-month-filter" aria-label="Filter by month name">
+      </select>
+    </label>
+    <label>Year filter
+      <select id="status-year-filter" aria-label="Filter by year from 2026 to 2090">
+      </select>
+    </label>
+  </div>
+  <div class="status-filter-meta"><span id="status-filter-count" aria-live="polite">Showing all records</span><button class="status-filter-reset" type="button" id="status-filter-reset">Reset filters</button></div>
+  <div class="record-table-wrap">
+    <table class="record-table month-table">
+      <thead><tr><th>SL</th><th>Member</th><th>Mobile</th><th>Total Meal Charge</th><th>Total Rice Charge</th><th>Month-Year</th><th>Action</th></tr></thead>
+      <tbody id="meal-status-rows">
+      {% for m in member_rows %}
+        <tr class="meal-status-row" data-month="{{ m.month|e }}" data-member="{{ m.member|e }}" data-mobile="{{ m.mobile|e }}">
+          <td>{{ loop.index }}</td>
+          <td class="month-title">{{ m.member }}</td>
+          <td>{{ m.mobile }}</td>
+          <td><strong>৳{{ "%.2f"|format(m.total_meal_charge) }}</strong></td>
+          <td><strong>৳{{ "%.2f"|format(m.total_rice_charge) }}</strong></td>
+          <td><strong>{{ m.label }}</strong></td>
+          <td>
+            <div class="month-actions">
+              <a class="btn btn-open" href="{{ url_for('member_meal_management_bp.page', month=m.month, member=m.member) }}">Open</a>
+              <a class="btn btn-download" href="{{ url_for('member_meal_management_bp.download_month_xlsx', month=m.month) }}?member={{ m.member|urlencode }}">Download (XLSX)</a>
+              <form method="post" action="{{ url_for('member_meal_management_bp.page') }}" style="display:inline" onsubmit="return confirm('Delete all meal records for {{ m.member|e }} in {{ m.label }}? This cannot be undone.');">
+                <input type="hidden" name="action" value="delete_month">
+                <input type="hidden" name="delete_member" value="{{ m.member }}">
+                <input type="hidden" name="delete_month" value="{{ m.month }}">
+                <input type="hidden" name="return_month" value="{{ m.month }}">
+                <input type="hidden" name="return_member" value="{{ m.member }}">
+                <button class="btn btn-delete" type="submit">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      {% else %}
+        <tr class="meal-status-empty"><td colspan="7" class="empty">No member meal records found.</td></tr>
+      {% endfor %}
+        <tr id="meal-status-no-results" hidden><td colspan="7" class="empty">No records match these filters.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+{% endif %}
+</main></div></div>
+<div class="meal-edit-overlay" id="meal-edit-overlay" onclick="if(event.target===this)closeMealEdit()" aria-hidden="true">
+  <section class="meal-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="meal-edit-title">
+    <div class="meal-edit-head"><div><h2 id="meal-edit-title">Edit Meal Record</h2><p>Update the meal details and save your changes.</p></div><button class="meal-edit-close" type="button" aria-label="Close edit dialog" onclick="closeMealEdit()">×</button></div>
+    <div class="meal-edit-body" id="meal-edit-body"></div>
+  </section>
+</div>
+<script>
+function navigateMealModule(value){
+  const urls={
+    'meal-entry':'/member/meal/?module=meal-entry',
+    'meal-status-list':'/member/meal/?module=meal-status-list',
+    'bazar-list':'/member/daily-bazar-list/',
+    'bazar-duty':'/member/meal/bazar-duty/'
+  };
+  if(urls[value]) window.location.href=urls[value];
+}
+
+var activeMealEdit=null;
+function toggleEdit(id){
+  var form=document.getElementById('edit-'+id), overlay=document.getElementById('meal-edit-overlay'), body=document.getElementById('meal-edit-body');
+  if(!form||!overlay||!body)return;
+  if(activeMealEdit)closeMealEdit();
+  form.dataset.originalParentId='';
+  form._originalParent=form.parentNode;
+  form._originalNext=form.nextSibling;
+  activeMealEdit=form;
+  body.appendChild(form);
+  form.classList.add('open');
+  form.style.setProperty('display','grid','important');
+  overlay.classList.add('visible');overlay.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+  var first=form.querySelector('input:not([type="hidden"]),select');if(first)first.focus();
+}
+function closeMealEdit(){
+  var overlay=document.getElementById('meal-edit-overlay');
+  if(activeMealEdit&&activeMealEdit._originalParent){
+    activeMealEdit.classList.remove('open');activeMealEdit.style.setProperty('display','none','important');
+    activeMealEdit._originalParent.insertBefore(activeMealEdit,activeMealEdit._originalNext);
+    activeMealEdit._originalParent=null;activeMealEdit._originalNext=null;
+  }
+  activeMealEdit=null;
+  if(overlay){overlay.classList.remove('visible');overlay.setAttribute('aria-hidden','true');}
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&activeMealEdit)closeMealEdit();});
+const mealDefaults={Breakfast:{meal:'0',rice:'0.5',quantity:'1',status:'ON'},Lunch:{meal:'0',rice:'0.5',quantity:'1',status:'ON'},Dinner:{meal:'0',rice:'0.5',quantity:'1',status:'ON'}};
+function selectMealMode(mode){
+  document.getElementById('all-meals-btn').classList.toggle('active',mode==='all');
+  document.getElementById('custom-meals-btn').classList.toggle('active',mode==='custom');
+  document.querySelectorAll('.meal-type-check').forEach(cb=>{cb.disabled=mode==='all';if(mode==='all')cb.checked=true;});
+  renderMealCards();
+}
+function selectedMealTypes(){return Array.from(document.querySelectorAll('.meal-type-check:checked')).map(x=>x.value);}
+function renderMealCards(){
+ const selected=selectedMealTypes(), host=document.getElementById('meal-charge-cards');
+ host.innerHTML='';
+ selected.forEach(type=>{
+  const d=mealDefaults[type];
+  const card=document.createElement('div');card.className='meal-charge-card';card.dataset.meal=type;
+  card.innerHTML=`<h3>${type}</h3><div class="meal-charge-fields">
+  <label>Meal Charge (৳)<input type="number" min="0" step="0.01" data-field="meal_charge" value="${d.meal}" oninput="updateMealTotals()"></label>
+  <label>Rice Charge (৳)<input type="number" min="0" step="0.01" data-field="rice_charge" value="${d.rice}" oninput="updateMealTotals()"></label>
+  <label>Quantity<input type="number" min="0" step="1" data-field="quantity" value="${d.quantity}" oninput="updateMealTotals()"></label>
+  <label>Status<select data-field="status" onchange="updateMealTotals()"><option value="ON" selected>ON</option><option value="OFF">OFF</option></select></label>
+  </div><div class="meal-card-total"><span>Meal total</span><strong>৳ <span data-total>0.50</span></strong></div>`;
+  host.appendChild(card);
+ });
+ updateMealTotals();
+}
+function updateMealTotals(){
+ let grand=0;
+ document.querySelectorAll('.meal-charge-card').forEach(card=>{
+  const val=f=>Number(card.querySelector(`[data-field="${f}"]`).value)||0;
+  const total=card.querySelector('[data-field="status"]').value==='ON'?Math.max(0,val('meal_charge'))*Math.max(0,val('quantity'))+Math.max(0,val('rice_charge'))*Math.max(0,val('quantity')):0;
+  card.querySelector('[data-total]').textContent=total.toFixed(2);grand+=total;
+ });
+ document.getElementById('meal-grand-total').textContent=grand.toFixed(2);
+ document.getElementById('meal-selected-summary').textContent=selectedMealTypes().length+' meal type(s) selected';
+}
+function prepareMealSubmit(){
+ const selected=selectedMealTypes();
+ if(!selected.length){alert('Please select at least one Meal Type.');return false;}
+ const entries=[];
+ document.querySelectorAll('.meal-charge-card').forEach(card=>{
+  const get=f=>card.querySelector(`[data-field="${f}"]`).value;
+  entries.push({type:card.dataset.meal,meal_charge:get('meal_charge'),rice_charge:get('rice_charge'),quantity:get('quantity'),status:get('status')});
+ });
+ document.getElementById('meal-entries-json').value=JSON.stringify(entries);
+ const dateInput=document.getElementById('meal-date-input');
+ if(!dateInput || !dateInput.value){alert('Please select a valid date.');return false;}
+ // Month is derived automatically from the selected date; no Month box is shown.
+ document.getElementById('meal-month-select').value=dateInput.value.slice(0,7);
+ return true;
+}
+selectMealMode('all');
+</script>
+
+<script>
+(function () {
+  function formatDateInputs() {
+    document.querySelectorAll('input[type="date"][data-display-format="DD.MM.YYYY"]').forEach(function (el) {
+      // Native date controls are browser-rendered and cannot reliably force DD.MM.YYYY.
+      // Keep ISO value for backend and show a formatted adjacent hint.
+      if (!el.dataset.formatHintAdded) {
+        var hint = document.createElement('small');
+        hint.textContent = 'Date format: DD.MM.YYYY';
+        hint.style.cssText = 'display:block;margin-top:4px;color:#607995;font-weight:400;font-size:12px';
+        el.insertAdjacentElement('afterend', hint);
+        el.dataset.formatHintAdded = '1';
+      }
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', formatDateInputs);
+  else formatDateInputs();
+})();
+
+function syncMemberDetails(){
+  // Member, mobile and branch are populated by the authenticated session and are read-only.
+}
+</script>
+
+
+<!-- Delete confirmation: affects only the Delete action -->
+<div id="meal-delete-modal" class="meal-delete-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="meal-delete-title">
+  <div class="meal-delete-box">
+    <div class="meal-delete-icon">!</div>
+    <h2 id="meal-delete-title">Delete this meal record?</h2>
+    <p>Are you sure you want to delete this meal record? This action cannot be undone.</p>
+    <div class="meal-delete-actions">
+      <button type="button" class="meal-delete-cancel" onclick="closeDeleteConfirm()">Cancel</button>
+      <button type="button" class="meal-delete-confirm" onclick="confirmMealDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+<style>
+.btn-delete{background:#ffe3e3!important;color:#171717!important;border:1px solid #ffc2c2!important}.btn-delete:hover{background:#ffd1d1!important;color:#000!important}
+.meal-delete-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,32,54,.48);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px}
+.meal-delete-overlay.open{display:flex}
+.meal-delete-box{width:min(420px,100%);box-sizing:border-box;background:#fff;border:1px solid #e5eaf1;border-radius:18px;padding:28px 26px 22px;text-align:center;box-shadow:0 22px 70px rgba(12,35,64,.25);animation:mealDeleteIn .18s ease-out}
+.meal-delete-icon{width:48px;height:48px;margin:0 auto 13px;border-radius:50%;display:grid;place-items:center;background:#fff0f0;border:1px solid #ffd0d0;color:#d12f43;font-size:27px;font-weight:600}
+.meal-delete-box h2{font-size:21px;margin:0 0 9px;color:#17365c;font-weight:500}
+.meal-delete-box p{font-size:14px;line-height:1.6;color:#68788c;margin:0 0 23px}
+.meal-delete-actions{display:flex;justify-content:center;gap:10px}
+.meal-delete-actions button{border-radius:9px;padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer}
+.meal-delete-cancel{background:#f3f6fa;color:#34465b;border:1px solid #d9e2ec}
+.meal-delete-cancel:hover{background:#e9eef5}
+.meal-delete-confirm{background:#ffe3e3;color:#171717;border:1px solid #ffc2c2}
+.meal-delete-confirm:hover{background:#ffd1d1}
+@keyframes mealDeleteIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){.meal-delete-box{padding:23px 18px}.meal-delete-actions button{flex:1}}
+</style>
+<script>
+let mealDeleteFormPending=null;
+function showDeleteConfirm(form){if(form.dataset.deleteConfirmed==='yes'){form.dataset.deleteConfirmed='';return true;}mealDeleteFormPending=form;const modal=document.getElementById('meal-delete-modal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';return false;}
+function closeDeleteConfirm(){const modal=document.getElementById('meal-delete-modal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';mealDeleteFormPending=null;}
+function confirmMealDelete(){if(!mealDeleteFormPending)return;const form=mealDeleteFormPending;form.dataset.deleteConfirmed='yes';closeDeleteConfirm();form.requestSubmit();}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeDeleteConfirm();}});
+document.getElementById('meal-delete-modal').addEventListener('click',function(e){if(e.target===this)closeDeleteConfirm();});
+</script>
+
+
+<!-- Compact normal notification for Update and Delete results -->
+<div id="meal-result-toast" class="meal-result-overlay" aria-live="polite" aria-atomic="true" role="status" hidden>
+  <div class="meal-result-box" id="meal-result-box">
+    <div class="meal-result-icon" id="meal-result-icon">✓</div>
+    <div class="meal-result-title" id="meal-result-title">Success</div>
+    <div class="meal-result-message" id="meal-result-message"></div>
+  </div>
+</div>
+<style>
+.meal-result-overlay{position:fixed;top:20px;right:20px;left:auto;bottom:auto;z-index:100001;display:block;padding:0;background:transparent;backdrop-filter:none;pointer-events:none;max-width:calc(100vw - 32px)}
+.meal-result-overlay[hidden]{display:none!important}
+.meal-result-box{width:min(360px,calc(100vw - 32px));box-sizing:border-box;display:grid;grid-template-columns:30px 1fr;column-gap:10px;align-items:center;background:#fff;border:1px solid #dce6f1;border-left:4px solid #168653;border-radius:10px;padding:12px 14px;text-align:left;box-shadow:0 8px 24px rgba(16,42,75,.14);animation:mealResultIn .18s ease-out}
+.meal-result-icon{grid-row:1 / span 2;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;margin:0;background:#e5f8ed;border:1px solid #b8ebcc;color:#11834f;font-size:16px;font-weight:700}
+.meal-result-title{font-size:14px;line-height:1.3;font-weight:700;color:#17365c;margin:0 0 2px}
+.meal-result-message{font-size:12px;line-height:1.45;color:#5d7189;overflow-wrap:anywhere}
+.meal-result-box.is-delete{border-left-color:#e24b55}
+.meal-result-box.is-delete .meal-result-icon{background:#fff0f0;border-color:#ffd0d0;color:#c92f3d}
+.meal-result-box.is-error{border-left-color:#e5a126}
+.meal-result-box.is-error .meal-result-icon{background:#fff6df;border-color:#ffe4a3;color:#a66b00}
+@keyframes mealResultIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:520px){.meal-result-overlay{top:12px;right:12px;max-width:calc(100vw - 24px)}.meal-result-box{width:calc(100vw - 24px);padding:11px 12px}}
+</style>
+<script>
+(function(){
+  const success=document.getElementById('meal-server-success');
+  const error=document.getElementById('meal-server-error');
+  const source=success||error;
+  if(!source)return;
+  const raw=(source.dataset.message||source.textContent||'').trim();
+  if(!raw)return;
+  // Prevent the same server message from appearing again on a browser reload.
+  // A different server message is still shown normally.
+  const noticeKey='meal-management-last-notice';
+  const noticeSignature=location.pathname+'|'+location.search+'|'+(error?'error':'success')+'|'+raw;
+  try {
+    if (sessionStorage.getItem(noticeKey) === noticeSignature) {
+      source.remove();
+      return;
+    }
+    sessionStorage.setItem(noticeKey, noticeSignature);
+  } catch (e) { /* Continue showing the message if session storage is unavailable. */ }
+  const low=raw.toLowerCase();
+  const isDelete=/delet|removed|remove/.test(low);
+  const isUpdate=/updat|edit|chang|saved|save|success/.test(low);
+  const isError=!!error;
+  const overlay=document.getElementById('meal-result-toast');
+  const box=document.getElementById('meal-result-box');
+  document.getElementById('meal-result-title').textContent=isError?'Request Unsuccessful':(isDelete?'Meal Entry Deleted':(isUpdate?'Meal Entry Updated':'Meal Entry Saved'));
+  document.getElementById('meal-result-icon').textContent=isError?'!':(isDelete?'✓':(isUpdate?'✓':'✓'));
+  document.getElementById('meal-result-message').textContent=raw;
+  if(isDelete)box.classList.add('is-delete');
+  if(isError)box.classList.add('is-error');
+  overlay.hidden=false;
+})();
+</script>
+
+
+<script>
+(function(){
+  const toggle=document.getElementById('ssa-profile-toggle');
+  const actions=document.getElementById('ssa-profile-actions');
+  if(!toggle||!actions)return;
+  toggle.addEventListener('click',function(){
+    const opening=toggle.getAttribute('aria-expanded')!=='true';
+    toggle.setAttribute('aria-expanded',String(opening));
+    actions.hidden=!opening;
+  });
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape'&&!actions.hidden){actions.hidden=true;toggle.setAttribute('aria-expanded','false');toggle.focus();}
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  const monthInput=document.getElementById('status-month-filter');
+  const yearInput=document.getElementById('status-year-filter');
+  const resetButton=document.getElementById('status-filter-reset');
+  const count=document.getElementById('status-filter-count');
+  const noResults=document.getElementById('meal-status-no-results');
+  const rows=Array.from(document.querySelectorAll('#meal-status-rows .meal-status-row'));
+  if(!monthInput||!yearInput||!resetButton||!count)return;
+
+  const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  monthNames.forEach(function(name,index){
+    const option=document.createElement('option');
+    option.value=String(index+1).padStart(2,'0');
+    option.textContent=name;
+    monthInput.appendChild(option);
+  });
+  for(let year=2026;year<=2090;year++){
+    const option=document.createElement('option');
+    option.value=String(year);
+    option.textContent=String(year);
+    yearInput.appendChild(option);
+  }
+
+  const availableMonths=Array.from(new Set(rows.map(function(row){return (row.dataset.month||'').trim();}).filter(function(value){return /^\d{4}-\d{2}$/.test(value);}))).sort();
+  const eligibleYears=availableMonths.map(function(value){return Number(value.slice(0,4));}).filter(function(year){return year>=2026&&year<=2090;});
+  const recentYear=eligibleYears.length?Math.max.apply(null,eligibleYears):2026;
+  const recentMonthForYear=availableMonths.filter(function(value){return value.startsWith(String(recentYear)+'-');}).sort().pop();
+  const latestMonth=availableMonths.length?availableMonths[availableMonths.length-1]:'';
+  const defaultMonth=(recentMonthForYear?recentMonthForYear.slice(5,7):(latestMonth?latestMonth.slice(5,7):String(new Date().getMonth()+1).padStart(2,'0')));
+  yearInput.value=String(recentYear);
+  monthInput.value=defaultMonth;
+
+  function applyStatusFilters(){
+    const month=monthInput.value.trim();
+    const year=yearInput.value.trim();
+    let visible=0;
+    rows.forEach(function(row){
+      const rowMonth=(row.dataset.month||'').trim();
+      const parts=rowMonth.split('-');
+      const rowYear=parts.length===2?parts[0]:'';
+      const rowMonthNumber=parts.length===2?parts[1]:'';
+      const match=rowYear===year&&rowMonthNumber===month;
+      row.hidden=!match;
+      if(match){visible++;row.cells[0].textContent=visible;}
+    });
+    if(noResults)noResults.hidden=visible!==0;
+    const monthName=monthNames[Number(month)-1]||'';
+    count.textContent=visible+' record'+(visible===1?'':'s')+' shown for '+monthName+' '+year;
+  }
+  monthInput.addEventListener('change',applyStatusFilters);
+  yearInput.addEventListener('change',applyStatusFilters);
+  resetButton.addEventListener('click',function(){yearInput.value=String(recentYear);monthInput.value=defaultMonth;applyStatusFilters();});
+  applyStatusFilters();
+})();
+</script>
+<script id="ssa-unified-sidebar-script">(function(){var b=document.getElementById('ssaUnifiedProfileTrigger');var d=document.getElementById('ssaUnifiedProfileDropdown');if(!b||!d)return;b.addEventListener('click',function(e){e.preventDefault();var open=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!open));d.classList.toggle('is-open',!open);});document.addEventListener('click',function(e){if(!e.target.closest('#ssaUnifiedProfile')){b.setAttribute('aria-expanded','false');d.classList.remove('is-open');}});})();</script>
+</body></html>
